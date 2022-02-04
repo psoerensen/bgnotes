@@ -1,0 +1,126 @@
+---
+title: 'Brief Introduction to Plant and Animal Breeding'
+author: "Peter Sørensen, Guillaume Ramstein"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: yes
+    includes:
+      in_header: preamble.tex
+  html_document:
+    number_sections: yes
+    includes:
+      in_header: mathjax_header.html
+  word_document: default
+biblio-style: apalike
+link-citations: yes
+bibliography: lbgfs2021.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+set.seed(19)
+```
+
+These lecture notes contributes to "Compendium Plant and Animal Breeding and Genetics" (CPABG).   
+The notes support the lectures.
+
+The notes consist of the following chapters:    
+
+Chapter 1: Brief Introduction to Plant and Animal Breeding (L8).    
+Chapter 2: Basic concepts in Quantitative Genetics used in Breeding (L10).   
+Chapter 3: Introduction to Estimation of Genetic Parameters used in Breeding (L12).   
+Chapter 4: Introduction to Estimation of Breeding Values (L14).    
+Chapter 5: Introduction to Estimation of Genomic Breeding Values (L16). 
+
+Appendix 1: Basic concepts in Probability and Statistics    
+Appendix 2: Basic concepts in Linear Algebra       
+Appendix 3: Introduction to R       
+
+The aim of this chapter is to give a brief introduction to breeding in animals and plants.   
+We can in addition suggest some further readings.   
+The text below is in part from the following sources(CC-BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/):   
+https://en.wikipedia.org/wiki/Selective_breeding    
+https://charlotte-ngs.github.io/lbgfs2021/cn/01_intro_lbg.pdf   
+
+
+# Brief Introduction to Breeding in Animals and Plants
+
+Selective breeding (also called artificial selection) is the process by which humans use animal breeding and plant breeding techniques to selectively develop particular phenotypic traits (characteristics) by choosing which parents will sexually reproduce and make offspring. Domesticated animals are known as breeds, normally bred by a professional breeder. Domesticated plants are known as varieties, cultigens, cultivars, or breeds. Two purebred animals of different breeds produce a crossbreed, and crossbred plants are called hybrids. Flowers, vegetables and fruit trees may be bred by amateurs or professional breeders: major crops are usually produced by professional breeders, in academia or industry.
+
+In both animal and plant breeding, crossing techniques such as inbreeding, linebreeding, and outcrossing are utilized.    Charles Darwin (https://en.wikipedia.org/wiki/Charles_Darwin) discussed how selective breeding had been successful in producing change over time in his 1859 book, On the Origin of Species. Its first chapter discusses selective breeding and domestication of animals like pigeons, cats, cattle, and dogs. Darwin used artificial selection as a springboard to introduce and support the theory of natural selection.
+
+The deliberate exploitation of selective breeding to produce desired results has become very common in agriculture and experimental biology.
+
+Selective breeding can be unintentional. In plants, it may result from the process of human cultivation, and may produce unintended – desirable or undesirable – results. For example, in some grains, an increase in seed size may have resulted from certain ploughing practices rather than from the intentional selection of larger seeds. Most likely, there has been an interdependence between natural and artificial factors that have resulted in plant domestication.
+
+## Fundamental Questions in Selective Breeding
+Natural selection and selective breeding can both cause changes in animals and plants. The difference between the two is that natural selection happens naturally, but selective breeding only occurs when humans intervene. For this reason, selective breeding is sometimes called artificial selection. Selective breeding takes place over many generations. These are the main steps involved:
+
+* Which traits should we breed for?
+* How do we select the _best_ breeding individuals?
+* What can breeders do to obtain the _best_ breeding individuals?
+
+The term `best` is relative, because there is no `best` breeding for all situations and all environments. Breeding individuals that show high performance in one environment, may not perform as well in a different environment. For example, Holstein cows in Europe or North America, are able to produce a lot of milk, but they have difficulties surviving in Africa. Knowing that the environment plays an important role for animals and plants, we usually assume that breeding populations are more or less adapted to their environment.
+Breeding individuals are usually described or characterized in terms of appearance or performance or a combination of both. In any case, we will be talking about __traits__ where any trait is an observable or measurable characteristic of an breeding individual. Examples of _observable_ traits in animals are 
+
+* coat color
+* size 
+* muscling
+* leg set
+* udder conformation and many more.
+
+Observable traits are mostly used to describe the appearance of an animal. In contrast to that, _measurable_ traits are mostly used to describe the performance of an animal. Examples of measurable traits are 
+
+* body weight
+* milk production
+* protein and fat yield.
+
+Note, it is important to distinguish between the observed or measured values of a trait which might be `red` coat color or $343$ kg of body weight and the traits themselves which are just coat color or body weight. The observed or measured values of a trait are also called __phenotypes__. 
+
+
+## Genotypes and Phenotypes {#geno-pheno}
+In selective breeding we are mainly concerned with changing the populations at the genetic level. The reason why we are interested in changing a population genetically is because parents do not pass their phenotypes per se to their offspring. Instead, they pass a random sample of their genes to their offspring. For each offspring every parent does transmit a different sample of their genes. From a genetic point of view, we want to know not only the most desirable phenotype, but also the most desirable genotypes. From the central dogma of molecular biology (https://en.wikipedia.org/wiki/Central_dogma_of_molecular_biology), it follows that an animal’s genotype provides the genetic basis for phenotypes. The relationship between phenotypes ($P$) and genotypes ($G$) can be summarized by the following equation:
+\begin{equation}
+P = G + E
+\end{equation}
+
+where $E$ represents the __environmental effects__. These may include external effects like climate and soil composition (abiotic factors) and exposure to beneficial or pathogenic microbes (biotic factors). They may also include developmental effects like maternal effects, or simply measurement errors (random fluctuations in measurement of phenotypes). Because we want to change our populations at the genetic level, we are interested in the effect of genotypes (G). In most cases, we are not able to directly observe or measure G. But we will see later on how we can estimate G based on measurements and observations of P and based on estimates of E.  In particular, we will see how __breeding values__ , the part of G that is transmitted over generation, are estimated and used by breeders to perform crosses and improve populations. Those tools are being described in the following section.
+
+
+## Improvement of Breeding Populations
+The purpose of selective breeding is to improve the traits selected for, in a breeding population. Once a breeding individual is conceived, its genotype is fixed and cannot be improved anymore. Breeders can improve populations at the genetic level using the following two tools:
+
+ * __evaluation__  of individuals in the current generation 
+ * __selection__ of the 'best' individuals (for phenotypes of interest)
+ * __mating__ of selected individuals to generate the next (improved) generation
+
+### Evaluation
+
+
+### Selection
+Selection is the process of choosing individuals in the current generation, as parents for the next generation. The application of selection in a certain population over a certain time changes the breeding individuals in that population at the genetic level. The most familiar form of selection is natural selection which occurs in natural and wildlife populations. Natural selection is one of the great forces of evolution and it also affects domestic animal and plant populations. All animal or plants with lethal genetic defects are naturally selected against, i.e., they do not survive before the breeder gets to evaluate them. 
+
+Although natural selection cannot be ignored for agricultural animal and plant species, for the focus of animal and plant breeders is __artificial selection__. The idea behind artificial selection is simple. For a given trait all individuals in a breeding population are ranked according to their estimated breeding value. From this list, the top-ranking breeding individual are used as parents for the next generation. In most breeding populations, breeders are interested in proving more than one trait. When considering more than one trait, the question is how to come up with the ranking for the individuals to be selected as potential parents. There are several strategies to produce such a ranking based on a number of traits. It has been shown that using a weighted mean of the breeding values of all traits, which is called an __aggregate genotype__ , to rank all animals is an optimal procedure to be used as selection criterion. 
+
+### Mating
+The second tool we have available as animal or plant breeders is __mating__. In a mating scheme, we must decide which of the selected males and females are mated with each other. There are a number of different rules that can be followed. The application of a given set of rules is summarized as a mating system. There are three reasons for using a specific mating system.
+
+1. producing offspring with extreme breeding values. When parents with extreme breeding values (high or low) are mated, offspring with extreme phenotypes can be expected. This is mostly used when a given trait is to be changed in one direction
+2. making use of complementarity in parental traits. When neither of the parents is optimal, a mix of traits can be desirable. In such a case parental genotypes can be quite different. . When parents of different breeds are mated, then this is called __crossbreeding__. 
+3. obtain positive effects due to heterosis. Hybrid vigor or heterosis in crossbreeding occurs when offspring performance exceeds the performance of the pure-breds. 
+
+There might also be other aspects that influence a mating system, e.g. to restrict the level of inbreeding or to consider optimum genetic contribution theory.
+
+
+## Scientific and Technological Advances is driving Breeding and Genetics 
+  
+
+Brief overview of these scientific and technological advances.....
+
+### Quantitative Genetics
+### Statistics
+### Computing
+### Genomic technologies
+### Phenotyping technologies
+

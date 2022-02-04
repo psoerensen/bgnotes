@@ -1,0 +1,542 @@
+---
+title: "Pedigree Based Relationship Matrix"
+author: "Peter Sørensen,....."
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: yes
+    includes:
+      in_header: preamble.tex
+  html_document:
+    number_sections: yes
+    includes:
+      in_header: mathjax_header.html
+  word_document: default
+biblio-style: apalike
+link-citations: yes
+bibliography: lbgfs2021.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+set.seed(19)
+```
+
+
+
+# Genetic Covariances Between Individuals {#geneticcovariancesbetweenanimals}
+The prediction of breeding values using BLUP as shown in chapter \@ref(blup) uses linear mixed effects models where the breeding value of each individual is included as a random effect. Linear mixed effect models in general and specifically Henderson's mixed model equations require us to be able to specify the variance-covariance matrix of all random effects. When using the linear mixed model, the breeding value of each individual is included as a random effect in the linear mixed effects model. As a consequence of that we need to determine the covariance between the true breeding values of all individuals. Figure \@ref(fig:animalcov) tries to display the structure of the required variance-covariance diagrammatically.
+
+```{r animalcov, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Genetic Covariance Between Individuals"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/animalcov.odg")
+knitr::include_graphics(path = "odg/animalcov.png")
+```
+ 
+The variance-covariance matrix shown at the bottom of Figure \@ref(fig:animalcov) has the variances of the true breeding values on the diagonal and all the covariances between the true breeding values of all individuals as offdiagonal elements. From the formulation of the linear mixed effect model in \@ref(eq:linearmixedeffectmodelmatrixvector), we defined the variance-covariance matrix of the random effects $u$ to be $G$ (see equation \@ref(eq:variancerandomeffects)). When predicting breeding values with the linear mixed model, the variance-covariance matrix of all components in the vector $a$ is defined as 
+
+\begin{equation}
+var(a) = G = A * \sigma_a^2
+(\#eq:genvarcovarmatrixanimalmodel)
+\end{equation}
+
+where the matrix $A$ is called __numerator relationship matrix__.
+
+
+## Similarity Between Individuals {#similaritybetweenindividuals}
+At the genetic level there are two different kinds of similarity
+
+1. Identity by descent (IBD)
+2. Identity by state
+
+```{r ibdibs, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Identity by State Versus Identity by Descent", out.width="100%"}
+#rmddochelper::use_odg_graphic(ps_path = "odg/ibdibs.odg")
+knitr::include_graphics(path = "odg/ibdibs.png")
+```
+
+Figure \@ref(fig:ibdibs) illustrates the difference between the two type of identities. The type of graph shown in Figure  \@ref(fig:ibdibs) is called a __pedigree__ which is commonly used to display the relationship between individuals in a population. The rectangle symbols denote male individuals and the round symbols stand for female individuals. The horizontal connections between female and male individuals denote a mating. All individuals connected to a vertical line and follow below are progeny of the connected parents. 
+
+The notations inside of the symbols stand for the different genotypes of the individuals on a given locus. The red arrows denote the path of two $A_1$-alleles which are copies of the same ancestral allele. These two copies are called __identical by descent__ (IBD). The green arrows show the path of two alleles which are identical by state which do not originate from the same copy of any given ancestral alleles. 
+
+
+## Numerator Relationship Matrix {#numeratorrelationshipmatrix} 
+The probability of identical genes by descent (IBD) occurring in two individuals is termed the co-ancestry or the coefficient of kinship (Falconer1996). The additive genetic relationship between two individuals is twice their co-ancestry. The matrix that expresses the additive genetic relationship among individuals in a population is called the __numerator relationship matrix__ $A$. The matrix $A$ is symmetric and its diagonal elements $(A)_{ii}$ are equal to $1 + F_i$ where $F_i$ is the __coefficient of inbreeding __ of individual $i$. The coefficient of inbreeding $F_i$ indicates whether an individual $i$ is inbred or not. $F_i$ is defined to be half the additive genetic relationship between the parents of $i$. Hence the diagonal element $(A)_{ii}$ of matrix $A$ corresponds to twice the probability that two gametes taken at random from an individual $i$ will carry IBD-alleles.
+
+The off-diagonal elements $(A)_{ij}$ equals the numerator of the coefficient of relationship between individuals $i$ and $j$. Multiplying the matrix $A$ by the additive genetic variance $\sigma_a^2$ leads to the covariance among breeding values. Thus if $a_i$ is the breeding value of individual $i$ then 
+
+\begin{equation}
+var(a_i) = (A)_{ii} \sigma_a^2 = (1 + F_i) \sigma_a^2
+(\#eq:vartruebreedingvalue)
+\end{equation}
+
+
+### Algorithm To Compute $A$ {#algorithmtocomputea}
+The matrix $A$ can be computed using either the 
+
+1. path coefficient method or 
+2. recursive method.
+
+The second method is especially suitable for an implementation by a software program. In what follows the recursive method to compute the components of $A$ is described now. Initially, individuals in a pedigree are numbered from $1$ to $n$ and ordered such that parents precede their progeny. The following rules are then  used to compute the components of $A$. 
+
+* If both parents $s$ and $d$ of individual $i$ are known then 
+    + the diagonal element $(A)_{ii}$ corresponds to: $(A)_{ii} = 1 + F_i = 1 + {1\over 2} (A)_{sd}$ and
+    + the off-diagonal element $(A)_{ji}$ is computed as:  $(A)_{ji} = {1\over 2} ((A)_{js} + (A)_{jd})$
+    + because $A$ is symmetric $(A)_{ji} = (A)_{ij}$
+    
+* If only one parent $s$ is known and assumed unrelated to the mate
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = {1\over 2} ((A)_{js}$
+    
+* If both parents are unknown    
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = 0$
+    
+
+### Numeric Example
+```{r pedexamplesetup, echo=FALSE, results='hide'}
+suppressPackageStartupMessages( library(pedigreemm) )
+n_nr_ani_ped <- 6
+n_nr_parent <- 2
+tbl_ped <- tibble::tibble(Calf = c((n_nr_parent+1):n_nr_ani_ped),
+                             Sire = c(1, 1, 4, 5),
+                             Dam  = c(2, NA, 3, 2))
+ped <- pedigree(sire = c(rep(NA, n_nr_parent), tbl_ped$Sire), dam = c(rep(NA, n_nr_parent), tbl_ped$Dam), label = as.character(1:n_nr_ani_ped))
+matA <- as.matrix(getA(ped = ped))
+matAinv <- as.matrix(getAInv(ped = ped))
+```
+
+We are given the following pedigree and we want to compute the matrix $A$ using the recursive method described in \@ref(algorithmtocomputea). 
+
+```{r tabpedexample, echo=FALSE, results='asis'}
+knitr::kable(tbl_ped,
+             format = 'latex',
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption = "Example Pedigree To Compute Additive Genetic Relationship Matrix")
+```
+
+The first step of the computations of $A$ are the numbering and the ordering of all the individuals. This is already done in the pedigree shown in Table \@ref(tab:tabpedexample). The components of $A$ are computed row-by-row starting with $(A)_{11}$. 
+
+\begin{align}
+(A)_{11} &= 1 + F_1 = 1 + 0 = 1 \notag \\
+(A)_{12} &= 0 = (A)_{21} \notag \\
+(A)_{13} &= {1\over 2} ((A)_{11} + (A)_{12}) = 0.5 = (A)_{31} \notag \\
+(A)_{14} &= {1\over 2} (A)_{11} = 0.5 = (A)_{14}  \notag \\
+(A)_{15} &= {1\over 2} (A)_{14} + (A)_{13}) = 0.5 = (A)_{51} \notag \\
+(A)_{16} &= {1\over 2} (A)_{15} + (A)_{12}) = 0.25 \notag
+\end{align}
+
+The same computations are also done for all the other components of the matrix $A$. The final result for the matrix looks as follows
+
+```{r displaymatrixa, echo=FALSE, results='asis'}
+cat("$$\n")
+# cat("A = \\left[")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA, pnDigits = 4), sep = "\n"), "\n")
+# cat("\\right]\n")
+cat(paste(rmdhelp::bmatrix(pmat = matA, ps_name = 'A'), sep = '\n'), '\n')
+cat("$$\n")
+```
+
+As a result, we can see from the components of the above shown matrix $A$ that individuals $1$ and $2$ are not related to each other. Furthermore from the diagonal elements of $A$, it follows that individuals $5$ and $6$ are inbred while individuals $1$ to $4$ are not inbred.
+
+\begin{comment}
+
+
+## The Inverse Numerator Relationship Matrix {#inversenumeratorrelationshipmatrix}
+The general form of Henderson's mixed model equations as shown in \@ref(eq:mixedmodeleq) depend on four matrices
+
+1. Design matrix $X$ for the fixed effects
+2. Design matrix $Z$ for the random effects
+3. The inverse variance-covariance matrix $R^{-1}$ for the residuals $e$ and
+4. The inverse variance-covariance matrix $G^{-1}$ for the random breeding values $a$. 
+
+When using the linear mixed model as described in section \@ref(#animalmodel), we have seen in \@ref(eq:genvarcovarmatrixanimalmodel) that $G$ corresponds to the product of the numerator relationship matrix $A$ and the genetic additive variance $\sigma_a^2$. But the mixed model equations depend on the inverse $G^{-1}$ of $G$ which means
+
+\begin{equation}
+G^{-1} = (A * \sigma_a^2)^{-1} = A^{-1} * {1\over \sigma_a^2}
+(\#eq:ginvformme)
+\end{equation}
+
+From \@ref(eq:ginvformme) we can see that in order to be able to set up the mixed model equations we need the inverse numerator relationship matrix $A^{-1}$. Because in practical routine predictions of breeding values, we have something in the order of 10 million individuals that we predict breeding values for. Hence the matrix $A$ has 10 million rows and 10 million columns. A matrix of that size cannot be inverted explicitly with commonly known methods such as described under https://en.wikipedia.org/wiki/Invertible_matrix. Henderson published in (Henderson1976) a set of simple rules to directly construct the matrix $A^{-1}$ without setting up the numerator relationship matrix.
+
+
+## Structure of $A^{-1}$
+When looking at a concrete example of an inverse of a numerator relationship matrix as shown below, we can discover some important facts. Let us assume the following pedigree.
+
+```{r simplepedexamplesetup, echo=FALSE, results='hide'}
+### # first six animals from Goetz p. 83
+suppressPackageStartupMessages( library(pedigreemm) )
+n_nr_ani_ped <- 5
+n_nr_parent <- 3
+tbl_ped_simple <- tibble::tibble(Calf = c(1:n_nr_ani_ped),
+                             Sire = c(NA, NA, NA, 1, 3),
+                             Dam  = c(NA, NA, NA, 2, 2))
+ped_simple <- pedigree(sire = tbl_ped_simple$Sire, dam = tbl_ped_simple$Dam, label = as.character(1:n_nr_ani_ped))
+matu_simple <- as.matrix(getA(ped = ped_simple))
+matAinv_simple <- as.matrix(getAInv(ped = ped_simple))
+```
+
+```{r tabpedsimpleexample, echo=FALSE}
+knitr::kable(tbl_ped_simple,
+             format = 'latex',
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption = "Pedigree Used To Compute Inverse Numerator Relationship Matrix")
+```
+
+The numerator relationship matrix $A$ for the pedigree shown in Table \@ref(tab:simplepedexamplesetup) is shown in \@ref(eq:numeratorrelationshipmatrix).
+
+```{r displaymatrixasimple, echo=FALSE, results='asis'}
+cat("\\begin{equation}\n")
+# cat("A = \\left[")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matu_simple, pnDigits = 4), sep = "\n"), "\n")
+# cat("\\right]\n")
+cat(paste(rmdhelp::bmatrix(pmat = matu_simple, ps_name = 'A'), sep = '\n'), '\n')
+cat("\\label{eq:numeratorrelationshipmatrix}\n")
+cat("\\end{equation}\n")
+```
+
+The matrix $A^{-1}$ shown below corresponds to the inverse of the matrix $A$ from \@ref(eq:numeratorrelationshipmatrix).
+
+```{r displaymatrixainv, echo=FALSE, results='asis'}
+cat("$$\n")
+# cat("A^{-1} = \\left[")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinv_simple, pnDigits = 4), sep = "\n"), "\n")
+# cat("\\right]")
+cat(paste(rmdhelp::bmatrix(pmat = matAinv_simple, ps_name = 'A^{-1}'), sep = '\n'), '\n')
+cat("$$")
+```
+
+From the above shown inverse $A^{-1}$, we recognize that $A^{-1}$ has a simpler structure than $A$ itself. The reason for this is that non-zero elements occur only at matrix elements of $A^{-1}$ corresponding to parents and progeny or to mates. Furthermore off-diagonal elements corresponding to mates are positive and elements corresponding to parents and progeny are negative. These observations were used by Henderson in [@Henderson1976] to come up with the rules described below. 
+
+
+## Henderson's Rule To Set Up $A^{-1}$
+We denote the row or column index corresponding to an individual of interest as $i$ and the row or column index belonging to the individuals father as $s$ and the row or column index corresponding to individual $i$'s mother as $d$. The rules differentiate the following three cases 
+
+1. both parents of individual $i$ are known
+2. only one parent of individual $i$ is known
+3. both parents of individual $i$ are unknown
+
+
+### Both Parents Known
+
+* add $2$ to the diagonal-element $(i,i)$
+* add $-1$ to off-diagonal elements $(s,i)$, $(i,s)$, $(d,i)$ and $(i,d)$
+* add ${1\over 2}$ to elements $(s,s)$, $(d,d)$, $(s,d)$, $(d,s)$
+
+
+### Only One Parent Known
+We assume that sire $s$ is known
+
+* add ${4\over 3}$ to diagonal-element $(i,i)$
+* add $-{2\over 3}$ to off-diagonal elements $(s,i)$, $(i,s)$
+* add ${1\over 3}$ to element $(s,s)$
+
+
+### Both Parents Unknown
+
+* add $1$ to diagonal-element $(i,i)$
+
+The application of Henderson's rules to construct $A^{-1}$ directly will be a problem in one of the coming exercises. When applying the above described rules, it has to be noted well that this simple version of the rules are only valid for a pedigree without inbreeding. We will see in section \@ref(#derivationofhendersonsrules) how to extend the simple rules such that they can be used for a general pedigree with inbreeding.
+
+
+## Derivation of Henderson's Rules {#derivationofhendersonsrules}
+Henderson's rules can be related to the so-called `LDL`-decomposition of the numerator relationship matrix $A$. The result of this decomposition consists of the equivalence between matrix $A$ and the product of three matrices $L$, $D$ and $L^T$. The matrix $L$ is a lower triangular matrix and the matrix $D$ is a diagonal matrix. The reason for why we are doing this decomposition of $A$ is that the matrices $L$ and $D$ can much easier be inverted than the matrix $A$. The `LDL`-decomposition is a general procedure in linear algebra and it can be applied to any symmetric and positive-definite matrix not only to numerator relationship matrices. But when the `LDL`-decomposition is applied to a numerator relationship matrix, the matrices $L$ and $D$ do also have a special genetic meaning. This meaning is revealed in the following derivation.
+
+
+### Decomposition of True Breeding Value and its Variance {#decompositionoftruebreedingvalueanditsvariance}
+The true breeding value ($a_i$) of individual $i$ can be decomposed into the true breeding values of individual $i$'s parents $s$ and $d$ and the mendelian sampling term $m_i$
+
+\begin{equation}
+a_i = {1\over 2} a_s + {1\over 2} a_d + m_i
+(\#eq:decomposeanimaltruebreedingvalue)
+\end{equation}
+
+Applying the decomposition shown in \@ref(eq:decomposeanimaltruebreedingvalue) for all individuals in the pedigree and combining the decompositions into a matrix-vector notation, we get 
+
+\begin{equation}
+a = P \cdot a + m
+(\#eq:decomposetruebreedingvaluematvec)
+\end{equation}
+
+\begin{tabular}{lll}
+where  &       &  \\
+       &  $a$  &  vector of true breeding values for all individuals  \\
+       &  $P$  &  matrix linking individuals to their parents         \\
+       &  $m$  &  vector of mendelian sampling terms
+\end{tabular}
+
+Equation \@ref(eq:decomposetruebreedingvaluematvec) can be interpreted as regression of the true breeding values onto parental breeding values. In such a regression the random term $m$ is like a residual term. The genetic meaning of $m$ corresponds to the deviation of $a_i$ from the full-sib average of the true breeding values within the nuclear family with parents $s$ and $d$. The term $m$ is called __mendelian sampling__ term. The source of $m$ is the fact that during meiosis, parental alleles are randomly assigned to each progeny. Bulmer (Bulmer1971) has shown that $m_i$ are independent from true breeding values of parents $s$ and $d$. Using this result, we take the variance on both sides of \@ref(eq:decomposeanimaltruebreedingvalue) leading to
+
+\begin{align}
+var(a_i)  &=  var({1\over 2} a_s + {1\over 2} a_d + m_i) \notag \\
+          &=  {1\over 4} var(a_s) + {1\over 4} var(a_d) + {1\over 2} cov(a_s, a_d) + var(m_i)
+(\#eq:vartruebreedingvalue)          
+\end{align}
+
+From \@ref(eq:genvarcovarmatrixanimalmodel) together with the definition of the numerator relationship matrix $A$, we know that 
+
+\begin{align}
+var(a_i)  &=  (1 + F_i) \sigma_a^2 \notag \\
+var(a_s)  &=  (1 + F_s) \sigma_a^2 \notag \\
+var(a_d)  &=  (1 + F_d) \sigma_a^2 \notag \\
+cov(a_s, a_d)  &=  (A)_{sd} \sigma_a^2 = 2F_i \sigma_a^2
+(\#eq:usedefnumeratorrelationshipmatrix)          
+\end{align}
+
+
+### Variance of Mendelian Sampling Terms {#variancemendeliansamplingterm}
+Inserting the relations from \@ref(eq:usedefnumeratorrelationshipmatrix) into \@ref(eq:vartruebreedingvalue) and solving for $var(m_i)$ gives the following result
+
+\begin{align}
+var(m_i)  &=  var(a_i) - {1\over 4} var(a_s) - {1\over 4} var(a_d) - {1\over 2} cov(a_s, a_d) \notag \\
+          &=  (1 + F_i) \sigma_a^2 - {1\over 4}(1 + F_s) \sigma_a^2 - {1\over 4} (1 + F_d) \sigma_a^2 - {1\over 2} * 2 * F_i * \sigma_a^2 \notag \\
+          &=  \left({1\over 2} - {1\over 4}(F_s + F_d)\right) \sigma_a^2
+(\#eq:mendeliansamplingvariance)          
+\end{align}
+
+In case where only parent $s$ of individual $i$ is known the terms in \@ref(eq:decomposeanimaltruebreedingvalue) and \@ref(eq:mendeliansamplingvariance) change to
+
+\begin{equation}
+a_i = {1\over 2} a_s + {1\over 2} a_d + m_i
+(\#eq:decomposeanimaltruebreedingvalue)
+\end{equation}
+
+
+\begin{align}
+a_i       &=  {1\over 2} a_s + m_i \notag \\
+var(m_i)  &=  \left(1 - {1\over 4}(1+ F_s)\right) \sigma_a^2 \notag \\
+          &=  \left({3\over 4} - {1\over 4}F_s\right) \sigma_a^2
+(\#eq:mendeliansamplingvarianceoneparentknown)          
+\end{align}
+
+When both parents are unknown, we get
+
+\begin{align}
+a_i       &=  m_i \notag \\
+var(m_i)  &=  \sigma_a^2
+(\#eq:mendeliansamplingvariancebothparentunknown)          
+\end{align}
+
+
+### Decomposition of $A$ {#decompositionofa}
+The true breeding values $a_s$ of sire $s$ and $a_d$ of dam $d$ can be decomposed in a similar way as shown for the true breeding value $a_i$ in \@ref(eq:decomposeanimaltruebreedingvalue). 
+
+\begin{align}
+a_s  &=  {1\over 2} a_{ss} + {1\over 2} a_{ds} + m_s \notag \\
+a_d  &=  {1\over 2} a_{sd} + {1\over 2} a_{dd} + m_d
+(\#eq:decomposeparenttruebreedingvalue)
+\end{align}
+
+\begin{tabular}{lll}
+where  &  &  \\
+       &  $ss$  &  sire of $s$  \\
+       &  $ds$  &  dam of $s$   \\
+       &  $sd$  &  sire of $d$  \\
+       &  $dd$  &  dam of $d$  
+\end{tabular}
+
+Using \@ref(eq:decomposeparenttruebreedingvalue) together with \@ref(eq:decomposeanimaltruebreedingvalue) leads to the following expression for $a_i$
+
+\begin{align}
+a_i  &=  {1\over 2} a_s + {1\over 2} a_d + m_i \notag \\
+     &=  {1\over 2} ({1\over 2} a_{ss} + {1\over 2} a_{ds} + m_s)+ {1\over 2} ({1\over 2} a_{sd} + {1\over 2} a_{dd} + m_d) + m_i \notag \\
+     &=  {1\over 4} a_{ss} + {1\over 4} a_{ds} + {1\over 4} a_{sd} + {1\over 4} a_{dd} + {1\over 2} m_s + {1\over 2} m_d + m_i  \notag
+(\#eq:recursivedecomposeanimaltruebreedingvalue)
+\end{align}
+
+This type of decomposition can also be done for the grand-parents of individual $i$ and further back until we get to true breeding values of individuals with unknown parents. Individuals of ancestor generations with unknown parents are called __founder population__. The process of decomposing true breeding values back through all generations of a pedigree is called __recursive decomposition__ of individual $i$'s true breeding value. Because we know from \@ref(eq:mendeliansamplingvariancebothparentunknown) that the decomposition of true breeding values $u_k$ for an individual $k$ with unknown parents is $u_k = m_k$, the result of the recursive decomposition of $a_i$ is a sum of mendelian sampling terms linking the ancestors of $i$ back to the founder population. 
+
+Ordering all individuals in a pedigree according to their age and writing the result of the recursive decomposition of all true breeding values in matrix-vector notation leads to
+
+\begin{equation}
+a = L \cdot m
+(\#eq:resultrecursivedecomposition)
+\end{equation}
+
+The matrix $L$ is a lower triangular matrix. The row corresponding to individual $i$ is the average of the rows in $L$ corresponding to parents $s$ and $d$ of $i$. The matrix $L$ contains the path of the gene flow from the base population to all individuals in the population. From equation \@ref(eq:resultrecursivedecomposition), we are computing the variance of all true breeding values which leads to
+
+\begin{align}
+var(a)  &=  var(L \cdot m) \notag \\
+        &=  L \cdot var(m) \cdot L^T \notag \\
+        &=  L \cdot (D \sigma_a^2) \cdot L^T \notag \\
+        &=  L \cdot D \cdot L^T  \sigma_a^2 \notag
+        &=  A \sigma_a^2
+(\#eq:vararecursivedecomposition)
+\end{align}
+
+From \@ref(eq:vararecursivedecomposition), the `LDL`-decomposition of $A$ follows directly as $A = LDL^T$. The single components $m_i$ are independent of each other. This also means that $cov(m_i, m_j) = 0$ for $i \ne j$. Hence the matrix $D$ is a diagonal matrix. In section \@ref(#variancemendeliansamplingterm) we have seen that $var(m_i)$ always contain $\sigma_a^2$ as a factor. Hence it is reasonable to express $var(m)$ as a product of a diagonal matrix $D$ times the genetic additive variance $\sigma_a^2$. The diagonal elements of matrix $D$ are computed as shown in section \@ref(#variancemendeliansamplingterm).
+
+The mixed model equations require the inverse numerator relationship matrix $A^{-1}$. Thanks to the `LDL`-decomposition of $A$, we can compute $A^{-1}$ as
+
+\begin{equation}
+A^{-1} = (L \cdot D \cdot L^T)^{-1} = (L^T)^{-1} \cdot D^{-1} \cdot L^{-1}
+(\#eq:ainvldldecomp)
+\end{equation}
+
+The inverse $D^{-1}$ is easy to compute, because $D$ is a diagonal matrix. As a consequence of that $D^{-1}$ is also a diagonal matrix where the elements $(D^{-1})_{ii}$ correspond to the inverse of the elements of the original matrix $D$, i.e. $(D^{-1})_{ii} = 1/(D)_{ii}$. The matrix $L^{-1}$ is also a lower triangular matrix and can easily computed based on the two relations for the vector $m$. Based on \@ref(eq:decomposetruebreedingvaluematvec), we know
+
+\begin{equation}
+m = a - Pa = (I-P)a
+(\#eq:mendeliansamplingiminuspa)
+\end{equation}
+
+and from \@ref(eq:resultrecursivedecomposition), we get
+
+\begin{equation}
+m = L^{-1}a
+(\#eq:mendeliansamplinglinversea)
+\end{equation}
+
+Setting both expressions for $m$ in \@ref(eq:mendeliansamplingiminuspa) and \@ref(eq:mendeliansamplinglinversea) equal can be used to obtain $L^{-1}$
+
+\begin{equation}
+m  = (I-P)a = L^{-1}a
+(\#eq:linverseequation)
+\end{equation}
+
+Therefore, 
+
+\begin{equation}
+L^{-1} = I - P
+(\#eq:linverseresult)
+\end{equation}
+
+
+### General Version of Henderson's Rule
+Based on the decomposition of $A^{-1}$ shown in \@ref(eq:ainvldldecomp), the general version of Henderson's rule where inbreeding of individuals can be accounted for can be summarized as 
+
+* Start with a matrix $A^{-1}$ where all elements are set to $0$.
+* Let $d^i$ be the $i$-th diagonal element of $D^{-1}$ for individual $i$, assuming $i$ has parents $s$ and $d$.
+* Then add the following contributions to $A^{-1}$
+    + $d^i$ to the element $(i,i)$
+    + $-d^i/2$ to the elements $(s,i)$, $(i,s)$, $(d,i)$, $(i,d)$
+    + $d^i/4$ to the elements $(s,s)$, $(s,d)$, $(d,s)$, $(d,d)$
+
+The contributions to rows and columns corresponding to parents $s$ and $d$ are only added, if they are known. Because the elements $d^i$ are dependent on the inbreeding coefficients $F_s$ and $F_d$ of parents $s$ and $d$, we have to find an efficient way to compute inbreeding coefficients for all individuals in a population.
+
+
+## Computing Inbreeding Coefficients {#computinginbreedingcoefficients}
+Inbreeding coefficients can be computed using different methods. From all these methods, we are just showing the one method which was described in (Quaas1976). This method is based on the properties of a second decomposition of the numerator relationship matrix $A$ which is called the __cholesky decomposition__. The cholesky decomposition of a matrix $A$ corresponds to 
+
+\begin{equation}
+A = RR^T
+(\#eq:choleskymata)
+\end{equation}
+
+where the matrix $R$ is a lower triangular matrix. At this point we have to be clear about this. In practical routine evaluations, we will not explicitly compute this decomposition, because we do not want to construct $A$ explicitly. We are just using the properties of \@ref(eq:choleskymata) to find an efficient way to compute the diagonal elements $(A)_{ii}$ of $A$ without constructing the complete matrix $A$. The diagonal elements $(A)_{ii}$ are important, because they contain the inbreeding coefficients ($F_i$), as $(A)_{ii} = 1 + F_i$. Based on \@ref(eq:choleskymata), $(A)_{ii}$ can be computed from the components of $R$ as
+
+\begin{equation}
+(A)_{ii} = \sum_{j=1}^i (R)_{ij}^2
+(\#eq:DiagElemMatA)
+\end{equation}
+
+This can be shown with a small $3\times 3$ matrix $A$
+
+```{r SmallExCholA, eval=TRUE, echo=FALSE, results='asis'}
+nAnzAni <- 3
+matA <- rmdhelp::matGetMatElem(psBaseElement = "(A)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+matR <- rmdhelp::matLowerTri(psBaseElement = "(R)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("$$")
+cat(paste(rmdhelp::bmatrix(pmat = matA), collapse = "\n"))
+cat(" \n")
+cat(" = ")
+cat(paste(rmdhelp::bmatrix(pmat = matR), collapse = "\n"))
+cat(" \n")
+cat(" * ")
+cat(paste(rmdhelp::bmatrix(pmat = t(matR)), collapse = "\n"))
+cat("\n")
+cat("$$\n")
+```
+
+For the above shown example, the diagonal elements $(A)_{ii}$ are computed as
+
+\begin{align}
+  (A)_{11} &= (R)_{11}^2 \notag \\
+  (A)_{22} &= (R)_{21}^2 + (R)_{22}^2 \notag \\
+  (A)_{33} &= (R)_{31}^2 + (R)_{32}^2 + (R)_{33}^2 \notag
+(\#eq:MatADiag)
+\end{align}
+
+This shows that diagonal elements $(A)_{ii}$ can be computed using just all the components of row $i$ in $R$ up to the diagonal. Next, we have to show how to compute the components of $R$.
+
+
+### Recursive Computation of $R$
+We are setting the two decompositions of $A$ equal which leads to
+
+\begin{equation}
+A = R * R^T = L * D * L^T
+(\#eq:CholEqLdl)
+\end{equation}
+
+Let us write the matrix $R$ as a product of two matrices $L$ and $S$ where $L$ corresponds to the matrix from the `LDL`-decomposition and insert that product into \@ref(eq:CholEqLdl)
+
+\begin{equation}
+A = R * R^T = L * S * (L * S)^T = L * S * S^T * L^T= L * D * L^T
+(\#eq:CholRLSEqLdl)
+\end{equation}
+
+From \@ref(eq:CholRLSEqLdl), we conclude that $D = S \cdot S^T$ where $S$ is also a diagonal matrix with elements $(S)_{ii} = \sqrt{(D)_{ii}}$. For our small example we get
+
+\begin{equation}
+```{r RlsDecompEx, eval=TRUE, echo=FALSE, results='asis'}
+matL <- rmdhelp::matLowerTri(psBaseElement = "(L)", pnNrRow = nAnzAni, pnNrCol = nAnzAni, pvecDiag = 1)
+matS <- rmdhelp::matDiag(psBaseElement = "(S)", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat(paste(rmdhelp::bmatrix(pmat = matR), collapse = "\n"))
+cat("  = \n")
+cat(paste(rmdhelp::bmatrix(pmat = matL), collapse = "\n"))
+cat("  * \n")
+cat(paste(rmdhelp::bmatrix(pmat = matS), collapse = "\n"))
+cat("\n")
+```
+(\#eq:SmallExRLS)
+\end{equation}
+
+From \@ref(eq:SmallExRLS), we can see that the diagonal elements $(R)_{ii}$ are equal to $(S)_{ii}$. Therefore
+
+\begin{equation}
+(R)_{ii} = (S)_{ii} = \sqrt{(D)_{ii}}
+\label{eq:ComputeRii}
+\end{equation}
+
+Earlier, we have seen that diagonal elements $(D)_{ii}$ of $D$ correspond to 
+
+\begin{equation}
+(D)_{ii} = {1\over 2}\ - {1\over 4}\ (F_s + F_d) = 1 - 0.25((A)_{ss} + (A)_{dd})
+\label{eq:ComputeDii}
+\end{equation}
+
+and hence
+
+\begin{equation}
+(R)_{ii} = \sqrt{1 - 0.25((A)_{ss} + (A)_{dd})}
+\label{eq:ComputeRiiResult}
+\end{equation}
+
+The components $(A)_{ss}$ and $(A)_{dd}$ correspond to diagonal elements of $A$ of parents of $s$ and $d$ which were computed earlier.
+
+The off-diagonal elements of $R$ are computed as
+
+\begin{equation}
+(R)_{ij} = (L)_{ij} * (S)_{jj}
+\label{eq:ComputeRij}
+\end{equation}
+
+One property of the matrix $L$ is that any element $(L)_{ij}$ is equal to the average of elements $(L)_{sj}$ and $(L)_{dj}$, if $s$ and $d$ are parents of individual $i$. Using this we get
+
+\begin{align}
+(R)_{ij} &= (L)_{ij} * (S)_{jj} \nonumber\\
+       &= {1\over 2}((L)_{sj} + (L)_{dj}) * (S)_{jj} \nonumber\\
+       &= {1\over 2}((R)_{sj} + (R)_{dj})
+(\#eq:ComputeRijRec)
+\end{align}
+
+With that we have shown how to compute all elements of $R$ recursively. This requires an ordering of all individuals according to their age.
+
+
+<!--
+## Appendix: Derivation of Diagonalelements of Numerator Relationship Matrix $A$
+The material shown in this section is based on chapters 14 and 15 of [@Falconer1996]. (TBC)
+-->
+
+
+\end{comment}
