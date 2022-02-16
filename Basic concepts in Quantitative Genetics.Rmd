@@ -1,9 +1,9 @@
 ---
 title: "Introduction to Basic Concepts in Quantitative Genetics"
-author: "Peter Sørensen, Guillaume Ramstein"
+author: "Guillaume Ramstein & Peter Sørensen"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  bookdown::pdf_document2:
     number_sections: yes
     includes:
       in_header: preamble.tex
@@ -72,14 +72,16 @@ In practice, the genotype-environment interaction effect can be important for th
 ### Genetic effects, genetic values and breeding values
 The genetic effect (G) in the model can include additive effects (A), dominance effects (D), and epistatic effects (I). Additive effects are the summed effects of individual alleles. Dominance effects are interactions between alleles within loci. Epistatic effect are interactions between alleles in different loci and can therefore only occur if two or more loci affect the trait. 
 
-Consider an individual that is diploid, like most animals and plants like maize, soybean, barley (i.e., they carry two copies of every genes, except in their sexual chromosomes). Assume that one locus in its genome exists under two possible alleles: A1 and A2, with respective allele effects +1 and -1.  How do the individual’s alleles combine into a genotype? They may combine additively, so that the value of a genotype (the combination of two alleles genotype) is simply the sum of allele effects, but this is only a very special case! If genetic effects are entirely additive, then the value of each possible genotype is the sum of their respective allele effects, i.e., -2 if the individual is A2A2, 0 if it is A2A1 (or A1A2), and +2 if it is A1A1. Generally, the value of each genotype will depend on the combination of alleles within one locus (G = A + D) or across multiple loci (G = A + D + I). For example, in presence of dominance, the value of each possible genotype may be -2 if the individual is A2A2, +1 if it is A2A1 (or A1A2), and +2 if it is A1A1.
+Consider an individual that is diploid, like most animals and plants like maize, soybean, barley (i.e., they carry two copies of every genes, except in their sexual chromosomes). Assume that one locus in its genome exists under two possible alleles: A1 and A2, with respective allele effects +1 and -1.  How do the individual’s alleles combine into a genotype? They may combine additively, so that the value of a genotype (the combination of two alleles genotype) is simply the sum of allele effects, but this is only a very special case! If genetic effects are entirely additive, then the value of each possible genotype is the sum of their respective allele effects, i.e., -2 if the individual is A2A2, 0 if it is A2A1 (or A1A2), and +2 if it is A1A1. 
+
+Generally, the value of each genotype will depend on the combination of alleles within one locus (G = A + D) or across multiple loci (G = A + D + I). For example, in presence of dominance, the value of each possible genotype may be -2 if the individual is A2A2, +1 if it is A2A1 (or A1A2), and +2 if it is A1A1.
 
 #### Additive Effects
 Additive effects are the summed effects of average allele effects. Quite confusingly, additive effects depend on the population, because average allele effects depend on the frequency of genotypes in the population! For example, assume that genotypes have values -2 (A2A2), +1 (A2A1) and +2 (A1A1). In a population consisting of 25% A2A2, 50% A2A1 and 25% A1A1, you would expect the A1 allele in a A1A2 genotype 2/3 of the time, and you would expect the A1 allele in a A1A1 genotype 1/3 of the time. In another population consisting of 90% A2A2, 18% A2A1 and 1% A1A1, you would expect the A1 allele in a A1A2 genotype about 95% of the time, and in a A1A1 genotype only about 5% of the time. As a result, the effect of the A1 allele, averaged over genotypes, will not be the same, from one population to another.
 The concept of additive genetic effects and average allele effects is fundamental to quantitative genetics. However, it is one of is most confusing, precisely because of the dependance of allele effects on genotype frequencies.
 
 #### Dominance Effects
-Dominance genetic effects are the interactions among alleles at a given locus. This is an effect that is extra to the sum of the additive allele effects. Each genotype has its own dominance effect, denoted by  $\delta_{ij}$, for the specific combination of alleles i and j, (e.g., $\delta_{A_{1}A_{2}}$), and each of them are non-zero quantities. Using the previous example, the additive and dominance effects would give .....to be completed
+Dominance genetic effects are the interactions among alleles at a given locus. This is an effect that is extra to the sum of the additive allele effects. Each genotype has its own dominance effect, denoted by  $\delta_{ij}$, for the specific combination of alleles i and j, (e.g., $\delta_{A_{1}A_{2}}$), and each of them are non-zero quantities. 
 
 #### Epistatic Genetic Effects
 Epistatic genetic effects encompass all possible interactions among the loci impacting the trait, whenever there is more than one such loci. This includes all two-way interactions (e.g., interactions between loci A and B, A and C), three-way interactions (e.g., joint interaction among A, B and C), etc. Epistasis can be decomposed, so it includes interactions between additive effects at different loci, interactions between additive effects at one locus with dominance effects at a second locus, and interactions between dominance effects at different loci.
@@ -305,7 +307,7 @@ Because parent $S$ has genotype $A_1A_1$, the frequency $f(A_1)$ of a $A_1$ alle
 (\#eq:MeanOffGen11)
 \end{equation}
 
-Applying definition \@ref(def:defbreedingvalue), we can compute the breeding value ($BV_{11}$) for individual $S$ as shown in equation \@ref(eq:BVGen11) while using the results given by equations \@ref(eq:MeanOffGen11) and \@ref(eq:popmean).
+We can compute the breeding value ($BV_{11}$) for individual $S$ as shown in equation \@ref(eq:BVGen11) while using the results given by equations \@ref(eq:MeanOffGen11) and \@ref(eq:popmean).
 
 \begin{align}
 BV_{11} &=  2*(\mu_{11} - \mu)  \notag \\
@@ -572,7 +574,8 @@ Based on the decomposition of the genotypic value $GV_{ij}$ given in \@ref(eq:Se
 (\#eq:GeneticVarianceBVDom)
 \end{align}
 
-Inserting the expressions for the breeding values $BV_{ij}$ and for the dominance deviation $D_{ij}$ found earlier and simplifying the equation leads to the result in \@ref(eq:FinalGeneticVariance). A more detailed derivation of $\sigma_G^2$ is given in the appendix (\@ref(appendix-derivations)) of this chapter.
+Inserting the expressions for the breeding values $BV_{ij}$ and for the dominance deviation $D_{ij}$ found earlier and simplifying the equation leads to the result in \@ref(eq:FinalGeneticVariance). 
+<!-- A more detailed derivation of $\sigma_G^2$ is given in the appendix (\@ref(appendix-derivations)) of this chapter. -->
 
 \begin{align}
   \sigma_G^2 &=  2pq\alpha^2 + \left(2pqd \right)^2 \notag\\
@@ -580,7 +583,7 @@ Inserting the expressions for the breeding values $BV_{ij}$ and for the dominanc
 (\#eq:FinalGeneticVariance)             
 \end{align}
 
-The formula in equation \@ref(eq:FinalGeneticVariance) shows that $\sigma_G^2$ consists of two components. The first component $\sigma_A^2$ is called the __genetic additive variance__ and the second component $\sigma_D^2$ is termed __dominance variance__. As shown in equation \@ref(eq:VarBV) $\sigma_A^2$ corresponds to the variance of the breeding values. $\sigma^2_{a}$, the variance of breeding values, is also called the additive genetic variance, because as we have already seen the breeding values are additive in the number of favorable alleles. In populations where there is no additive genetic variance, individuals all have the same breeding value. Therefore, they will produce offspring with the same expected advantage (zero), and selection cannot generate any improvement over generations. Because $\sigma_D^2$ corresponds to the variance of the dominance deviation effects (see equation \@ref(eq:VarDom)) it is called dominance variance.
+The formula in equation \@ref(eq:FinalGeneticVariance) shows that $\sigma_G^2$ consists of two components. The first component $\sigma_A^2$ is called the __genetic additive variance__ and the second component $\sigma_D^2$ is termed __dominance variance__. Here $\sigma_A^2$ corresponds to the variance of the breeding values. The variance of breeding values is also called the additive genetic variance, because as we have already seen the breeding values are additive in the number of favorable alleles. In populations where there is no additive genetic variance, individuals all have the same breeding value. Therefore, they will produce offspring with the same expected advantage (zero), and selection cannot generate any improvement over generations. Because $\sigma_D^2$ corresponds to the variance of the dominance deviation effects it is called dominance variance.
 
 
 ## Multiple locus model for a quantitative trait {#extension-to-more-loci}
@@ -607,14 +610,14 @@ V &= V_A + V_B + I_{AB} \notag \\
 (\#eq:DecomposeGenotypicValueTwoLoci)
 \end{align}
 
+<!-- Collecting terms in \@ref(eq:DecomposeGenotypicValueTwoLoci) as follows -->
 Collecting terms in \@ref(eq:DecomposeGenotypicValueTwoLoci) as follows
 
 \begin{align}
 \mu &= \mu_A + \mu_B \notag \\
 U   &= BV_A + BV_B \notag \\
 D   &= D_A + D_B \notag \\
-I   &= I{AB}
-(\#eq:CollectVariables)
+I   &= I{AB} (\#eq:CollectVariables)
 \end{align}
 
 The decomposition shown in \@ref(eq:DecomposeGenotypicValueTwoLoci) and the collection of variables (see \@ref(eq:CollectVariables)) can be generalized to more than two loci. This leads to the following generalized decomposition of the overall total genotypic value $GV$ for the case of multiple loci affecting a certain trait of interest.

@@ -1,9 +1,10 @@
 ---
 title: "Estimation of Genetic Parameters"
-author: "Peter Sørensen,....."
+author: "Guillaume Ramstein & Peter Sørensen"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  bookdown::pdf_document2:
+    citation_package: natbib
     number_sections: yes
     includes:
       in_header: preamble.tex
@@ -12,9 +13,8 @@ output:
     includes:
       in_header: mathjax_header.html
   word_document: default
-biblio-style: apalike
+bibliography: [qg2021.bib]
 link-citations: yes
-bibliography: lbgfs2021.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -35,33 +35,18 @@ This section introduces the basic concepts of estimating genetic parameters such
   
 
 # Introduction
-The estimation of genetic parameters is an important issue in animal and plant breeding. First of 
-all, estimating additive genetic and possible non-additive genetic variances contributes 
-to a better understanding of the genetic mechanism. Secondly, estimates of genetic and 
-phenotypic variances and covariances are essential for the prediction of breeding values 
-and for the prediction of the expected genetic response of 
-selection programmes. Parameters that are of interest are heritability, genetic and 
-phenotypic correlation and repeatability, and those are computed as functions of the 
-variance components.
-
-Genetic parameters are estimated using information on phenotypes and genetic relationships 
-for individuals in the breeding population. Heritability is estimated by comparing individual 
-phenotypic variation among related individuals in a population. Close (compared to distant) relatives 
-share more DNA in common and if the trait is under genetic influence they will therefore share 
-phenotypic similarities. In this section we will illustrate how different phenotypic sources 
-and genetic relationships are used for estimating genetic parameters.
+The estimation of genetic parameters is an important issue in animal and plant breeding. First of all, estimating additive genetic and possible non-additive genetic variances contributes to a better understanding of the genetic mechanism. Second, estimates of genetic and phenotypic variances and covariances are essential for the prediction of breeding values. Third, prediction of the expected genetic response to selection computed using the breeders equation (presented later in the course). Genetic parameters of interest are heritability, genetic and phenotypic correlation and repeatability, and those are computed as functions of the variance components. Genetic parameters are estimated using information on phenotypes and genetic relationships for individuals in the breeding population. In this section we will illustrate how different phenotypic sources and genetic relationships are used for estimating genetic parameters.
 
 ## Genetic model
 As introduced previously the phenotype for a quantitative trait is the sum of both genetic and environmental factors. In general the total genetic effect for an individual is the sum of both additive and non-additive effects. However, only the additive genetic effects are passed on to the offspring and therefore have a breeding value. Therefore we only consider the additive genetic model as the basis for estimation of genetic parameters. The model for the phenotype ($y$) is:
 \begin{align}
 			y=\mu+a+e	 \notag
 \end{align}
-where  $\mu$ is the population mean, $a$ is the additive effect, and $e$ is the environmental deviation (or residual) not explained by the genetic effects in the model. 
-We assume that the additive genetic effect, a, and the residual term, e, are normally distributed which means that the observed phenotype is also normally distributed
+where  $\mu$ is the population mean, $a$ is the additive effect, and $e$ is the environmental deviation (or residual) not explained by the genetic effects in the model. We assume that the additive genetic effect, a, and the residual term, e, are normally distributed which means that the observed phenotype is also normally distributed
 \begin{align}
-a \sim N(0,\sigma^2_{a}), \quad
-e \sim N(0,\sigma^2_{e}), \quad
-y \sim N( \mu,\sigma^2_{y}) \notag
+a \sim N(0,\sigma^2_{a}), \notag \\
+e \sim N(0,\sigma^2_{e}), \notag \\
+y \sim N( \mu,\sigma^2_{a} + \sigma^2_{e}) \notag
 \end{align}
 where $\sigma^2_{a}$ is additive genetic variance, $\sigma^2_{e}$ is residual variance, and ($\sigma^2_{y}$) is the total phenotypic variance. 
 
@@ -86,49 +71,26 @@ Thus in order to estimate the heritability and genetic correlation we need to es
 
 
 ## Data required for estimating genetic parameters
-Information on phenotypes and genetic relationships for individuals in the breeding population 
-are used to formulate appropriate statistical models for the analysis of the data
-and accurate estimation of genetic parameters and breeding values of individuals.
+Information on phenotypes and genetic relationships for individuals in the breeding population are used to formulate appropriate statistical models for the analysis of the data and accurate estimation of genetic parameters and breeding values of individuals.
 
-__Phenotypes__ for traits of economic importance need to be recorded accurately and completely. All individuals
-within a production unit (herd, flock, ranch, plot) should be recorded. Individuals should not be
-selectively recorded. Data includes the dates of events when traits are observed, factors
-that could influence an individual’s performance, and an identification of contemporaries that
+__Phenotypes__ for traits of economic importance need to be recorded accurately and completely. All individuals within a production unit (herd, flock, ranch, plot) should be recorded. Individuals should not be selectively recorded. Data includes the dates of events when traits are observed, factors that could influence an individual’s performance, and an identification of contemporaries that
 are raised and observed in the same environment under the same management regime.
 Observations should be objectively measured, if at all possible.
 
 __Genetic relationships__ for the individuals in the breeding population is required. Genetic relationships can be inferred from a pedigree or alternative alternative from genetic markers. Individuals and their parents need to be uniquely identified in the data. Information about birth dates, breed composition, and genotypes for various markers or QTLs could also be stored. If individuals are not uniquely identified, then genetic change of the population may not be
-possible. In aquaculture species, for example, individual identification may not be feasible,
-but family identification (father and mother) may be known.
+possible. In aquaculture species, for example, individual identification may not be feasible, but family identification (father and mother) may be known.
 
-Furthermore knowledge and understanding of the production system is 
-important for designing optimum selection and mating strategies. For dairy cattle key elements are the
-gestation length and the age at first breeding. The number of offspring per female per
-gestation will influence family structure. The use of artificial insemination and/or embryo
-transfer could be important. Other management practices are also useful to know. 
-
-Prior information about the traits is useful. Read the literature. Most likely other researchers or 
-breeders have already made analyses of the same species and traits. Their models could be useful 
-starting points for further analyses. Their parameter estimates could predict the kinds of 
-results that might be found. The idea is to avoid the pitfalls and problems that other 
-researchers have already encountered. Be aware of new kinds of analyses of the same data, 
-that may not involve statistical models.
+Prior information about the traits is useful. Read the literature. Most likely other researchers or breeders have already made analyses of the same species and traits. Their models could be useful starting points for further analyses. Their parameter estimates could predict the kinds of results that might be found. The idea is to avoid the pitfalls and problems that other researchers have already encountered. Be aware of new kinds of analyses of the same data, that may not involve statistical models.
 
 
 ## Statistical models and variance components
-For estimating genetic parameters we need to specify a model that describes the genetic and non-genetic factors that may affect the trait phenotypes. Often the non-genetic factors are referred to as systematic effect 
-such as age, parity, litter size, days open, sex, herd, year, season, management, etc.
+For estimating genetic parameters we need to specify a model that describes the genetic and non-genetic factors that may affect the trait phenotypes. Often the non-genetic factors are referred to as systematic effect such as age, parity, litter size, days open, sex, herd, year, season, management, etc.
 
 \begin{align}
-			\text{mean}=\text{mean} + \text{systematic effect} + \text{genetic effect}  + residual	 \notag
+			\text{phenotype}=\text{mean} + \text{systematic effect} + \text{genetic effect}  + residual	 \notag
 \end{align}
 
-In this, we make a distinction between fixed effects, that determine the level (expected means) of observations, and 
-random effects that determine variance. A model at least exists of one fixed (mean) 
-and one random effect (residual error variance). If observations also are influenced by a 
-genetic contribution of the individuals, then a genetic variance component exists as well. In 
-that situation, we have two components contributing to the total variance of the 
-observations: a genetic and a residual variance component. 
+In this, we make a distinction between fixed effects, that determine the level (expected means) of observations, and random effects that determine variance. A model at least exists of one fixed (mean) and one random effect (residual error variance). If observations also are influenced by a genetic contribution of the individuals, then a genetic variance component exists as well. In that situation, we have two components contributing to the total variance of the observations: a genetic and a residual variance component. 
 
 A statistical model is usually specified as a mathematical relationship between one or more random variables and other non-random variables. In quantitative genetics it is often based on the additive genetic model specified above with inclusion of additional factors that may affect the trait of interest: 
 
@@ -136,28 +98,26 @@ A statistical model is usually specified as a mathematical relationship between 
 			y=\mu + \text{...systematic effect....} + a + e	 \notag
 \end{align}
 
-where  $\mu$ is the population mean, $a$ is the additive effect, and $e$ is the environmental deviation (or residual) not explained by the systematic effects and the genetic effects in the model. We assume that the additive genetic effect, a, and the residual term, e, are normally distributed such that $a \sim N(0,\sigma^2_{a})$ and $e \sim N(0,\sigma^2_{e})$. The goal of the statistical analysis is to derive estimates for the variance components that is the additive genetic variance $\sigma^2_{a}$, and the residual variance $\sigma^2_{e}$ the residual variance. 
+where  $\mu$ is the population mean, $a$ is the additive effect, and $e$ is the environmental deviation (or residual) not explained by the systematic effects and the genetic effects in the model. 
 
-The statistical model is a formal representation of our quantitative genetic theory, but it is important to realize that all models are simple approximations to how factors influence a trait. The goal of the statistical analysis is to find the best practical model that explains the most variation in the data. Statistical knowledge is required. The methods used for estimating genetic parameters is based on statistical concepts such as random variables, multivariate normal theory and linear (mixed) models. These concepts and their use will be explained in the following sections. 
+We assume that the additive genetic effect, a, and the residual term, e, are normally distributed such that $a \sim N(0,\sigma^2_{a})$ and $e \sim N(0,\sigma^2_{e})$. The goal is to derive estimates for the variance components that is the additive genetic variance $\sigma^2_{a}$, and the residual variance $\sigma^2_{e}$ the residual variance. 
+
+The statistical model is a formal representation of our quantitative genetic theory, but it is important to realize that all models are simple approximations to how genetic and non-genetic factors influence a trait. The goal of the statistical analysis is to find the best practical model that explains the most variation in the data. Statistical knowledge is required. The methods used for estimating genetic parameters is based on statistical concepts such as random variables, multivariate normal theory and linear (mixed) models. These concepts and their use will be explained in the following sections. 
 
 
 
 # Methods for estimation of genetic parameters
-In general estimation of heritability and genetic correlation is based on methods that determine resemblance 
-between genetically related individuals. Here we will present three methods for estimating heritability, parent-offspring regression, analysis of variance (ANOVA) for family data (e.g. halfsib/fullsib families) and restricted maximum likelihood (REML) analysis for general pedigree. 
+In general estimation of heritability and genetic correlation is based on methods that determine resemblance between genetically related individuals. Close (compared to distant) relatives share more DNA in common and if the trait is under genetic influence they will therefore share phenotypic similarities. Here we will present three methods for estimating heritability, parent-offspring regression, analysis of variance (ANOVA) for family data (e.g. halfsib/fullsib families) and restricted maximum likelihood (REML) analysis for a general pedigree. 
 
 ## Estimating heritability using parent - offspring regression
-The simplest method for estimation genetic parameters is based on regression analysis. 
-Heritability may be estimated by comparing phenotypes for traits recorded in parent and offspring. Parent-offspring regression compares trait values in parents ($y_p$) to trait values in their offspring ($y_o$). Estimation of heritability is based on a linear regression model:
+The simplest method for estimation genetic parameters is based on regression analysis. Heritability may be estimated by comparing phenotypes for traits recorded in parent and offspring. Parent-offspring regression compares trait values in parents ($y_p$) to trait values in their offspring ($y_o$). Estimation of heritability is based on a linear regression model:
 \begin{align}
 			y_o &= y_p b_{o|p}+e_o. \notag \\
 \end{align}
 The slope of the regression line ($b_{o|p}$) approximates the heritability of the trait when offspring values are regressed against the average trait in the parents. If only one parent's value is used then heritability is twice the slope. In other words the expected value of the regression line is $b_{o|p} = 0.5h^2$ (or h2 when 
 regression is on mid-parent mean). 
 
-To better understand this relationship consider a situation 
-where we have collected phenotypes on a number of father-offspring families. 
-From standard regression theory the slope can be determined as: 
+To better understand the parent-offspring regression method consider a situation where we have collected phenotypes on a number of father-offspring families. From standard regression theory the slope can be determined as: 
 \begin{align}
 			b_{o|f} &= \frac{Cov(y_f,y_o)}{Var(y_o)} \notag \\
 \end{align}
@@ -168,33 +128,34 @@ The phenotypes for the father ($y_f$) and the offspring ($y_o$) can be expressed
 			y_f &= \mu+a_f+e_f \notag \\
 			y_o &= \mu+0.5a_m+0.5a_f+a_{mendelian}+e_o \notag
 \end{align}
-where $\mu$ is the population mean, $a_m$ and $a_f$ are the additive genetic effect for the mother and the father, a_{mendelian} is the mendelian deviation in the offspring, and $e_f$ and $e_o$ are the residual effect for the father and the offspring.
+where $\mu$ is the population mean, $a_m$ and $a_f$ are the additive genetic effect for the mother and the father, $a_{mendelian}$ is the mendelian deviation in the offspring, and $e_f$ and $e_o$ are the residual effect for the father and the offspring.  
 
-The offspring get half of the genes from each parent and therefore the breeding value for the offspring is the average of the parents' breeding values plus the Mendelian deviation:
+The offspring get half of the genes from each parent (i.e. genetic relationship is 0.5) and therefore the breeding value for the offspring is the average of the parents' breeding values plus the Mendelian deviation:
 \begin{align}
 		a_{\text{offspring}}=\frac{1}{2}a_{\text{father}}+\frac{1}{2}a_{\text{mother}}+a_{\text{mendelian}} \notag 	
 \end{align}
 	(a = additive genetic value = breeding value)
-The term $a_{mendelian}$ is necessary, because two fullsibs $i$ and $j$ both having parents $father$ and $mother$ receive different random samples of the set of parental alleles. Hence the breeding values $a_i$ and $a_j$ of halfsibs $i$ and $j$ are not going to be the same. 
-Furthermore we assume that the breeding values are normally distributed:
+The term $a_{mendelian}$ is necessary, because two fullsibs $i$ and $j$ both having parents $father$ and $mother$ receive different random samples of the set of parental alleles. Hence the breeding values $a_i$ and $a_j$ of fullsibs $i$ and $j$ are not going to be the same. Furthermore we assume that the breeding values are normally distributed:
 \begin{align}
 a_{father} \sim N(0,\sigma^2_{a}) \notag \\
 a_{mother} \sim N(0,\sigma^2_{a}) \notag \\
 a_{mendelian} \sim N(0,0.5\sigma^2_{a}) \notag \\
 \end{align}
 
-Therefor an expression for the covariance between the phenotypes of the parent and the offspring can be derived as:  
+An expression for the covariance between the phenotypes of the parent and the offspring can be derived as:  
 \begin{align}
 			Cov(y_f,y_o) &= Cov(a_f+e_f,0.5a_m+0.5a_f+a_{mendelian}+e_o) \notag \\
 			             &= Cov(a_f,0.5a_f) \notag \\
 			             &= 0.5Cov(a_f,a_f) \notag \\
 			             &= 0.5\sigma_a^2 \notag 
 \end{align}
-and similar for the variance variance of the offspring phenotypes:  
+This derivation illustrate and important concept in which the phenotypic covariance between related individuals can be expressed in terms of the genetic covariance ($Cov(a_f,0.5a_f)$). The genetic covariance between related individuals can be expressed in terms of their genetic relationship (which in this example equals 0.5 because offspring get half of the genes form its parent) and the genetic variance ($\sigma_a^2$).   
+
+The variance of the offspring phenotypes:  
 \begin{align}
 			Var(y_o) &= Var(0.5a_m+0.5a_f+0.5a_{mendelian}+e_o) \notag \\
 			         &= Var(0.5a_m) + Var(0.5a_f) + Var(a_{mendelian}) + Var(e_o) \notag \\
-			         &= 0.25Var(a_m) + 0.25Var(a_f) + Var(a_{mendelian}) + Var(e_o) \notag \\
+			         &= 0.25Var(a_m) + 0.25Var(a_f) + Var(a_{mendelian}) + Var(e_o) \notag  \\
 			         &= 0.25\sigma_a^2 + 0.25\sigma_a^2 + 0.5\sigma_a^2 + \sigma_e^2 \notag \\
 			         &= \sigma_a^2 + \sigma_e^2 \notag
 \end{align}
@@ -202,40 +163,38 @@ Therefore the expected value of the regression coefficient for a father-offsprin
 \begin{align}
 			b_{o|f} &= \frac{0.5\sigma_a^2}{\sigma_a^2 + \sigma_e^2} \notag \\
 			        &= 0.5\frac{\sigma_a^2}{\sigma_a^2 + \sigma_e^2} \notag \\
-			        &= 0.5h^2 \notag \\
-			h^2     &= 2b_{o|f}\notag
+			        &= 0.5h^2 \notag 
 \end{align}
-
-Similar relationships can be derived for other types of parent-offspring regression analysis (mother-offspring and mid- parent-offspring). The heritability can be estimated from the regression coefficient based on:  
+Similar relationships can be derived for other types of parent-offspring regression analysis (mother-offspring and mid- parent-offspring). The heritability can therefore be estimated from the regression coefficient based on:  
 \begin{align}
     h^2 &= 2b_{o|m} \quad \text{(mother-offspring regression)} \notag \\
     h^2 &= 2b_{o|f} \quad \text{(father-offspring regression)} \notag \\
     h^2 &=  b_{o|mf} \quad \text{(mean parent-offspring regression)} \notag
 \end{align}
 
-Offspring-parent regression is not often used in practice. 
-It requires data on 2 generations, and uses only this data. It is based on the genetic relationship between parent and offspring which equals 0.5 (i.e. offspring get half of the genes form its parent), but it is not possible to 
-utilize genetic relationships among parents. However, the method is robust against 
-selection of parents. 
+Offspring-parent regression is not often used in practice. It requires data on 2 generations, and uses only this data. It is based on the genetic relationship between parent and offspring, but it is not possible to utilize genetic relationships among parents. However, the method is robust against selection of parents. 
 
 
-## Estimating heritability using ANOVA for family data
+## Estimating heritability for family data using ANOVA 
 Genetic parameters have been estimated for many years using analysis of variance 
 (ANOVA). This method require that individuals can be assigned to groups with the 
-same degree of genetic relationship for all members. Family structures considered most often 
-are paternal half-sib groups or full-sib groups. In the case of paternal half-sib group all 
-offspring of one sire are treated as one group and offspring of different sires are 
-allocated to different groups.
+same degree of genetic relationship for all members. Family structures considered most often are paternal half-sib groups or full-sib groups. In the case of paternal half-sib group all offspring of one sire are treated as one group and offspring of different sires are allocated to different groups.
 
-Estimation of heritability using ANOVA is based on a linear model. 
-Consider a situation where we have phenotypic observation for multiple offspring for a number of families (halfsib or fullsib). 
-A simple linear model for the phenotypic observation for the jth offspring in the ith famility include the population mean ($\mu$) and a family effect ($f_i$): 
+### Linear model
+Estimation of heritability using ANOVA is based on a linear model. Consider a situation where we have phenotypic observation for $n_o$ offspring for $n_f$ families (halfsib or fullsib). The total number of observations is $n=n_fn_o$. A simple linear model for the phenotypic observation for the jth offspring in the ith family include the population mean ($\mu$) and a family effect ($f_i$): 
 \begin{align}
  y_{ij} &= \mu + f_i + e_{ij}
 \end{align}
+where $e_{ij}$ is the residual error resulting from dominance, and environmental contributions. We assume that the $e_{ij}$ are uncorrelated with each other and have common variance $\sigma^2_{e}$. 
 
-Assume n observations, with $n_f$ families, with $n_o$ is the number of offspring per family. 
- 
+### Assumption for the parameters in the model
+The variance among family effects (the between-family, or among family, variance) is denoted by $\sigma^2_{f}$.
+We further assume that the random factors ($f$ and $e$) are uncorrelated with each other (i.e., $Cov(f_{i},e_{ij})=0$). Therefore the analysis of variance partitions the total phenotypic variance into the sum of the variances from each of the contributing factors. Thus, the total phenotypic variance equals the variance due to family plus the residual variance:
+\begin{align}
+\sigma^2_{y} &= \sigma^2_{f} +\sigma^2_{e}
+\end{align}
+
+### Estimation of variance components
 The total sum of squares (SST) is the sum of each of the observations squared:
 \begin{align}
  SST &= \sum_{i=1}^{n_f}\sum_{j=1}^{n_o} {y}_{ij}^2
@@ -251,13 +210,12 @@ The mean sum of squares (SSM) is n times the mean squared:
 The model sum of squares (SSA) due to a particular factor (e.g. the family effect) is therefore the sum over all observations of the estimated (family) effect in each observation squared (in balanced data this 
 is the difference between the family group mean and the overall mean): 
 \begin{align}
- SSA &= \sum_{i=1}^{n_f} (\bar{y}_{i.}-\bar{y}_{-.})^2
+ SSA &= \sum_{i=1}^{n_f} (\bar{y}_{i.}-\bar{y}_{..})^2
 \end{align}
 Notice that the sum of squares for the main effect (SSA) is the sum of all the squared 
 estimates of $f_i$, because in a balanced data set the estimate of $f_i$ is equal to ($y_{i}.-y_{..}$). In a 
 balanced data, it is rather simple to determine the expectations for each sum of squares, 
 because the number of observations per class of f is constant ($n_o$). 
-
 
 The residual sum of squares (SSE) due to the residual (error) is the sum over all 
 observations of the residual effect in each observation squared (this is the 
@@ -273,39 +231,33 @@ The total sum of squares can be expressed as a sum of the components described a
 \end{align}
  
 In balanced data, it is rather simple to estimate variance components, by setting 
-the "Mean Squares" equal to their expectations. Those expectations are linear functions 
-of the variance components and is derived based on statistical theory (Expected value 
-of a sum of squares). 
-In this simple model we can calculate estimate of the residual variance components ($\hat{\sigma}^2_{e}$) as: 
+the mean squares (MS) equal to their expectations (E(MS)). The mean squares are computed as:
+\begin{align}
+ MSE &= SSE/(n-n_f) \\ \notag
+ MSA &= SSA/(n_f-1) \notag
+\end{align}
+The expected mean squares (derived based on statistical theory for expected value of a sum of squares) are linear functions of the variance components: 
+\begin{align}
+ E(MSE) &=  \sigma^2_{e} \\ \notag
+ E(MSA) &=  \sigma^2_{e} + n_f\sigma^2_{f}  \notag
+\end{align}
+
+Therefore in this simple model we can calculate estimate of the residual variance components ($\hat{\sigma}^2_{e}$) as: 
 \begin{align}
  \hat{\sigma}^2_{e} &= SSE/(n-n_f)
 \end{align}
-and and estimate of the family variance ($\hat{\sigma}^2_{f}$) as:
+and the estimate of the family variance ($\hat{\sigma}^2_{f}$) as:
 \begin{align}
  \hat{\sigma}^2_{f} &= (SSA/(n_f-1) - \hat{\sigma}^2_{e})/n_o
 \end{align}
 
-Calculating the variance between groups, involves partitioning the sum of squared 
-observations (SS) due to different sources of variation in the model of analysis, groups 
-of relatives being one of them, and equating the corresponding mean squares. Mean 
-squares are derived as the SS divided by the associated degrees of freedom, to their 
-expectations. 
-
-Using ANOVA, the covariance among members of a family or group of relatives is 
-usually determined as the variance component between groups. For example, in case of 
-a half-sib family model, the variance between half-sib families $\sigma_{s}^2$ 
-and variance within half-sib families $\sigma_{e}^2$. 
-As shown earlier, the half-sib family variance $\sigma_{s}^2=0.25\sigma_{a}^2$
- while the variance within half-sib families is $0.75\sigma_{a}^2+\sigma_{e}^2$
-
-
-Fullsib families
+### Estimation of heritability from variance components
+Importantly, the identity Cov(within) = Var(between) allow us to relate an estimated variance component (e.g., the between-family variance $\sigma_{f}^2$) with the casual underlying variance components (e.g., $\sigma_{a}^2$) that are our real interest. To see this consider the phenotype for two fullsibs:
 \begin{align}
-			y_m &= \mu+a_m+e_m \notag \\
-			y_f &= \mu+a_f+e_f \notag \\
 			y_{o1} &= \mu+0.5a_m+0.5a_f+0.5a_{mendelian_1}+e_{o1} \notag \\
 			y_{o2} &= \mu+0.5a_m+0.5a_f+0.5a_{mendelian_2}+e_{o2} \notag
 \end{align}
+and therefore phenotypic covariance between the two fullsibs can be expressed as:
 \begin{align}
 			Cov(y_{o1},y_{o2}) &= Cov(0.5a_m+0.5a_f+a_{mendelian1}+e_{o1},0.5a_m+0.5a_f+a_{mendelian2}+e_{o2}) \notag \\
 			             &= Cov(0.5a_f,0.5a_f) + Cov(0.5a_m,0.5a_m) \notag \\
@@ -313,20 +265,24 @@ Fullsib families
 			             &= 0.25\sigma_a^2 +0.25\sigma_a^2 \notag \\
 			             &= 0.5\sigma_a^2 \notag
 \end{align}
-Halfsib families
+which is the covariance within families. Here we assume that parents are unrelated ($Cov(a_m,a_f)=0$).
+
+The phenotypes for the two fullsibs can also be expressed:
 \begin{align}
-			y_{m1} &= \mu+a_{m1}+e_{m1} \notag \\
-			y_{m2} &= \mu+a_{m2}+e_{m2} \notag \\
-			y_f &= \mu+a_f+e_f \notag \\
-			y_{o1} &= \mu+0.5a_{m1}+0.5a_f+0.5a_{mendelian1}+e_{o1} \notag \\
-			y_{o2} &= \mu+0.5a_{m2}+0.5a_f+0.5a_{mendelian2}+e_{o2} \notag
+			y_{i1} &= \mu+f_i+e_{i1} \notag \\
+			y_{i2} &= \mu+f_i+e_{i2} \notag
 \end{align}
+and therefore the phenotypic covariance can also be expressed as: 
 \begin{align}
-			Cov(y_{o1},y_{o2}) &= Cov(0.5a_{m1}+0.5a_f+a_{mendelian1}+e_{o1},0.5a_{m2}+0.5a_f+a_{mendelian2}+e_{o2}) \notag \\
-			             &= Cov(0.5a_f,0.5a_f) + Cov(0.5a_{m1},0.5a_{m2}) \notag \\
-			             &= 0.25Cov(a_f,a_f) + 0 \notag \\
-			             &= 0.25\sigma_a^2 \notag \\
-			             &= 0.25\sigma_a^2 \notag
+			Cov(y_{i1},y_{i2}) &= Cov(f_i+e_{i1},f_i+e_{i2}) \notag \\
+			             &= Cov(f_i,f_i) + Cov(e_{i1},e_{i2}) \notag \\
+			             &= \sigma_f^2 + 0 \notag \\
+			             &= \sigma_f^2 \notag
+\end{align}
+which is the between family variance. 
+This leads to the identity Cov(within) = Var(between) which for the fullsib family design:
+\begin{align}
+			\sigma_f^2 &= 0.5\sigma_a^2 \notag
 \end{align}
 
 Therefore the heritability can be estimated from the variance component based on:  
@@ -334,38 +290,22 @@ Therefore the heritability can be estimated from the variance component based on
     \sigma_{hs}^2 &= 0.25\sigma_a^2 \quad \text{(halfsib families)} \notag \\
     \sigma_{fs}^2 &= 0.5\sigma_a^2 \quad \text{(halfsib families)} \notag \\
     h^2 &= \frac{4\sigma_{hs}^2}{4\sigma_{hs}^2+\sigma_e^2} \quad \text{(halfsib families)} \notag \\
-    h^2 &= \frac{2\sigma_{fs}^2}{2\sigma_{fs}^2+\sigma_e^2} \quad \text{(fullsib families)} \notag \\
+    h^2 &= \frac{2\sigma_{fs}^2}{2\sigma_{fs}^2+\sigma_e^2} \quad \text{(fullsib families)} \notag
 \end{align}
 
-Data arising from experimental designs used for estimating genetic parameters 
-are usually not balanced (i.e. number of offspring varies across families). 
-Methods analogous to the ANOVA have been developed for unbalanced data.
-However REML is nowadays the method of choice for variance component estimation.
-
-The estimation of variance components (within and between family components). If 
-the variation within families is large relative to differences between families, the trait 
-must be lowly heritable. Variance components are attributed to specific effects. For 
-example, the (paternal) half-sib variance is due to differences between sires. The 
-variance component represents the sire variance, which is a quarter of the additive 
-genetic variance.
-
-Estimation of variance components is easier to generalise, and this method is generally 
-used to estimate genetic parameters. The remainder of this chapter will therefore mostly deal with 
-variance component estimation. 
+There are several limitations of the ANOVA method. First we assume that parents and families are unrelated. Second, data arising from experimental designs used for estimating genetic parameters are usually not balanced (i.e. number of offspring varies across families). Violations of these assumptions and unbalanced data will lead to biases or errors in estimating genetic parameters using the ANOVA method. 
 
 
-## Estimating heritability using Restricted Maximum Likelihood
-Genetic parameters are nowadays estimated using restricted maximum likelihood (REML) or Bayesian methods.
-This method allow for estimation of genetic parameters using phenotypic information for individuals from a general pedigree.REML is based on linear mixed model methodology and use a likelyhood approach for estimating genetic parameters.
+## Estimating heritability for a general pedigree using Restricted Maximum Likelihood
+Genetic parameters are nowadays estimated using restricted maximum likelihood (REML) or Bayesian methods. This method allow for estimation of genetic parameters using phenotypic information for individuals from a general pedigree. This method allow for unbalanced data and account for genetic relationships within and between families. REML is based on linear mixed model methodology and use a likelihood approach for estimating genetic parameters.
+
 
 ### Linear mixed model:
-The linear mixed model contains the observation vector for the trait(s) of interest, the
-factors that explain how the observations came to be, and a residual effect that includes
-everything not explainable.
+The linear mixed model contains the observation vector for the trait(s) of interest, the factors that explain how the observations came to be, and a residual effect that includes everything not explainable by the model.
 
 A matrix formulation of a general model equation is:
 \begin{align}
-y &= Xb + Za + e \notag
+y &= Xb + a + e \notag
 \end{align}
 
 where
@@ -374,16 +314,10 @@ y &: \text{is the vector of observed values of the trait,} \notag \\
 b &: \text{is a vector of factors, collectively known as fixed effects,} \notag \\
 a &: \text{is a vector of factors known as random effects,} \notag \\
 e &: \text{is a vector of residual terms, also random,} \notag \\
-X,Z &: \text{are known design matrices that relate the elements of b and a to their corresponding element in y.} \notag 
+X &: \text{is a known design matrice that relate the elements of b to their corresponding element in y.} \notag 
 \end{align}
 
-The __observation vector__ contains elements resulting from measurements, either subjective
-or objective, on the experimental units (usually animals) under study. The elements in
-the observation vector are random variables that have a multivariate distribution, and if
-the form of the distribution is known, then advantage should be taken of that knowledge.
-Usually $y$ is assumed to have a multivariate normal distribution, but that is not always
-true. The elements of $y$ should represent random samples of observations from some defined
-population. If the elements are not randomly sampled, then bias in the estimates of b and
+The __observation vector__ contains elements resulting from measurements, either subjective or objective, on the experimental units (usually individuals) under study. The elements in the observation vector are random variables that have a multivariate distribution, and if the form of the distribution is known, then advantage should be taken of that knowledge. Usually $y$ is assumed to have a multivariate normal distribution, but that is not always true. The elements of $y$ should represent random samples of observations from some defined population. If the elements are not randomly sampled, then bias in the estimates of $b$ and
 $a$ can occur, which would lead to errors in ranking individuals.
 
 A __continuous factor__ is one that has an infinite-like range of
@@ -391,71 +325,162 @@ possible values. For example, if the observation is the distance a rock can be t
 then a continuous factor would be the weight of the rock. If the observation is the
 rate of growth, then a continuous factor would be the amount of feed eaten.
 
-__Discrete__ factors usually have classes or levels such as age at calving might have four
-levels (e.g. 20 to 24 months, 25 to 28 months, 29 to 32 months, and 33 months or
-greater). An analysis of milk yields of cows would depend on the age levels of the
-cows.
+__Discrete__ factors usually have classes or levels such as age at calving might have four levels (e.g. 20 to 24 months, 25 to 28 months, 29 to 32 months, and 33 months or greater). An analysis of milk yields of cows would depend on the age levels of the cows.
 
-In the traditional ”frequentist” approach, __fixed__ and __random__ factors need
-to be distinguished. 
+It is is necessary to distinguish between __fixed__ and __random__ factors in the linear mixed model. 
 
 If the number of levels of a factor is small or limited to a fixed number, then that
-factor is usually fixed. 
-If inferences about a factor are going to be limited to that set of levels, and to no
-others, then that factor is usually fixed.
-If a new sample of observations were made (a new experiment), and the same levels
-of a factor are in both samples, then the factor is usually fixed.
-If the levels of a factor were determined as a result of selection among possible
-available levels, then that factor should probably be a fixed factor.
-Regressions of a continuous factor are usually a fixed factor (but not always).
+factor is usually fixed. If inferences about a factor are going to be limited to that set of levels, and to no others, then that factor is usually fixed. If a new sample of observations were made (a new experiment), and the same levels of a factor are in both samples, then the factor is usually fixed. If the levels of a factor were determined as a result of selection among possible available levels, then that factor should probably be a fixed factor. Regressions of a continuous factor are usually a fixed factor (but not always).
 
 If the number of levels of a factor is large, then that factor can be a
-random factor.
-If the inferences about a factor are going to be made to an entire population of
-conceptual levels, then that factor can be a random factor.
-If the levels of a factor are a sample from an infinitely large population, then that
-factor is usually random.
-If a new sample of observations were made (a new experiment), and the levels were
-completely different between the two samples, then the factors if usually random.
+random factor. If the inferences about a factor are going to be made to an entire population of conceptual levels, then that factor can be a random factor.
+If the levels of a factor are a sample from an infinitely large population, then that factor is usually random. If a new sample of observations were made (a new experiment), and the levels were completely different between the two samples, then the factors if usually random.
 
-#### Expectation and variance of variables in the model: {-}
-In the statistical model (specified above) the random effect ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables that are assumed to follow a multivariate normal distribution.  
-In general terms the expectations of these random variables are:  
+### Expectation and variance of variables in the linear mixed model:
+In the statistical model (specified above) the random effect ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables that are assumed to follow a multivariate normal distribution. In general terms the expectations of these random variables are:  
 \begin{align}
-E(y) &= E(Xb) + E(Za) + E(e) \notag \\
+E(y) &= E(Xb) + E(a) + E(e) \notag \\
      &= Xb + 0 + 0 \notag \\
      &= Xb \notag
 \end{align}
 and the variance-covariance matrices are:
 \begin{align}
  Var(a) &= G \notag \\
- Var(e) &= R \notag \\
- Var(y) &= ZGZ' + R = V \notag \\
-\end{align}
- 
-where $G$, $R$ and $V$ are square matrices of genetic, residual and phenotypic (co)variances among the individuals in the data set. If we assume  
-
-\begin{align}
- Var(a) &= G \notag \\
         &= A\sigma_a^2 \notag \\
  Var(e) &= R \notag \\
         &= I\sigma_e^2 \notag \\
- Var(y) &= ZGZ' + R = V \notag \\
+ Var(y) &= G + R = V \notag \\
         &= A\sigma_a^2 + I\sigma_e^2 \notag
 \end{align}
+ 
+where $G$, $R$ and $V$ are square matrices of genetic, residual and phenotypic (co)variances among the individuals in the data set. 
+
+### Genetic relationships amongs individuals 
+Estimating heritability using REML (similar to the parent-offspring regression and ANOVA method) utilize that the phenotypic covariance between related individuals can be expressed in terms their genetic relationship and the genetic variance ($\sigma_a^2$). This concept can be generalized. 
+Related individuals share genes and thus resemble each other (have correlated phenotypes, to an extent that depends on additive genetic relationships). Consider a simple parent-offspring example. The offspring get half of the genes from each parent and therefore the breeding value for the offspring is the average of the parents' breeding values plus the Mendelian deviation (the part of the breeding value that is due to random segregation of the genes from each parent):
+\begin{align}
+		a_{\text{offspring}}=\frac{1}{2}a_{\text{father}}+\frac{1}{2}a_{\text{mother}}+a_{\text{mendelian}} \notag 	
+\end{align}
+	(a = additive genetic value = breeding value)
+
+The term $a_{mendelian}$ is necessary, because two fullsibs $i$ and $j$ both having parents $father$ and $mother$ receive different random samples of the set of parental alleles. Hence the breeding values $a_i$ and $a_j$ of fullsibs $i$ and $j$ are not going to be the same. The Mendelian deviation reflects that random contribution of (Mendelian) segregation to breeding values of individuals.  
+
+In this equation the $\frac{1}{2}$ refers to the additive genetic relationship which in this example indicates that the offspring receives half of its genes from its parent. 
+
+In general the weight given to a specific source of information depends on the additive genetic relationship with the candidate. Examples of different types of additive genetic relationships can be found in the table below. 
+
+Table 1. The additive genetic relationship ($A_{ij}$) between the various sources (j) and the individual itself, i.e. the candidate to be evaluated, the proband (i).
+
+\begin{center} 
+\begin{tabular}{|c|c|}
+  \hline
+  Relative  &  $A_{ij}$\\
+  \hline
+  Self  &  1.0    \\
+  \hline
+  Unrelated  &  0    \\
+  \hline
+  Mother  &  0.5 \\
+  \hline
+  Father  &  0.5 \\
+  \hline
+  Grandparent  &  0.25 \\
+  \hline
+  Halfsib  &  0.25 \\
+  \hline
+  Fullsib  &  0.5 \\
+  \hline
+  Cousin  &  0.0625 \\
+  \hline
+  Progeny  &  0.5 \\
+  \hline
+  Twin(MZ/DZ)  &  1/0.5 \\
+  \hline
+\end{tabular}
+\end{center}
 
 
-#### Assumptions and limitations of the model: {-}
-The third part of a model includes items that are not apparent in parts 1 and 2. For
-example, information about the manner in which data were sampled or collected. Were
-the animals randomly selected or did they have to meet some minimum standards? Did
-the data arise from many environments, at random, or were the environments specially
-chosen? Examples will follow. A linear model is not complete unless all three parts of the model are present. 
-Statistical procedures and strategies for data analysis are determined only after a complete
-model is in place.
+The $A$ matrix that expresses the additive genetic relationship among individuals in a population is called the __numerator relationship matrix__ $A$. The matrix $A$ is symmetric and its diagonal elements $(A)_{ii}$ are equal to $1 + F_i$ where $F_i$ is the __coefficient of inbreeding __ of individual $i$. The coefficient of inbreeding $F_i$ indicates whether an individual $i$ is inbred or not. $F_i$ is defined to be half the additive genetic relationship between the parents of $i$. Hence the diagonal element $(A)_{ii}$ of matrix $A$ corresponds to twice the probability that two gametes taken at random from an individual $i$ will carry IBD-alleles.
+
+The off-diagonal elements $(A)_{ij}$ equals the numerator of the coefficient of relationship between individuals $i$ and $j$. Multiplying the matrix $A$ by the additive genetic variance $\sigma_a^2$ leads to the covariance among breeding values. Thus if $a_i$ is the breeding value of individual $i$ then 
+
+\begin{equation}
+var(a_i) = (A)_{ii} \sigma_a^2 = (1 + F_i) \sigma_a^2
+(\#eq:vartruebreedingvalue)
+\end{equation}
 
 
-### Likelihood approach for estimating variance components
+#### Algorithm To Compute $A$ {#algorithmtocomputea}
+The matrix $A$ can be computed using either the 
+
+1. path coefficient method or 
+2. recursive method.
+
+The second method is especially suitable for an implementation by a software program. In what follows the recursive method to compute the components of $A$ is described now. Initially, individuals in a pedigree are numbered from $1$ to $n$ and ordered such that parents precede their progeny. The following rules are then  used to compute the components of $A$. 
+
+* If both parents $s$ and $d$ of individual $i$ are known then 
+    + the diagonal element $(A)_{ii}$ corresponds to: $(A)_{ii} = 1 + F_i = 1 + {1\over 2} (A)_{sd}$ and
+    + the off-diagonal element $(A)_{ji}$ is computed as:  $(A)_{ji} = {1\over 2} ((A)_{js} + (A)_{jd})$
+    + because $A$ is symmetric $(A)_{ji} = (A)_{ij}$
+    
+* If only one parent $s$ is known and assumed unrelated to the mate
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = {1\over 2} ((A)_{js}$
+    
+* If both parents are unknown    
+    + $(A)_{ii} = 1$
+    + $(A)_{ij} = (A)_{ji} = 0$
+    
+
+#### Numeric Example
+```{r pedexamplesetup, echo=FALSE, results='hide'}
+suppressPackageStartupMessages( library(pedigreemm) )
+n_nr_ani_ped <- 6
+n_nr_parent <- 2
+tbl_ped <- tibble::tibble(Calf = c((n_nr_parent+1):n_nr_ani_ped),
+                             Sire = c(1, 1, 4, 5),
+                             Dam  = c(2, NA, 3, 2))
+ped <- pedigree(sire = c(rep(NA, n_nr_parent), tbl_ped$Sire), dam = c(rep(NA, n_nr_parent), tbl_ped$Dam), label = as.character(1:n_nr_ani_ped))
+matA <- as.matrix(getA(ped = ped))
+matAinv <- as.matrix(getAInv(ped = ped))
+```
+
+We are given the following pedigree and we want to compute the matrix $A$ using the recursive method described in \@ref(algorithmtocomputea). 
+
+```{r tabpedexample, echo=FALSE, results='asis'}
+knitr::kable(tbl_ped,
+             format = 'latex',
+             booktabs = TRUE,
+             longtable = TRUE,
+             caption = "Example Pedigree To Compute Additive Genetic Relationship Matrix")
+```
+
+The first step of the computations of $A$ are the numbering and the ordering of all the individuals. This is already done in the pedigree shown in Table \@ref(tab:tabpedexample). The components of $A$ are computed row-by-row starting with $(A)_{11}$. 
+
+\begin{align}
+(A)_{11} &= 1 + F_1 = 1 + 0 = 1 \notag \\
+(A)_{12} &= 0 = (A)_{21} \notag \\
+(A)_{13} &= {1\over 2} ((A)_{11} + (A)_{12}) = 0.5 = (A)_{31} \notag \\
+(A)_{14} &= {1\over 2} (A)_{11} = 0.5 = (A)_{14}  \notag \\
+(A)_{15} &= {1\over 2} (A)_{14} + (A)_{13}) = 0.5 = (A)_{51} \notag \\
+(A)_{16} &= {1\over 2} (A)_{15} + (A)_{12}) = 0.25 \notag
+\end{align}
+
+The same computations are also done for all the other components of the matrix $A$. The final result for the matrix looks as follows
+
+```{r displaymatrixa, echo=FALSE, results='asis'}
+cat("$$\n")
+# cat("A = \\left[")
+# cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA, pnDigits = 4), sep = "\n"), "\n")
+# cat("\\right]\n")
+cat(paste(rmdhelp::bmatrix(pmat = matA, ps_name = 'A'), sep = '\n'), '\n')
+cat("$$\n")
+```
+
+As a result, we can see from the components of the above shown matrix $A$ that individuals $1$ and $2$ are not related to each other. Furthermore from the diagonal elements of $A$, it follows that individuals $5$ and $6$ are inbred while individuals $1$ to $4$ are not inbred.
+
+
+### Likelihood approach for estimating variance components and heritability
 Restricted Maximum Likelihood is a method that is used to estimate the parameters in the model (i.e. variance components $\sigma_{a}^2$ and $\sigma_{e}^2$) specified in the linear mixed model above. The general principle used in likelihood methods is to find the set of parameters which maximizes the likelihood of the data. 
 
 It is useful to recall that the likelihood ($L(\theta|{y})$) is any function of the parameter ($\theta$) that is proportional to $p({y}|\theta)$. Maximizing $L(\theta|{y})$ leads to obtaining the most likely value of $\theta$ ($\hat{\theta}$) given the data ${y}$. Usually the likelihood is expressed in terms of its logarithm ($l(\theta|\bf{y})$) as it makes the algebra easier. 
@@ -471,11 +496,12 @@ The likelihood of the data for a given linear mixed model can be written as a fu
 	\label{eq:reml.likelihood}
 \end{equation}
 
-From calculus we know that we can find the maximum of a function by taking the first 
-derivative and set that equal to zero. Solving that would result in the desired 
+From calculus we know that we can find the maximum of a function by taking the first derivative and set that equal to zero. Solving that would result in the desired 
 parameters (assuming that we did not find the minimum, this can be checked using 
 second derivatives). The first and second derivatives of the likelihood function 
 are complicated formulas. 
+
+The REML method was developed by \citet{Patterson1971} as an improvement of the standard Maximum Likelihood (ML). The ML method was originally proposed by \citet{Fisher1922} but was introduced to variance components estimation by \citet{Hartley1967}. ML assumes that fixed effects are known without error which is in most cases false and, as consequence, it produces biased estimates of variance components (usually, the residual variance is biased downward). To solve this problem, REML estimators maximize only the part of the likelihood not depending on the fixed effects. This entails that when comparing multiple models by their REML likelihoods, they must contain the same fixed effects, and that REML, by itself, does not estimate the fixed effects. 
 
 There are no simple one-step solutions for estimating the variance components based on REML \citep{LynchWalsh1998}. Instead, we infer the partial derivatives of the likelihoods with respect to the variance components. The solutions to these involve the inverse of the variance-covariance matrix, which themselves includes the variance components, so the variance components estimates are non-linear functions of the variance components. It is therefore necessary to apply iterative methods to obtain the estimates.
 
@@ -483,58 +509,42 @@ From the estimate of the variance components the heritability can easily compute
 \begin{align}
 \hat{h}^2 &= \hat{\sigma}^2_{a}/(\hat{\sigma}^2_a+\hat{\sigma}^2_e)
 \end{align}
-where the "$\hat{h}^2$" refers to the heritability is an estimate. 
+where the "$\hat{~}$" refers to the heritability is an estimate. 
 
 
 ### Advantages of using REML for estimating genetic parameters
-The REML method was developed by \citet{Patterson1971} as an improvement of the standard Maximum Likelihood (ML). The ML method was originally proposed by \citet{Fisher1922} but was introduced to variance components estimation by \citet{Hartley1967}. ML assumes that fixed effects are known without error which is in most cases false and, as consequence, it produces biased estimates of variance components (usually, the residual variance is biased downward). To solve this problem, REML estimators maximize only the part of the likelihood not depending on the fixed effects,
-by assuming that the fixed effects have been, so to speak, fixed. This entails that when comparing multiple models by their REML likelihoods, they must contain the same fixed effects,
-and that REML, by itself, does not estimate the fixed effects. 
-
-REML does not produce unbiased estimates owing to the inability to return negative values of variance components of many methods to obtain REML estimators, but it is still the method of choice due to the fact that this source of bias is also present in ML estimates \citep{LynchWalsh1998}.
+Although REML does not produce unbiased estimates it is still the method of choice due to the fact that this source of bias is also present in ML estimates \citep{LynchWalsh1998}.
 
 REML requires that y have a multivariate normal distribution 
 although various authors have indicated that ML or REML estimators may be an 
 appropriate choice even if normality does not hold (Meyer, 1990). 
 
 REML can account for selection when the complete mixed model is used with 
-all genetic relationships and all data used for selection included (Sorensen and Kennedy, 
-1984; Van der Werf and De Boer, 1990). 
+all genetic relationships and all data used for selection included (Sorensen and Kennedy, 1984; Van der Werf and De Boer, 1990). 
 
 There is obviously an advantage in using (RE)ML methods that are more flexible in 
-handling animal and plant breeding data on several (overlapping) generations (and possibly 
-several random effects). However, the use of such methods has a danger in the sense 
-that we need not to think explicitly anymore about data structure. To estimate, as an 
-example, additive genetic variance, we need to have a data set that contains a certain 
-family structure that allows us to separate differences between families from differences 
-within families. Or in other words, we need to separate genetic and residual variance. 
-ANOVA methods require more explicit knowledge about such structure, since the data 
-has to be ordered according to family structures (e.g. by half sib groups). 
+handling animal and plant breeding data on several (overlapping) generations (and possibly several random effects). However, the use of such methods has a danger in the sense that we need not to think explicitly anymore about data structure. To estimate, as an example, additive genetic variance, we need to have a data set that contains a certain family structure that allows us to separate differences between families from differences within families. Or in other words, we need to separate genetic and residual variance. ANOVA methods require more explicit knowledge about such structure, since the data has to be ordered according to family structures (e.g. by half sib groups). 
 
-Developments in variance component estimation specific to animal and plant breeding have been 
-closely linked with advances in the genetic evaluation using Best Linear 
-Unbiased Prediction (BLUP). Early REML applications were generally limited to models 
+Early REML applications were generally limited to models 
 largely equivalent to those in corresponding ANOVA type analysis, considering one 
 random effect only and estimating genetic variances from paternal half sib covariances 
-(so-called sire model). Today, heritability can be estimated from general pedigrees and from genomic relatedness estimated from genetic markers. Linear mixed models is also used genetic evaluation schemes, 
+(so-called sire model). Today, heritability can be estimated based on genetic relationships inferred from general pedigrees or estimated from genetic markers. Linear mixed models is also used genetic evaluation schemes, 
 allowing information on all known relationships between individuals to be incorporated in 
 the analysis. Linear mixed models can include maternal, permanent environmental, cytoplasmic or 
 dominance effects or effects at QTL thereby more accurately describe the observed data. 
 These effects are fitted as additional random effects. 
 
 
-## When to estimate variance components?
+# When to estimate variance components?
 In general, the estimation of variances and covariances has to be based on a sufficient 
 amount of data. Depending on the data structure and the circumstances during 
 measuring, estimations can be based on some hundreds (selection experiments) or more 
 than 10,000 observations (field recorded data). It is obvious that we are not interested in 
 estimating variance components from every data set. The information in literature is in 
 many cases even better than estimations based on a small data set. In general, we have 
-to estimate variance if: 
- - we are interested in a new trait, from which no parameters are available; 
-- variances and covariances might have changed over time 
-- considerable changes have occurred in a population e.g. due to recent 
-importations. 
+to estimate variance if we are interested in a new trait, from which no parameters are available, variances and covariances might have changed over time, or considerable changes have occurred in a population e.g. due to recent 
+importations of genetic material. 
+
 Mostly it is assumed that variances and covariances, and especially the ratio of both of 
 them (like heritability, correlation), are based on particular biological rules, which do 
 not rapidly change over time. However, it is well known that the genetic variance 

@@ -1,0 +1,1273 @@
+---
+title: 'Using R for Statistical Analyses of Quantitative Traits'
+author: "Rasmus Bak Stephansen & Peter Sørensen"
+date: "`r Sys.Date()`"
+bibliography: lbgfs2021.bib
+biblio-style: apalike
+link-citations: yes
+output:
+  pdf_document:
+    includes:
+      in_header: preamble.tex
+  html_document:
+    includes:
+      in_header: mathjax_header.html
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+# Introduction
+Quantitative traits such as size, obesity or longevity vary greatly among individuals. Their phenotypes are continuously distributed phenotypes and do not show simple Mendelian inheritance (i.e., their phenotypes are distributed in discrete categories determined by one or a few genes). Basic descriptive statistics such as mean, and variance can be used to describe each of these traits. Trait values are often assumed to follow a normal distribution. Furthermore relationships between traits can be characterized in terms of covariance and correlations and linear relationships. In this chapter we will use small data examples in R to illustrate some of the basic statistical concept used in quantitative genetics. We suggest to use R through a user-friendly interface called Rstudio. 
+
+## Install R and Rstudio
+__R__ is a free software environment for statistical computing and graphics (https://www.r-project.org/). Because R is free and it is available for the most commonly used operating systems such as Windows, MacOSX and Linux, it has become very popular in statistics and in data science. Furthermore, R can be extended with user-contributed code and documentation (called R-packages) in a very easy and standardised way. The number of available R-packages is growing rapidly and has reached more than 18000 (https://cran.r-project.org/web/packages/).
+
+__RStudio__ (https://www.rstudio.com/) is a private company that among a large number of different products distributes the RStudio Integrated Development Environment (IDE) for R. A great number of different resources about R and RStudio IDE is available. 
+
+\hfill
+
+__Install R__ from here: https://mirrors.dotsrc.org/cran/
+
+__Install Rstudio__ (free version) from here: https://www.rstudio.com/products/rstudio/download/
+
+__Further information and introduction to R and Rstudio__ can be found here:
+
+https://cran.r-project.org/doc/manuals/r-release/R-intro.html   
+
+https://www.rstudio.com/resources/cheatsheets
+
+https://www.rstudio.com/resources/webinars
+
+
+
+\newpage
+
+# Basic statistics used for characterising a quantitative trait
+In this section we will introduce these basic statistical concepts using simple data examples in R.
+
+
+### Mean and Variance
+The mean and variance of a quantitative traits is are descriptive statistics commonly used to summarize a set of observations.
+
+Suppose that we have measured the body-mass-index (BMI) for $n=5$ individuals and the values are
+```{r}
+y = c(23, 31, 27, 22, 25) # vector of observations
+n = length(y)             # how many elements in vector
+y                         # show vector
+n                         # show value of 'n'
+```
+
+The __mean__ of these values is their sum divided by their count, 
+$$\textrm{mean} = \frac{1}{n} \sum_{i=1}^n \textrm{y}_i = \frac{23 + 31 + 27 + 22 + 25}{5}=25.6.$$
+Mean describes the center of data values 
+around which the individual values deviate the least
+(in terms of variance). In that sense it is the single value that
+best describes where the mass center of the values is.
+Mean can be computed in R by `mean()` function.
+
+```{r}
+mean(y)            # best way: use R
+sum(y)/length(y)   # other way: using sum
+(23+31+27+22+25)/5 # manual way: do NOT use this in R because it is prone to errors and wastes time
+```
+
+To have an idea how much the values of BMI *vary* around their mean 
+we can use **standard deviation** that is the square root of **variance**. 
+
+__Variance__ is the average squared deviation from the mean. 
+When variance is computed from a sample of size $n$, whose mean is first estimated from that same sample, then the denominator in variance calculation is $n-1$ rather than $n$, so
+
+\begin{align}
+\textrm{variance} &= \frac{1}{n-1}\sum_{i=1}^n(\textrm{y}_i-\textrm{mean})^2  \notag \\
+                  &= \frac{(23-25.6)^2 + (31-25.6)^2 + (27-25.6)^2 + (22-25.6)^2 + (25-25.6)^2}{4}  \notag \\
+                  &= 12.8 \notag \\
+\end{align}
+
+
+The same in R:
+```{r}
+var(y)                         # using var() function
+sum((y - mean(y))^2) / (n - 1) # in practice use var()
+```
+
+__Standard deviation__ is the square root of variance and is a measure of variability 
+that is in the same units as the original measurement (variance is in squared unit of the original measurement). Square root is computed by `sqrt()`.
+
+```{r}
+sd(y)          # using sd() function for sample standard deviation
+sqrt(var(y))   # SD = sqrt of variance
+```
+
+Interpretation of SD is as an average deviation that the obervations show 
+around the mean of the sample. In our example, on average, observed bmi values deviate about 3.6 units from the mean.
+
+\begin{comment}
+
+#### Median
+Median is the middle value of a distribution. It is a value 
+below which at most 50% of the values are and above which at most 50% of the values are.
+Let's determine median first manually by sorting the bmi values and
+looking up which is the middle value.
+```{r}
+sort(y)
+```
+
+It seems to be 25. Let's check that `median()` function agrees.
+```{r}
+median(y)
+```
+
+Mean or Median? A main difference between mean and median is that mean is heavily
+affected by extreme values while median is not. Assume that out of the 5 bmi values above,
+the largest one would by 50 (instead of 31). Now mean would increase to 29.4 (from 25.6),
+and consequently everyone else except the highest bmi individual would have their bmi value below the mean, which shows that the mean value doesn't necessarily 
+describe well the middle point of the *individual* level values. 
+Median, however, would not change from 25.  
+
+#### Quantile
+We just learned that median is the cutpoint that divides the set of observations to two equal
+sized parts. More generally, we can also divide the set of observations to more than two 
+equal sized parts,
+and such cutpoints are called quantiles. 
+For example,
+if we divide the observations to 4 equal sized parts,
+the three cutpoints needed ($Q_1$,$Q_2$ and $Q_3$) are called 4-quantiles (also called quartiles)
+and their definition is that 25% of the values are $\leq Q_1$, 
+50% of the values are $\leq Q_2$, and 75% of the values are $\leq Q_3$.
+Similarly, we can divide data into 10 equal sized groups by 10-quantiles (also called deciles; there are 9 deciles)
+or into 100 groups by 100-quantiles (also called percentiles; there are 99 percentiles).
+
+To demonstrate how to get quantiles from observed data set with function `quantile()`, 
+let's divide the sequence of values from 0 to 200 into quartiles.
+The first quartile corresponds to point below which the proportion of observations is 0.25,
+the second quartile corresponds to proportion 0.5 and the third quartile to proportion 0.75.
+We can evaluate these three values by `quantile()` function.
+```{r}
+x = 0:200 #vector of values 0,1,...,200
+quantile(x, probs = c(0.25, 0.50, 0.75)) #returns quantiles corresponding to given proportions of distribution
+```
+This tells us that 25% of the values are below 50, 50% are below 100 and 75% are below 150.
+
+Quantile function is useful to find cutpoints that define a range of "normal variation" 
+in population.
+For example, if we had measured 10,000 bmi values from the population,
+and wanted to find the cutpoints that defined 1% of the lowest and 1% of the highest values
+of `bmi`, we would call `quantile(y, probs = c(0.01, 0.99))`. 
+
+\end{comment}
+
+
+\newpage
+
+# Normal Distribution
+The most prevalent continuous distribution is the Normal distribution 
+(also called the Gaussian distribution after German mathematician Carl F. Gauss). 
+A reason for its wide applicability is that in very 
+many settings the distribution of sums of independent 
+random variables tend towards a Normal distribution, and hence many complex 
+properties, such as height or susceptibility to coronary artery disease, 
+that result from an interplay between a large number of genetic and environmental
+factors, follow approximately a Normal distribution in the population. 
+
+
+Normal distribution is defined by 2 parameters: 
+mean (mu, $\mu$) and standard deviation (sigma, $\sigma$). 
+Often (outside R) variance (sigma^2, $\sigma^2$) is used 
+in place of standard deviation to define the second parameter. 
+Always pay attention to which one is in question since mixing up 
+these parameters badly mixes up all the statistics! For now, remember that 
+the basic R functions take in standard deviation `sigma`.
+
+The standard normal distribution, N(0,1),  has mean = 0 and sd = 1.
+Let's plot the density function `dnorm(,0, 1)` and the cumulative distribution function `pnorm(, 0, 1)` 
+of N(0,1) next to each other. We use `par(mfrow=c(1,2))` to say that we set plotting parameter
+`mfrow` to split the plotting region into 1 row and 2 columns, whence the two plots show up next to each other.
+
+```{r, echo = T, fig.width = 10}
+x = seq(-3, 3, 0.001) # range of x-values where we evaluate dnorm() and pnorm()
+
+d = dnorm(x, 0, 1)    # values of density function of N(0,1)
+p = pnorm(x, 0, 1)    # values of cumulative distribution function of N(0,1)
+
+par(mfrow = c(1,2))   # plotting region split to 1 x 2 area to show two plots 
+                      # next to each other
+
+plot(x, d, xlab = "", ylab = "Density function of N(0,1)", 
+     main = "Standard Normal Distribution",
+     t = "l", lwd = 1.3, col = "limegreen")
+
+plot(x, p, xlab = "", ylab = "Cumulative distribution function of N(0,1)", 
+     main = "mean = 0 and sd = 1",
+     t = "l", lwd = 1.3, col = "darkgreen")
+```
+
+The density plot shows that the peak is
+at the mean of the distribution, and the density drops from there symmetrically
+making a bell-shaped curve characteristic to a Normal distribution.
+
+The cumulative distribution plot shows how the probability mass accumulates as we move
+from small values (here starting from -3) to larger values (here up to 3). We know that
+95% of the probability mass of the N(0,1) distribution is between values -1.96 and 1.96:
+
+```{r}
+qnorm(c(0.025, 0.975), 0, 1) # 95% of mass of N(0,1) is between these two points
+```
+
+Let's generate samples from a Normal distribution, say with mean=4 and sd=2, 
+using `rnorm()` and plot the data using a histogram.
+Standard `hist()` shows on y-axis the counts of observations in each bin, but
+by setting `prob = TRUE` we can make the y-axis to scale to the values of a density function
+(making the total area of the histogram = 1). 
+Then we can also show the theoretical density function `dnorm(,4,2)` in the same plot and compare the two.
+
+```{r}
+n.samples = 5000  # samples from distribution
+mu = 4            # mean
+sigma = 2         # standard deviation
+
+x = rnorm(n.samples, mu, sigma)        # random sample from normal distribution
+data.frame(mean = mean(x), sd = sd(x)) # show empirical mean and sd of data
+
+hist(x, breaks = 40, col = "gray", prob = TRUE, main = "N(4,2)")
+
+# add grid of x-values to evaluate dnorm(, mu, sigma)
+x.grid = seq(min(x), max(x), length.out = 1000)
+
+# add dashed line to the current plot
+lines(x.grid, dnorm(x.grid, mu, sigma), col = "red", lwd = 1.5, lty = 2) 
+
+# add a legend text to appear in the top right corner
+# pch is plotting symbol (15 square; -1 no symbol)
+# lty is line type (0 no line; 2 dashed line)
+legend("topright", col = c("gray","red"), legend = c("empirical","theoretical"), 
+       lwd = 1.5, pch = c(15,-1), lty = c(0,2)) 
+```
+
+We see that the histogram of 5000 random samples from N(4,2) 
+matches quite well with the theoretical density function of N(4,2), as it should.
+With more samples, the match would get even tighter.
+
+
+\newpage
+
+
+## Central Limit Theorem (CLT)
+
+Assume dataset $X$ contains $n$ (independent) samples from some distribution 
+with mean=$\mu$ and standard deviation=$\sigma$ but
+$X$ does not necessarily need to follow Normal, binomial or any other distribution we have ever heard about.
+CLT says that the distribution of the point estimate of the mean of $X$ 
+is approximately Normal(mean=$\mu$,sd= $\sigma/\sqrt{n}$) in LARGE samples. 
+This result can be used to derive confidence intervals for the estimated mean. 
+For example, a 95%CI is the observed mean $\pm 1.96\,s/\sqrt{n}$, where $s$ 
+is the observed standard deviation of $X$. 
+The importance of this result is its complete generality 
+with respect to the shape of the underlying distribution. 
+However, it requires a large sample to work in practice: 
+Rather hundreds than a few dozens. 
+
+Let's try it out with Uniformly distributed values.
+Let's compute a mean of $n=500$ U(0,1) distributed values, and repeat this computation
+1000 times. We'll do that by making a big data matrix where rows are 1000 repetitions and columns are 500 observations. 
+According to the theory ([Uniform distribution](https://en.wikipedia.org/wiki/Continuous_uniform_distribution), [Variance of a uniform distribution](https://math.stackexchange.com/questions/728059/prove-variance-in-uniform-distribution-continuous/728072)), the mean of a uniform distribution U(0,1) is 0.5 and its standard deviation is $1/\sqrt{12}\approx 0.289$.
+Thus, we expect that the mean of 500 samples from U(0,1) has a 
+mean of 0.5 and sd of $1/\sqrt{12\cdot 500} \approx 0.0129.$.
+Our main interest is whether the distribution of the mean over the data sets is Normal as CLT claims.
+
+```{r, fig.width = 5}
+n = 500  # sample size in each repetition
+m = 1000 # number of repetitions
+
+X = matrix(runif(n*m), nrow = m, ncol = n) # data matrix
+means = rowSums(X) / n                     # collect 100 means here
+
+c(mean(means), sd(means)) # mean and sd of the estimates of the mean
+
+# See whether means seem Normally distributed
+qqnorm(means)              
+qqline(means)
+```
+
+Indeed, the distributions of means look like Normal according to the QQ-plot. 
+Let's see the histogram of the means, and let's also show a histogram of one of the individual data sets to see that it indeed looked like uniform (and not Normal).
+
+```{r, fig.width = 10}
+par(mfrow = c(1,2))
+hist(means, xlim = c(0.4,0.6), breaks = 15, col = "limegreen", 
+     main="Means of 1000 data sets follow a Normal")
+
+# Plot the first data set just to make sure that the original data look like U(0,1)
+hist(X[1,], breaks = 10, col = "gray", 
+     main="500 values of one data set follow Uniform(0,1)") 
+```
+
+From the histograms we see how a single
+data set looks uniformly distributed on [0,1] (right)
+but how the means of 1000 such data sets is tightly concentrated
+around 0.5 and looks like Normally distributed. This is CLT in action.
+
+From this result, we can derive the standard Normal approximation to the confidence 
+interval for the mean of values from any distribution.
+Suppose that we have $n$ values from a distribution $D$.
+The endpoints of the 95% confidence interval for the mean of $D$ are 
+$$\overline{x}\pm 1.96 \times \widehat{s}/\sqrt{n},$$
+where $\overline{x}$ is the empirical mean of the $n$ values, $\widehat{s}$ is their empirical standard deviation
+and $1.96$ `=qnorm(1-0.05/2)` is the quantile
+point from the standard Normal distribution below which
+probability mass $0.975 = 1-0.05/2$ lies.
+
+
+\newpage
+
+# What is a linear relationship?
+In this section, we study relationship between two or more variables.
+First, we establish how to quantify the strength of the linear relationship 
+between continuous variables
+and then we learn how to use the relationship to predict
+value of an unknown variable 
+given the values of observed variables.
+
+Mathematically, two variables $X$ and $Y$ are linearly related if there
+are some numbers $a$ and $b$ such that $Y = a + b \cdot X$.
+Here, $b$ is the coefficient that links the changes in $X$ to changes in $Y$:
+A change of one unit in variable $X$ always corresponds to a change of $b$ units in variable $Y$.
+Additionally, $a$ is the value that allows a shift between the
+ranges of $X$ and $Y$.
+
+Let's plot three linear relationships with parameters 
+$a = 0, b= 2$ in green $a=1, b=-1$ in orange and
+$a= -1, b=0$ in blue. 
+Let's use 5 points to demonstrate these
+two lines when x-coordinate is between -1 and 1.
+```{r, fig.width = 5}
+n = 5
+x = seq(-1, 1, length = n) 
+y = 0 + 2*x
+plot(x, y, t = "b", col = "darkgreen", lwd = 2) #t="b" uses "b"oth lines and points 
+grid() #make a grid on background
+y = 1 + (-1)*x
+lines(x, y, t = "b", col = "orange", lwd = 2) # add line to the existing plot
+y = -1 + 0*x
+lines(x, y, t = "b", col = "blue", lwd = 2) # add line to the existing plot
+```
+
+We see that depending on the sign of $b$, the line is either increasing ($b=2$, green),
+decreasing ($b=-1$, orange), or flat ($b=0$, blue).
+We call $b$ as **slope** and $a$ as **intercept** of the linear
+relationship.
+
+**Example.** 
+Friedewald's formula is an example of a linear relationship.
+It tells how to estimate LDL cholesterol values from 
+total cholesterol, HDL cholesterol and triglycerides (when measured in mmol/l):
+$$\text{LDL}\approx \text{TotalC} - \text{HDL} - 0.45\cdot \text{TriGly}.$$
+
+In practice, we never observe perfect linear relationships between measurements.
+Rather we observe relationships that are linear to some degree, and that are further
+diluted by noise in the measurements. We can model such imperfect linear relationships
+by adding some Normally distributed random variation on top of a perfect linear relationships
+of the previous figure. Let's add most noise to the green and least to the blue line.
+The amount of noise is determined by the standard deviation of the Normal variable
+that is added on top of the perfect linear relationship, where larger SD means 
+that we are making a more noisy observation of the underlying line. 
+```{r, fig.width = 5}
+n = 50
+x = seq(-1, 1, length = n) 
+y = 0 + 2*x + rnorm(n,0,0.8)
+plot(x, y, t = "p", col = "darkgreen", lwd = 2) #t="b" uses "b"oth lineas and points 
+y = 1 + -1*x + rnorm(n,0,0.4)
+lines(x, y, t = "p", col = "orange", lwd = 2) # add line to the existing plot
+y = -1 + 0*x + rnorm(n,0,0.1)
+lines(x, y, t = "p", col = "blue", lwd = 2) # add line to the existing plot
+grid() #make a grid on background
+```
+
+In this Figure, the quality of the linear model as an explanation of
+the relationship between X and Y
+varies between the three cases (blue best, green worst).
+Next we want to quantify such differences.
+
+\newpage
+
+# Correlation
+
+To illustrate the concept of correlation we will use a data set of heights and weights of 199 individuals (88 males and 111 females). This dataset originates from <http://vincentarelbundock.github.io/Rdatasets/doc/carData/Davis.html>.
+You can download it from the course webpage.
+We will call it `measures`.
+https://vincentarelbundock.github.io/Rdatasets/csv/carData/Davis.csv
+
+```{r}
+#measures = read.table("Davis_height_weight.txt",as.is = TRUE, header = TRUE)
+measures <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/carData/Davis.csv")
+measures <- measures[-12,]  # remove observation 12 which is an outlier 
+head(measures)
+
+```
+
+The last two columns are self-reported values of weight and height.
+Let's plot weight against height.
+
+```{r}
+plot(measures$height, measures$weight, pch = 20, #pch = 20 means a solid round symbol
+     ylab = "weight (kg)", xlab = "height (cm)") 
+```
+
+Unsurprisingly, there is a clear pattern where taller individuals weight more.
+To quantify the (linear part of the) relationship, we compute a Pearson's
+**correlation coefficient** between the variables. This happens in two parts:
+compute the covariance between the variables and scale the covariance by the variability of both variables to
+get a dimensionless correlation coefficient.
+
+**Covariance** measures the amount of variation in the variables that is linearly shared between the variables.
+Technically, it is the average product of deviations from the means of the variables, and from
+a sample it is computed as
+$$\textrm{cov}(X,Y) = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \overline{x})(y_i - \overline{y}) 
+\textrm{, where }\overline{x}, \overline{y} \textrm{ are the means of }x_i \textrm{ and } y_i, \textrm{respectively}.$$
+When both $X$ and $Y$ tend to be above their mean values simultaneously, 
+then covariance is positive, whereas
+the covariance is negative if when $X$ is above its mean, $Y$ tends to be below its mean. 
+In other words, covariance is positive when $X$ and $Y$ tend to increase together and decrease
+together; covariance is negative when they tend to go to opposite directions.
+Covariance of 0 says that there is no linear relationship between $X$ and $Y$.
+Note that if we compute the covariance between the variable and itself,
+that is, $X=Y$ in the formula above, the result is simply
+the variance of that one variable. 
+Thus, covariance is a generalization of
+the concept of variance to two variables.
+
+
+**Correlation** coefficient results when covariance is normalized by the product of
+the standard deviations of the variables:
+$$\textrm{cor}(X,Y) = \frac{\textrm{cov}(X,Y)}{\textrm{SD}(X) \textrm{SD}(Y)}.$$
+Correlation is always between -1 and +1, and it denotes the strength of the linear relationship
+between the variables. If correlation is +1, then values of $X$ and $Y$ are on a line that has a positive slope
+and if correlation is -1, then $X$ and $Y$ are on a line that has a negative slope. When correlation is 0,
+there is no linear association between the variables. (See Figures from [Wikipedia](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient).)
+Note that if correlation between $X$ and $Y$ is 1 it does not necessarily 
+mean that $Y = X$, but only that 
+there is a perfect linear relationship of the form 
+$Y= a + b\cdot X$ for some constants $a$ and $b > 0$, and any such linear relationship
+leads to the correlation of 1.
+
+
+Let's compute an estimate $\widehat{r}$ of the correlation between height and weight 
+based on our sample of $n=199$ observations.
+```{r}
+r = cor(measures$height, measures$weight) 
+r
+```
+A correlation of ~0.8 is quite high. 
+
+\begin{comment}
+
+To get confidence intervals for the correlation coefficient 
+we can use `r.con()` function from the `psych` package.
+(Install `psych` package with command `install.packages("psych")` first 
+if Rstudio hasn't done it automatically for you.)
+
+We expect a clear positive correlation between weight and height based on the Figure above.
+Let's see what it is and print also its 95%CI.
+```{r}
+n = nrow(measures) #sample size is the number of rows of y
+library(psych) #DO FIRST: install.packages("psych")
+r.res = r.con(r, n, p = 0.95, twotailed = TRUE) #returns lower and upper bounds of CI
+c(r = r, low95CI = r.res[1], up95CI = r.res[2])
+```
+In this case, `r.con()` gives 95%CI as (0.707, 0.822), 
+so we can conclude that the height-weight
+correlation is about 70-80% in this population.
+
+\end{comment}
+
+
+\newpage
+
+# Linear regression
+In statistics, linear regression is a linear approach for modelling the relationship between response variable and one or more explanatory variables (also known as dependent and independent variables). The case of one explanatory variable is called simple linear regression; for more than one, the process is called multiple linear regression. This term is distinct from multivariate linear regression, where multiple correlated dependent variables are predicted, rather than a single scalar variable (https://en.wikipedia.org/wiki/Linear_regression).
+
+Correlation coefficient $r$ describes the strength of linear relationship between two variables.
+Both variables are treated symmetrically in definition of $r$.
+However, we may also want to utilize the linear relationship to predict the value of $Y$ given that
+we know the value of $X$. For example, we may use our observed population above to make a 
+statistical prediction of weights of individuals who are exactly 170 cm tall.
+From the earlier Figure, that is redrawn below, we see that such individuals 
+have weights roughly in the range from 50 kg to 80 kg.
+```{r, echo = FALSE}
+plot(measures$height, measures$weight, pch = 20, 
+     ylab = "weight (kg)", xlab = "height (cm)") 
+lm.fit = lm(weight ~ height, data = measures) #This fits linear model, will be explained later
+abline(lm.fit, lty = 2, col = "gray", lwd = 1.6) #puts the fitted line to figure
+```
+
+To characterize the relationship more mathematically,
+we want to fit a line through the observed data that describes how $Y$ depends on $X$.
+(This line is shown in gray in Figure above.)
+
+The **linear regression** model assumes that $$y_i = a + b x_i + \varepsilon_i,$$
+where $a$ (intercept, vakiotermi) and $b$ (slope, kulmakerroin) 
+are model parameters that define the line.
+With them, we can compute, for each observed value $x_i$, the value of $Y$
+predicted by the line as $\widehat{y}_i = a + b x_i$. We call $\widehat{y}_i$
+as the predicted value, or prediction (for $x_i$).
+In the linear model, $\varepsilon_i = y_i - \widehat{y}_i$ 
+is the difference between the observed value $y_i$ and the value $\widehat{y}_i$
+predicted by the model, and is called a **residual** (for observation $i$).
+
+Any pair of parameters $a$ and $b$ define one line (namely $y = a + bx$) in 
+X-Y coordinates. Which of them fits the best to the data? 
+In standard linear model, we choose the line 
+that minimizes the sum of the squared residuals. 
+That is, we choose $a$ and $b$
+in such a way that residual sum of squares
+$$\textrm{RSS} = \sum_{i=1}^n(y_i-\widehat{y}_i)^2 = \sum_{i=1}^n(y_i-(a+bx_i))^2$$
+is minimized. This line fits the observed data best in the "least squares" sense:
+the sum of squared deviations of the observed values from their predictions are minimized.
+We denote these **least squares estimates** 
+of the parameter values as $\widehat{a}$ and $\widehat{b}$.
+
+In R, the linear model is estimated using `lm(y ~ x)` function where formula `y ~ x`
+reads "regress y on x" or simply "y on x". 
+When our data is in a data.frame object (like our current `measures`), we can specify
+the data.frame in the call of `lm()` by parameter `data = ` and replace
+longer expressions such as `measures$height` in the model formula by variable name
+such as `height`.
+`lm()` returns a fitted model object that can be saved as a new variable.
+With that object, for example, the regression line can be added to a figure by 
+`abline(lm.object)` and a summary of the estimated model parameters 
+is given by `summary(lm.object)`. Let's try it out.
+
+
+```{r}
+lm1 = lm( weight ~ height, data = measures) #fit linear regression of weight on height
+plot(measures$height, measures$weight, pch = 20, 
+     ylab = "weight (kg)", xlab = "height (cm)", col = "gray")
+abline(lm1, col = "red", lwd = 1.5) #add the regression line
+summary(lm1) 
+```
+
+In output of `summary(lm)`:
+
+* Residuals are the observed vertical differences between the line and the observed `weight` value and here 
+  we see a summary of their distribution.
+* Coefficients show the least squares parameter estimates with their SEs and P-values 
+ (here highly significantly different from 0 with P-values < 2e-16). The slope tells that each cm
+ in `height` corresponds to an average increase of 1.15 kg in `weight`.
+* Residual standard error is an estimate for standard deviation of errors ($\sigma$ parameter in model)
+* R-squareds tell how large proportion of the variance in $Y$ the line explains compared to the total
+variance in $Y$. Typically, we should be looking at Adjusted Rsquared as it is 
+more reliable than the raw Rsquared if there are many predictors in the model.
+
+In this case, the linear model on height explains almost 60% of the variation in weight 
+and therefore leaves about 40% of variation in weight as something that cannot be explained 
+by (a linear effect of) height only. Note that in the case of simple linear regression with
+one predictor (here height), Rsquared is exactly the square of the correlation between $X$ and $Y$.
+
+```{r}
+cor(measures$weight, measures$height)^2
+summary(lm1)$r.squared
+```
+
+This explains why we say that the correlation coefficient is a measure of strength 
+of a linear association between variables:
+When $r=\pm1$, then the linear regression model explains all variation in $Y$ and hence the observations
+are on a single line in X-Y coordinates.
+
+Let's see which variables we have in the `lm` object by `names()`:
+```{r}
+names(lm1)
+```
+
+We could get both the fitted values (`lm1$fitted.values`) as well as residuals (`lm1$residuals`)
+for each individual from the regression model object. 
+For example, let's find for which individuals the
+predicted weight is more than 20kg off.
+We use `abs()` to get absolute value of residuals and `which()` to get the indexes
+of the samples for which the absolute residual is > 20.
+NOTE: If there was NAs among the variables used in regression,
+then by default R removes those individuals from the regression, and
+therefore the fitted values and residuals would not be present for
+all individuals who were originally present in the data.
+If we want to use the regression results at individual level,
+it is important first to check that we either have the same number of individuals
+in the regression as we have in the data, or otherwise we need to
+play with the `na.action` parameter in `lm()`, as will be shown below
+at the last example of this document.
+
+```{r}
+#Let's check that all inds were included in regression rather than had NAs.
+#Otherwise, the indexing below would go wrong since 'measures' had more inds than 'lm1'
+stopifnot(length(lm1$residuals) == nrow(measures)) #this would crash if condition was not true
+
+ii = which( abs(lm1$residuals) > 20) #returns indexes for which condition is TRUE
+cbind(measures[ii, 2:4], lm1$fitted.values[ii], lm1$residuals[ii])
+```
+
+We notice two things. First, there is one outlier case where weight is 119 kg 
+whereas it is predicted to be 76 kg based on the height of 180 cm. 
+Second, all of the worst predictions have happened for males.
+Indeed, it is unlikely that the same linear regression model would be appropriate 
+for both males and females.
+
+Let's improve the model and add `sex` as an another predictor to 
+the model to allow different mean weights in males and females.
+Since `sex` is of type "character" with two values ("M" and "F"), 
+R automatically treats it as *factor* in regression model.
+For factor variables, regression model will essentially give
+different mean values for different levels of the factor
+(here the two levels are males and females).
+```{r}
+lm2 = lm(weight ~ height + sex, data = measures) 
+summary(lm2)
+```
+
+Now our model says that after we account for difference in 
+average weight between males and females,
+each cm in height corresponds to 0.81 kg in height (it was 1.15 kg when sex wasn't accounted for).
+Additionally we see that for the same height, a male weights on average 8.2 kg more than a female.
+This model explains more of the variation in weight than the previous model 
+as the adjusted Rsquared has increased to 63% from 59%.
+Numerically, 
+the linear predictions are now sex-dependent for the intercept term but not for the slope:
+\begin{eqnarray*}
+\text{weight} &=& 0.81 \cdot \text{height} - 76.6, \text{ for females,}\\
+\text{weight} &=& 0.81 \cdot \text{height} - 68.4, \text{ for males}
+\end{eqnarray*}
+
+But are there also differences in the height-weight slope between the sexes? 
+Let's simply fit separate linear models in males and in females and check the slopes.
+
+```{r}
+males = (measures$sex == "M") #TRUE/FALSE vector that is TRUE for males and FALSE for females
+lmM = lm(weight ~ height, data = measures[males,]) #Use only male rows
+lmF = lm(weight ~ height, data = measures[!males,]) #Use only non-male = female rows
+```
+
+We can get the estimated parameter values as `lm.object$coeff`.
+```{r}
+lmM$coeff 
+lmF$coeff
+```
+and confidence intervals by `confint(lm.object, parm = , level = 0.95)`.
+```{r}
+confint(lmM, "height")
+confint(lmF, "height")
+```
+
+It seems like slope in females might be considerably smaller than in males. 
+Since the 95%CIs are quite wide, we cannot conclude 
+exactly how large the difference is from these data alone.
+
+If we wanted to have also SEs and P-values for the coefficients, we could get them
+from `summary(lm.object)$coeff`, for example:
+```{r}
+summary(lmM)$coeff
+```
+
+
+Finally, let's plot the model fits and put Rsquared values in the titles of the plots
+to see how much height linearly explains of weight in each sex.
+```{r, fig.height = 4.5}
+par( mfrow = c(1,2) )
+plot(measures[males,"height"], measures[males,"weight"], pch = 20, 
+     ylim = c(35, 120), xlim = c(140, 200),
+     ylab = "weight (kg)", xlab = "height (cm)", col="gray")
+abline(lmM, col = "cyan", lwd = 1.5)
+title(paste0("MALES R2=", signif(summary(lmM)$r.squared,3) ) )
+plot(measures[!males,"height"], measures[!males,"weight"], pch = 20, 
+     ylim = c(35, 120), xlim = c(140, 200),
+     ylab = "weight (kg)", xlab = "height (cm)", col="gray")
+abline(lmF, col = "magenta", lwd = 1.5)
+title(paste0("FEMALES R2=",signif(summary(lmF)$r.squared, 3) ) )
+```
+
+We see a dramatic decrease in variance explained after we have adjusted the analyses for sex.
+This is because there is a strong difference in distributions of 
+both height and weight between males and females,
+and therefore a large part of the explanatory power of the orginal model 
+was the effect of sex.
+After sex is accounted for, height explains anymore about 25-30% of variation in weight.
+This shows how important the additional variables, also called
+covariates, can be for the 
+interpretation of the regression model parameters.
+
+\begin{comment}
+
+\newpage
+
+# Practical 1: Use R for Analysing Quantitative Traits
+
+
+## Time schedule of practical session 1 (menti: 9525 8671):
+\begin{tabular}{|l|l|}
+\hline
+Time & Activity \\
+\hline
+09:15 & Questions to lecture and multiple-choice questions \\
+\hline
+09:25 & Introduction to R-studio \\
+\hline
+09:45 & Assignments to groups – work with exercises \\
+\hline
+10:00 & Break \\
+\hline
+11:35 & Prepare final words of exercises in each group \\
+\hline
+10:45 & Present final words \\
+\hline
+10:55 & Repeat multiple-choice questions \\
+\hline
+11:00 & End of practical session 1 \\
+\hline
+\end{tabular}
+
+
+### Learning objective: 
+Understand how to use R to compute basic statistics for real data set. Make different plots of trait phenotypes to visualize distribution of trait values and correlation among traits.
+
+
+#### Load phenotype data
+```{r, echo=TRUE}
+# Read data, change the path to where you store the data
+pheno <- read.table("pheno.txt", header = T)
+head(pheno)
+summary(pheno)
+```
+
+#### Question 2: What is the mean of yield and gluten?
+### Answer:
+```{r, echo=T}
+# First we extract the two traits into two variables in the R environment :
+yield <- pheno[,"yield"]
+gluten <- pheno[,"gluten"]
+# Average of all the values in yield and gluten:
+mean(yield)
+mean(gluten)
+```
+
+#### Question 3: What is the variance of phenotypes for yield and gluten?
+### Answer:
+```{r, echo=T}
+# Variance of the values in yield and gluten: 
+var(yield) 
+var(gluten) 
+```
+
+#### Question 4: How are the phenotypes of yield and gluten distributed?
+### Answer:
+```{r, echo=T}
+# Histogram of yield and gluten: 
+layout(matrix(1:2,ncol=2))
+hist(yield)
+hist(gluten)
+# Boxplots of yield and gluten: 
+layout(matrix(1:2,ncol=2))
+boxplot(yield, main="yield")
+boxplot(gluten, main="gluten")
+```
+
+
+#### Question 5: Is there a relationship between the phenotypes of yield and gluten?
+### Answer:
+```{r, echo=T}
+# Correlation between values of yield and gluten: 
+cor(yield,gluten)
+# Plot values of yield and gluten: 
+plot(yield,gluten)
+```
+
+
+#### Question 6: Does genetic factors contribute to the phenotypic variation in yield and gluten?
+### Answer:
+```{r, echo=T}
+# Boxplots of yield and gluten: 
+# First we extract the two traits into two variables in the R environment :
+par1 <- pheno[,"Par1"]
+par2 <- pheno[,"Par2"]
+layout(matrix(1:4,ncol=2))
+boxplot(yield~par1, main="yield-par1")
+boxplot(yield~par2, main="yield-par2")
+boxplot(gluten~par1, main="gluten-par1")
+boxplot(gluten~par2, main="gluten-par2")
+```
+
+
+
+
+\newpage
+
+# Practical 2: Basic Quantitative Genetics
+
+## Time schedule of practical session 2 (menti: 7030 220):
+
+\begin{tabular}{|l|l|}
+\hline
+09:15 & Questions to lecture and multiple-choice questions \\
+\hline
+09:25 & Today´s exercise and assignment to groups \\
+\hline
+09:30 & Prepare group presentations – use only 1 trait \\
+\hline
+09:45 & Group presentations and discussions \\
+\hline
+10:00 & 15 minutes break \\
+\hline
+10:15 & Group presentations and discussions  \\
+\hline
+10:50 & Repeat multiple-choice questions \\
+\hline
+11:00 & End of practical session 2 \\
+\hline
+\end{tabular}
+
+### Learning objective: 
+To be completed...
+
+ 
+### Exercise 1: Basic questions about traits for selection
+
+a)	Which traits could we select for? 
+b)	Why these traits?
+c)	How do we record phenotypes for these traits? 
+d)	Is it difficult to record these traits? 
+e)	Which factors might influence the recording of these traits? 
+
+f)	What distribution does these traits have? (normal, poisson, etc.)
+g)	Do the traits fit with the infinitesimal model?
+h)	Are these traits heritable?
+i)	Do we know about their heritability? 
+j)	Genetic correlation to other traits?
+
+
+\hfill
+
+
+
+### Exercise 2: Compute breeding values for a monogenic trait
+We assume that the absorption of cholesterol is determined by a certain enzyme. The level of enzyme production is determined by a single bi-allelic locus E. The genotype frequencies and the genotypic values for the two dairy cattle populations Original Braunvieh and Brown Swiss are given in the following table.
+
+
+\begin{center} 
+\begin{tabular}{|c|c|c|}
+\hline
+Variable	& Original Braunvieh	& Brown Swiss \\
+\hline
+$f_{E1E1}$	&	0.0625	&	0.01 \\
+\hline
+$f_{E1E2}$	&	0.3750	&	0.18 \\
+\hline
+$f_{E2E2}$	&	0.5625	&	0.90 \\
+\hline
+$a$	&	15.00	& 29.00 \\
+\hline
+$d$	&	3.00	& 0.00 \\
+  \hline
+\end{tabular}
+\end{center}
+
+#### Task:
+Compute the breeding values for all three genotypes in both populations. Assume that allele E1 is the allele with the positive effect on the enzyme level and that the Hardy-Weinberg Equilibrium holds in both populations.
+
+### Answer:
+
+
+\hfill
+
+
+### Exercise 3: Compute genotype frequencies and population mean for a monogenic trait
+In a population the following numbers of genotypes were counted for a given genetic locus called A.
+
+\begin{center} 
+\begin{tabular}{|c|c|}
+  \hline
+  Genotype & Count \\
+  \hline
+  A1A1	& 24 \\
+  \hline
+  A1A2	& 53 \\
+  \hline
+  A2A2	& 23 \\
+  \hline
+\end{tabular}
+\end{center}
+
+#### Task 1: 
+Compute the allele and genotype frequencies
+
+#### Task 2: 
+Compute the population mean $\mu$ under the assumptions that the difference between the genotypic values of the homozygous genotypes is 20 and the genotypic value of the heterozygous genotype is 2.
+
+### Answer:
+
+
+
+\newpage
+
+# Practical 3: Estimation of Genetic Parameters
+
+## Time schedule of practical session 3 (menti: XXX):
+
+\begin{tabular}{|l|l|}
+\hline
+09:15 & Questions to lecture and multiple-choice questions \\
+\hline
+09:25 & Today´s exercise and assignment to groups \\
+\hline
+09:30 & Prepare group presentations – use only 1 trait \\
+\hline
+09:45 & Group presentations and discussions \\
+\hline
+10:00 & 15 minutes break \\
+\hline
+10:15 & Group presentations and discussions  \\
+\hline
+10:50 & Repeat multiple-choice questions \\
+\hline
+11:00 & End of practical session 2 \\
+\hline
+\end{tabular}
+
+## Learning objective: 
+Genetic parameters are nowadays estimated using restricted maximum likelihood (REML). This method allow for estimation of genetic parameters using phenotypic information for individuals from a general pedigree. REML is based on linear mixed model methodology and use a likelyhood approach for estimating genetic parameters. The learning objectives of this practical are:
+
+* To explore data (phenotype and pedigree) used for estimation of variance components using R
+* Calculate genetic relationship for a simple pedigree and for a general pedigree
+* Estimate variance components for a quantitative trait using REML 
+* Estimate heritability based on the estimate variance components
+
+
+### Install and load R packages will be used in this exercise
+
+```{r, echo=TRUE}
+library(qgg) # R package used for REML analysis
+```
+
+### Prepare phenotypic data used in the analyses
+The data is in the format of having one row for each individuals and one column for each trait. To do the regression we need a dataframe with one column as record of offspring (the dependent variable) and one as record of parent mean (the explanatory variable). We do the following preparation of the data to make it ready for the lm() function.
+
+```{r, echo=TRUE}
+# Read phenotype data used
+pheno <- read.table("pheno.txt", header = T)
+```
+
+```{r, echo=FALSE}
+#pheno$Ind <- as.factor(as.character(pheno$Ind))
+#pheno$Par1 <- as.factor(as.character(pheno$Par2))
+#pheno$Par2 <- as.factor(as.character(pheno$Par2))
+pheno$fixed <- as.factor(as.character(pheno$fixed))
+pheno$fs <- as.factor(paste(as.character(pheno$Par1),as.character(pheno$Par2),sep="_"))
+```
+
+One of the first thing to do is to explore the data used in your analysis. You’re looking to understand what variables you have, how many records the data set contains, how many missing values, what is the variable structure, what are the variable relationships and more. 
+Here are few simple commands to help you get a fast overview of the data set you are working with:
+
+```{r, echo=TRUE}
+head(pheno)
+summary(pheno)
+str(pheno)
+```
+
+```{r, echo=FALSE}
+father <- unique(pheno$Par1)
+father <- father[!father%in%pheno$Ind]
+mother <- unique(pheno$Par2)
+mother <- mother[!mother%in%pheno$Ind]
+pedf <- cbind(father, 0,0, 1)
+pedm <- cbind(mother, 0,0, 2)
+pedo <- cbind(pheno[,1:3],1)
+rownames(pedf) <- pedf[,1]
+rownames(pedm) <- pedm[,1]
+rownames(pedo) <- pedo[,1]
+colnames(pedf) <- colnames(pedm) <- colnames(pedo) <- c("id","father","mother","sex")
+pedigree <- rbind(pedf,pedm,pedo)
+```
+
+
+
+## Exercise 1: Calculate additive genetic relationship matrix
+Estimating heritability using the REML methods required us to calculate an additive genetic relationship matrix. This is done using information about the id, mother, and father which is avaliable in our pedigree data file.
+
+
+```{r, echo=FALSE}
+prm <- function(pedigree=NULL) {
+        n <- nrow(pedigree)
+        A <- matrix(0,ncol=n,nrow=n)
+        rownames(A) <- colnames(A) <- as.character(pedigree[,1])
+        A[1, 1] <- 1
+        for (i in 2:n) {
+            if (pedigree[i,2] == 0 && pedigree[i,3] == 0) {
+                A[i, i] <- 1
+                for (j in 1:(i - 1)) A[j, i] <- A[i, j] <- 0
+            }
+            if (pedigree[i,2] == 0 && pedigree[i,3] != 0) {
+                A[i, i] <- 1
+                for (j in 1:(i - 1)) A[j, i] <- A[i, j] <- 0.5 *
+                  (A[j, as.character(pedigree[i,3])])
+            }
+            if (pedigree[i,2] != 0 && pedigree[i,3] == 0) {
+                A[i, i] <- 1
+                for (j in 1:(i - 1)) A[j, i] <- A[i, j] <- 0.5 *
+                  (A[j, as.character(pedigree[i,2])])
+            }
+            if (pedigree[i,2] != 0 && pedigree[i,3] != 0) {
+                A[i, i] <- 1 + 0.5 * (A[as.character(pedigree[i,3]), as.character(pedigree[i,2])])
+                for (j in 1:(i - 1)) A[j, i] <- A[i, j] <- 0.5 *
+                  (A[j, as.character(pedigree[i,2])] + A[j, as.character(pedigree[i,3])])
+            }
+        }
+        return(A)
+}
+
+grm <- function(Glist = NULL, GRMlist = NULL, ids = NULL, rsids = NULL, rws = NULL, cls = NULL,
+                W = NULL, method = "add", scale = TRUE, msize = 100, ncores = 1, fnG = NULL,
+                overwrite = FALSE, returnGRM = FALSE, miss = 0, pedigree=NULL, task = "grm") {
+  if(!is.null(pedigree)) {
+   return(prm(pedigree=pedigree))
+  } 
+  if (task == "grm") {
+    GRM <- computeGRM(
+      Glist = Glist, ids = ids, rsids = rsids, rws = rws, cls = cls,
+      W = W, method = method, scale = scale, msize = msize, ncores = ncores,
+      fnG = fnG, overwrite = overwrite, returnGRM = returnGRM, miss = miss
+    )
+    return(GRM)
+  }
+  if (task == "eigen") {
+    eig <- eigenGRM(GRM = GRM, GRMlist = GRMlist, method = "default", ncores = ncores)
+    return(eig)
+  }
+}
+```
+
+Load pedigree data file here:
+
+Again it is useful to explore the pedigree data.
+
+How many individuals do we have in the pedigree?
+```{r, echo=TRUE}
+dim(pedigree)
+```
+
+What does the pedigree data look like?
+```{r, echo=TRUE}
+str(pedigree)
+head(pedigree)
+tail(pedigree)
+```
+
+Extract a small pedigree as an example
+```{r, echo=TRUE}
+ids <- c("9","38","78","83","86")
+pedigree[ids,]
+```
+
+Task: Calculate relationship coefficient for Ind 83 to 86, and their parents
+Answer:
+
+Henderson provided and algorithm for construction additive relationship matrix for a general pedigree. This algorithm is implemented R function 'grm' from the qgg package.
+```{r, echo=TRUE}
+A <- grm(pedigree=pedigree) 
+A[1:5,1:4]
+```
+
+Check dimensions of the relationship matrix. The number of rows and columns should be equal to the number of individuals in the pedigree:
+
+```{r, echo=TRUE}
+dim(A)
+```
+
+Check the first 5 individuals in the matrix:
+```{r, echo=TRUE}
+A[1:5,1:5]
+```
+
+Check diagonal of A
+```{r, echo=TRUE}
+mean(diag(A))
+```
+
+
+Make a plot of the additive relationship matrix
+```{r, echo=TRUE, message=FALSE}
+library(corrplot)
+corrplot(A, method="color", bg="white", 
+         outline=FALSE, col=NULL, tl.pos="n",is.corr = FALSE, xlab=FALSE, ylab=FALSE)
+
+```
+
+Extract a small submatrix of the relationship matrix
+```{r, echo=TRUE}
+ids <- c("9","38","78","83","86")
+A[ids,ids]
+```
+
+Task: Are the values in the relationship matrix the same as you have found in the previous section?
+
+
+## Exercise 3: Estimation of heritability using REML
+In REML we use all relations between individuals by including a pedigree
+Learning objective: Understand how to use pedigree information to do REML analysis and estimate heritability
+
+
+REML analysis for yield
+Here we use “qgg” package to fit the REML model
+
+Prepare data for genetic analysis
+
+Prepare mode for the phenotypes
+```{r, echo=TRUE}
+fm <- yield ~ 1
+X <- model.matrix(fm, data =  pheno)
+head(X)
+```
+
+Run REML analysis
+```{r, echo=TRUE}
+ids <- as.character(pheno$Ind)
+fit <- greml(y = yield, X = X, GRM = list(A=A[ids,ids]), verbose=F, maxit = 300)
+```
+
+Obtain variance components and parameters
+```{r, echo=TRUE}
+theta <- fit$theta
+Va <- theta[1]
+Ve <- theta[2]
+Va
+Ve
+```
+
+Task: Calculate heritability
+
+Task: Compare the heritabilities obtained using ANOVA on halfsib familes and REML? What could be the reason for the difference?
+Answer:
+
+
+
+
+\newpage
+
+# Practical 4: Estimation of breeding values
+
+
+### Exercise 1: Breeding value and reliability 
+
+En Texel vædder (Thor) har i alt 90 afkom. Af disse afkom har 39 får fået første kuld. Den gennemsnitlige kuldstørrelse for de 39 afkom er 1,8, hvilket er 0,25 lam pr. kuld mere end populationsgennemsnittet for racen Texel. Antag at den additive genetiske variation for kuldstørrelse er $\sigma_a^2=0.038$, og at heritabiliteten for kuldstørrelse er $h^2=0.10$.
+
+a)	Beregn vædderen Thors avlsværdi for kuldstørrelse 
+b)	Beregn sikkerheden af avlsværditallet
+
+
+### Exercise 2: Reliability using different relatives
+
+We want to compare the reliabity of the estimated breeding value for an individual
+computed based on phenotypic observation on different types of relatives. 
+Assume that the trait narrow sense trait heritability $h^2=0.25$. What is the reliability if 
+we compute the breeding values based on:
+
+1) Mother
+2) 50 paternal halfsibs (same father)
+3) 20 offspring that halfsibs (different mothers)
+
+Which information gives the highest reliability?
+
+
+Learning objective: Understand the data needed for analysis, describe the data to be analyzed.
+
+```{r, echo=F}
+library(qgg) # R package used for estimating breeding values
+```
+
+### Preparation of phenotypic data will be used in this exercise and check the content in the phenotypic data
+
+# Exercise 2: Calculation of breeding value based on own phenotype
+
+Learning objective: Understand how to use own phenotype to calculate breeding values based on simulated data
+
+## Step 2.1: Calculate the population mean for yield
+
+```{r, echo=TRUE}
+mu_yield <- mean(pheno$yield)
+mu_yield
+```                              
+
+
+
+```{r, echo=F}
+#ped <- read.table(paste0(datadir, "/ped.txt"), header = T)
+#ped_small <- ped[ped$Ind %in% c(9, 38, 48, 78, 83:86),]
+# ped_small
+# dim(ped)
+# head(ped)
+#A_small <- Amatrix(ped_small, ploidy=2)
+# dim(A_small)
+# A_small
+# Check diagonal of A
+# mean(diag(A_small))
+```
+
+
+# Excerise 7: BLUP for all the individual in pheno_simu
+
+## Step 7.1: Build relationship matrxi for all individuals
+
+```{r, echo=T}
+#A_full <- Amatrix(ped, ploidy=2)
+#dim(A_full)
+```
+
+## Step 7.2: calculate X, V
+
+## Question 7.1: Please construct X, V using the code in step 6.1 (Hint: Y <- pheno_simu[,"yield"], beaware of A matrix used here)
+### Answer:
+
+```{r, echo=F}
+#y <- pheno[,"yield"]
+#n <- length(y)
+#vp <- var(y) # Phenotypic variance
+#va <- vp * h2 # Additive variance
+#ve <- vp * (1-h2) # Enviromental variance
+#X <- rep(1, n) # Fixed effect is mu
+#I <- diag(n) # Identity matrix
+#dim(I)
+#V <- A_full*va + I*ve # Including variance of each y
+```
+
+## Step 7.3: compute BLUE
+
+## Question 7.2: Please compute BLUE using the code in step 6.2
+### Answer:
+
+```{r, echo=F}
+#Xp <- t(X) # X prime
+#Vinv <- solve(V) # Inverse X
+#XVX <- Xp %*% Vinv %*% X
+#blue <- solve(XVX) %*% Xp %*% Vinv %*% Y
+# blue
+```
+
+## Step 7.4: compute BLUP
+
+## Question 7.3: Please compute BLUP using the code in step 6.3
+### Answer:
+
+```{r, echo=F}
+#Xb <- X %*% blue
+#G <- A_full*va
+#blup <- G %*% Vinv %*% (Y-Xb)
+# blup
+```
+
+#### Step 7.5: Visualize Y and BLUP
+
+#### Question 7.4: Make histogram for Y and BLUP, how do you think about their distribution?
+### Answer:
+
+#### Question 7.5: Do you think which individual is best and which is the worst in the whole population? What is the reason? (Hint: max(), min())
+### Answer:
+
+
+#### Question 8: Did you have any problem during the practice?
+### Answer:
+
+\end{comment}

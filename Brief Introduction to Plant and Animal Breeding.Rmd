@@ -1,6 +1,6 @@
 ---
 title: 'Brief Introduction to Plant and Animal Breeding'
-author: "Peter Sørensen, Guillaume Ramstein"
+author: "Guillaume Ramstein & Peter Sørensen"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -23,23 +23,21 @@ set.seed(19)
 ```
 
 These lecture notes contributes to "Compendium Plant and Animal Breeding and Genetics" (CPABG).   
-The notes support the lectures.
+The aim of the notes is to give a brief introduction to breeding in animals and plants and to support the associated lectures.
 
 The notes consist of the following chapters:    
 
-Chapter 1: Brief Introduction to Plant and Animal Breeding (L8).    
-Chapter 2: Basic concepts in Quantitative Genetics used in Breeding (L10).   
-Chapter 3: Introduction to Estimation of Genetic Parameters used in Breeding (L12).   
-Chapter 4: Introduction to Estimation of Breeding Values (L14).    
-Chapter 5: Introduction to Estimation of Genomic Breeding Values (L16). 
+Chapter 1: Brief Introduction to Plant and Animal Breeding.    
+Chapter 2: Basic concepts in Quantitative Genetics used in Breeding.   
+Chapter 3: Estimation of Genetic Parameters used in Breeding.   
+Chapter 4: Estimation of Breeding Values.    
+Chapter 5: Estimation of Genomic Breeding Values. 
 
-Appendix 1: Basic concepts in Probability and Statistics    
-Appendix 2: Basic concepts in Linear Algebra       
-Appendix 3: Introduction to R       
+Appendix 1: Using R for Statistical Analyses of Quantitative Traits.       
+<!-- Appendix 2: Basic concepts in Probability and Statistics     -->
 
-The aim of this chapter is to give a brief introduction to breeding in animals and plants.   
-We can in addition suggest some further readings.   
-The text below is in part from the following sources(CC-BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/):   
+
+The material provided in these notes is in part from the following sources (CC-BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/):
 https://en.wikipedia.org/wiki/Selective_breeding    
 https://charlotte-ngs.github.io/lbgfs2021/cn/01_intro_lbg.pdf   
 
@@ -62,19 +60,29 @@ Natural selection and selective breeding can both cause changes in animals and p
 * What can breeders do to obtain the _best_ breeding individuals?
 
 The term `best` is relative, because there is no `best` breeding for all situations and all environments. Breeding individuals that show high performance in one environment, may not perform as well in a different environment. For example, Holstein cows in Europe or North America, are able to produce a lot of milk, but they have difficulties surviving in Africa. Knowing that the environment plays an important role for animals and plants, we usually assume that breeding populations are more or less adapted to their environment.
-Breeding individuals are usually described or characterized in terms of appearance or performance or a combination of both. In any case, we will be talking about __traits__ where any trait is an observable or measurable characteristic of an breeding individual. Examples of _observable_ traits in animals are 
 
-* coat color
-* size 
-* muscling
-* leg set
-* udder conformation and many more.
+Breeding individuals are usually described or characterized in terms of appearance and/or performance. In any case, we will be talking about __traits__ where any trait is an observable or measurable characteristic of an breeding individual. Examples of _observable_ traits are: 
 
-Observable traits are mostly used to describe the appearance of an animal. In contrast to that, _measurable_ traits are mostly used to describe the performance of an animal. Examples of measurable traits are 
+\begin{center} 
+\begin{tabular}{|l|l|l|}
+\hline
+Type of traits	& Animals	& Plants \\
+\hline
+Observable	& Coat color & Grain/flower/leaf color \\
+           & Size       & Branching pattern \\
+           & Muscling   & Disease \\
+           & Leg set    & \\
+           & Udder conformation &	 \\
+\hline
+Measurable	& Body weight & Plant height \\
+           & Milk yield  & Grain yield \\
+           & Protein and fat yield &  Biomass yield \\
+           & Carcass weight	& Nutritional content \\
+\hline
+\end{tabular}
+\end{center}    
 
-* body weight
-* milk production
-* protein and fat yield.
+
 
 Note, it is important to distinguish between the observed or measured values of a trait which might be `red` coat color or $343$ kg of body weight and the traits themselves which are just coat color or body weight. The observed or measured values of a trait are also called __phenotypes__. 
 
@@ -96,7 +104,8 @@ The purpose of selective breeding is to improve the traits selected for, in a br
  * __mating__ of selected individuals to generate the next (improved) generation
 
 ### Evaluation
-
+Breeding value estimation is a fundamental component of breeding programmes,in which the breeding value of each individual is predicted to inform subsequent selection decisions.
+The breeding value for an individual is the effect its genes will have in the population. Breeding values are used for 1) comparing individuals in the breeding population and to select parents for the next generation, 2) predicting the consequences of selection decisions, and 3) describing genetic differences over time (result of previous selection).
 
 ### Selection
 Selection is the process of choosing individuals in the current generation, as parents for the next generation. The application of selection in a certain population over a certain time changes the breeding individuals in that population at the genetic level. The most familiar form of selection is natural selection which occurs in natural and wildlife populations. Natural selection is one of the great forces of evolution and it also affects domestic animal and plant populations. All animal or plants with lethal genetic defects are naturally selected against, i.e., they do not survive before the breeder gets to evaluate them. 
@@ -112,6 +121,7 @@ The second tool we have available as animal or plant breeders is __mating__. In 
 
 There might also be other aspects that influence a mating system, e.g. to restrict the level of inbreeding or to consider optimum genetic contribution theory.
 
+\begin{comment}
 
 ## Scientific and Technological Advances is driving Breeding and Genetics 
   
@@ -124,3 +134,4 @@ Brief overview of these scientific and technological advances.....
 ### Genomic technologies
 ### Phenotyping technologies
 
+\end{comment}
