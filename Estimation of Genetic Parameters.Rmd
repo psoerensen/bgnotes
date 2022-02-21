@@ -399,13 +399,13 @@ var(a_i) = A_{ii} \sigma_a^2 = (1 + F_i) \sigma_a^2
 The matrix $A$ can be computed using a recursive method. This method is especially suitable for an implementation by a software program. In what follows the recursive method to compute the components of $A$ is described. Initially, individuals in a pedigree are numbered from $1$ to $n$ and ordered such that parents precede their progeny. The following rules are then  used to compute the components of $A$. 
 
 * If both parents $s$ and $d$ of individual $i$ are known, then 
-    + the diagonal element $A_{ii}$ corresponds to: $A_{ii} = 1 + F_i = 1 + {1\over 2} A_{sd}$ and
-    + the off-diagonal element $A_{ji}$ is computed as:  $A_{ji} = {1\over 2} (A_{js} + A_{jd})$
+    + the diagonal element $A_{ii}$ corresponds to: $A_{ii} = 1 + F_i = 1 + \frac{1}{2} A_{sd}$ and
+    + the off-diagonal element $A_{ji}$ is computed as:  $A_{ji} = \frac{1}{2} (A_{js} + A_{jd})$
     + because $A$ is symmetric $A_{ji} = A_{ij}$
     
 * If only one parent $s$ of individual $i$ is known and assumed unrelated to the mate
     + $A_{ii} = 1$
-    + $A_{ij} = A_{ji} = {1\over 2} (A_{js})$
+    + $A_{ij} = A_{ji} = \frac{1}{2} (A_{js})$
     
 * If both parents are unknown    
     + $A_{ii} = 1$
@@ -440,10 +440,10 @@ The first step of the computations of $A$ are the numbering and the ordering of 
 \begin{align}
 A_{11} &= 1 + F_1 = 1 + 0 = 1 \notag \\
 A_{12} &= 0 = A_{21} \notag \\
-A_{13} &= {1\over 2} (A_{11} + A_{12}) = 0.5 = A_{31} \notag \\
-A_{14} &= {1\over 2} A_{11} = 0.5 = A_{41}  \notag \\
-A_{15} &= {1\over 2} (A_{14} + A_{13}) = 0.5 = A_{51} \notag \\
-A_{16} &= {1\over 2} (A_{15} + A_{12}) = 0.25 \notag
+A_{13} &= \frac{1}{2} (A_{11} + A_{12}) = 0.5 = A_{31} \notag \\
+A_{14} &= \frac{1}{2} A_{11} = 0.5 = A_{41}  \notag \\
+A_{15} &= \frac{1}{2} (A_{14} + A_{13}) = 0.5 = A_{51} \notag \\
+A_{16} &= \frac{1}{2} (A_{15} + A_{12}) = 0.25 \notag
 \end{align}
 
 The same computations are also done for all the other components of the matrix $A$. The final result for the matrix looks as follows
@@ -566,10 +566,10 @@ Total            &  $n$                                &  $y^Ty$ \\
 
 The sums of squares ($SSQ$) can also be expanded into sums of scalar quantities which might be easier to understand. For our sire model we get
 
-$$F = y^TX(X^TX)^{-1}X^Ty = {1\over n} \left[\sum_{i=1}^n y_i \right]^2$$
+$$F = y^TX(X^TX)^{-1}X^Ty = \frac{1}{n} \left[\sum_{i=1}^n y_i \right]^2$$
 where $n$ corresponds to the number of observations in the dataset.
 
-$$S= y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = \sum_{i=1}^{q} {1 \over n_i} \left[\sum_{j=1}^{n_i} y_{ij}\right]^2 - F $$
+$$S= y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty - y^TX(X^TX)^{-1}X^Ty = \sum_{i=1}^{q} \frac{1}{n_i} \left[\sum_{j=1}^{n_i} y_{ij}\right]^2 - F $$
 where $n_i$ corresponds to the number of observations for sire $i$. 
 
 $$T = y^Ty - y^TZ_s(Z_s^TZ_s)^{-1}Z_s^Ty = \sum_{i=1}^n y_i^2 - S - F$$
@@ -708,7 +708,7 @@ The maximum likelihood (ML) approach was developed and popularized by R. A. Fish
 Given a vector $y$ of observations. As already mentioned, the vector $y$ follows a certain density. As an example such a density might be a multivariate normal distribution. For a given vector $y$ of length $n$, the underlying $n$-dimensional multivariate normal distribution has the following form
 
 $$
-f_Y(y) = \frac{1}{\sqrt{(2\pi)^n det(\Sigma)}} exp \left\{-{1\over 2}(y - \mu)^T \Sigma^{-1}(y - \mu) \right\}
+f_Y(y) = \frac{1}{\sqrt{(2\pi)^n det(\Sigma)}} exp \left\{-\frac{1}{2}(y - \mu)^T \Sigma^{-1}(y - \mu) \right\}
 $$
 
 \begin{tabular}{lll}
