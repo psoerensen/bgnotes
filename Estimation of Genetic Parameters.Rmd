@@ -108,7 +108,7 @@ The statistical model is a formal representation of our quantitative genetic the
 
 
 # Methods for estimation of genetic parameters
-In general estimation of heritability and genetic correlation is based on methods that determine resemblance between genetically related individuals. Close (compared to distant) relatives share more alleles and if the trait is under genetic influence they will therefore share phenotypic similarities. Here we will present three methods for estimating heritability: parent-offspring regression, analysis of variance (ANOVA) for family data (e.g., half-sib/full-sib families) and restricted maximum likelihood (REML) analysis for a general pedigree. These methods are increasingly more complex, but they are also increasingly more flexible. While REML can analyze any type of relationships and structures, ANOVA can only analyze groups of individuals with similar relationships (e.g., half-sib, or full-sib families), and regression analysis can only analyze pairs of individuals with similar relationships (e.g., pairs of parent and respective offspring, or pairs of monozygotic twins).
+In general estimation of heritability and genetic correlation is based on methods that determine resemblance between genetically related individuals. Close (compared to distant) relatives share more alleles and if the trait is under genetic influence they will therefore share phenotypic similarities. Here we will present three methods for estimating heritability: parent-offspring regression, analysis of variance (ANOVA) for family data (e.g., half-sib/full-sib families) and restricted maximum likelihood (REML) analysis for a general pedigree. These methods are increasingly more complex, but they are also increasingly more flexible. While REML can analyze any type of relationships and structures, ANOVA can only analyze groups of individuals with similar relationships (e.g., half-sib, or full-sib families), and regression analysis can only analyze pairs of individuals with similar relationships (e.g., pairs of parent and respective offspring, or pairs of monozygotic twins). These methods can also be used for estimation of genetic correlation, but this will not be coevered in these notes.
 
 ## Estimating heritability using parent - offspring regression
 The simplest method for estimating genetic parameters is based on regression analysis. Heritability may be estimated by comparing phenotypes for traits recorded in parent and offspring. Parent-offspring regression compares trait values in parents ($y_p$) to trait values in their offspring ($y_o$). Estimation of heritability is based on a linear regression model:
@@ -194,22 +194,18 @@ The variance among family effects (the between-family, or among-family, variance
 \end{align}
 
 ### Estimation of variance components
-The total sum of squares (SST) is the sum of each of the observations squared:
+The total sum of squares (SST) around the overall mean ($\bar{y}$) is the sum of each of the observations squared:
 \begin{align}
- SST &= \sum_{i=1}^{n_f}\sum_{j=1}^{n_o} {y}_{ij}^2
+ SST &= \sum_{i=1}^{n_f}\sum_{j=1}^{n_o} ({y}_{ij}-\bar{y})^2
 \end{align}
 
 where $y_{ij}$ is an observation on the jth offspring in the ith family. 
 In ANOVA, the total variation (the sum of squares SST) is decomposed into different sources of variation corresponding to different effects in the model.
-The mean sum of squares (SSM) is n times the mean squared: 
-\begin{align}
- SSM &= n\bar{y}_{..}^2
-\end{align}
 
 The model sum of squares (SSA) due to a particular factor (e.g. the family effect) is the sum over all observations of the estimated (family) effect in each observation squared (in balanced data sets this 
-is the difference between the family group mean and the overall mean): 
+is the difference between the family group mean ($\bar{y}_{i}$) and the overall mean ($\bar{y}$)): 
 \begin{align}
- SSA &= \sum_{i=1}^{n_f} n_{o}(\bar{y}_{i.}-\bar{y}_{..})^2
+ SSA &= n_{o}\sum_{i=1}^{n_f}(\bar{y}_{i}-\bar{y})^2
 \end{align}
 Notice that the sum of squares for the main effect (SSA) is the sum of all the squared 
 estimates of $f_i$, because in a balanced data set the estimate of $f_i$ is equal to ($y_{i}.-y_{..}$). In a 
@@ -221,25 +217,27 @@ observations of the residual effect in each observation squared (this is the
 difference between the observation and its group mean): 
 
 \begin{align}
- SSE &= \sum_{i=1}^{n_f}\sum_{j=1}^{n_o} (y_{ij} - y_{i.})^2
+ SSE &= \sum_{i=1}^{n_f}\sum_{j=1}^{n_o} (y_{ij} - \bar{y}_{i})^2
 \end{align}
 
 The total sum of squares can be expressed as the sum of the components described above:  
 \begin{align}
- SST &= SSM + SSA + SSE
+ SST &= SSA + SSE
 \end{align}
  
 In balanced data, it is rather simple to estimate variance components, by setting 
 the mean squares (MS) equal to their expectations E(MS) (estimation by the method of moments). The mean squares are computed as:
 \begin{align}
- MSE &= SSE/(n-n_f) \\ \notag
- MSA &= SSA/(n_f-1) \notag
+ MSA &= SSA/(n_f-1) \\ \notag
+ MSE &= SSE/(n-n_f) \notag
 \end{align}
-The expected mean squares (derived from statistical theory on expected value of a sum of squares) are linear functions of the variance components: 
-\begin{align}
+
+The expected mean squares (derived from statistical theory on expected value of a sum of squares) are linear functions of the variance components: \begin{align}
  E(MSE) &=  \sigma^2_{e} \\ \notag
- E(MSA) &=  \sigma^2_{e} + n_o\sigma^2_{f}  \notag
+ E(MSA) &=  \sigma^2_{e} + \widetilde{n}_o\sigma^2_{f}  \notag
 \end{align}
+
+where $\widetilde{n}_o = [n-(\sum_{i=1}^{n_f}n_{o_{i}}^2/n)]/(n_f-1)$ which reduces to $n_o$ with equal family sizes.
 
 Therefore in this simple model we can estimate of the residual variance components ($\hat{\sigma}^2_{e}$) as: 
 \begin{align}
@@ -247,7 +245,7 @@ Therefore in this simple model we can estimate of the residual variance componen
 \end{align}
 and the estimate of the family variance ($\hat{\sigma}^2_{f}$) as:
 \begin{align}
- \hat{\sigma}^2_{f} &= \text{MSA}/n_o
+ \hat{\sigma}^2_{f} &= (\text{MSA-MSE})/n_o
 \end{align}
 
 ### Estimation of heritability from variance components
@@ -321,16 +319,18 @@ The __observation vector__ contains elements resulting from measurements, either
 $a$ can occur, which would lead to errors in ranking individuals.
 \end{comment}
 
+The factors (or 'variables') which describe fixed and random effects, may be either continuous or categorical. 
+
 __Continuous variables__ have (theoretically) an infinite range of
-possible values. For example, if the observation is the distance a rock can be thrown, then a continuous factor would be the weight of the rock. If the observation is the rate of growth, then a continuous factor would be the amount of feed eaten.
+possible values (e.g., body weight in pigs or grain yield in wheat).
 
 __Categorical variables__ which fall in distinct categories (e.g., different herds in animals, or different locations in plants). These variables do not describe a gradient of values along a single axis, like height of individuals (values between 0 and "infinity").
 
 In addition to continuous or categorical, it is necessary to distinguish between __fixed__ and __random__ effects in the linear mixed model. 
 
-If the number of levels of a categorical variables is small or limited to a fixed number, and inferences about a factor are going to be limited to that set of levels, and to no others, then that factor is usually fixed. In other words, if a new sample of observations is made (from a new experiment), and the same levels of that factor are in both samples, then the factor is usually fixed. Continuous variables are usually fixed too (but not always).
+__Fixed effect:__ If the number of levels of a categorical variables is small or limited to a fixed number, and inferences about a factor are going to be limited to that set of levels, and to no others, then that factor is usually fixed. In other words, if a new sample of observations is made (from a new experiment), and the same levels of that factor are in both samples, then the factor is usually fixed. Continuous variables are usually fixed too (but not always).
 
-If the number of levels of a categorical variable is large, then that factor may be random. If the inferences about a factor are going to be made to an entire population of conceptual levels, and if the levels of a factor are a sample from an infinitely large population, then that factor is usually random. In other words, if a new sample of observations were made (from a new experiment), and the levels are completely different between the two samples, then the factor is usually random.
+__Random effect:__ If the number of levels of a categorical variable is large, then that factor may be random. If the inferences about a factor are going to be made to an entire population of conceptual levels, and if the levels of a factor are a sample from an infinitely large population, then that factor is usually random. In other words, if a new sample of observations were made (from a new experiment), and the levels are completely different between the two samples, then the factor is usually random.
 
 ### Expectation and variance of variables in the linear mixed model:
 In the statistical model (specified above) the random effect ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables which follow a multivariate normal distribution. In general terms the expectations of these random variables are:  
@@ -356,7 +356,7 @@ Estimating heritability using REML (similar to the parent-offspring regression a
 
 In general, the genetic covariance with a selection candidate (breeding individual) depends on the additive genetic relationship with the candidate. Examples of different types of additive genetic relationships can be found in the table below. 
 
-Table 1. The additive genetic relationship ($A_{ij}$) between the various sources (j) and the individual itself, i.e. the candidate to be evaluated, the proband (i).
+The additive genetic relationship ($A_{ij}$) between the various sources (j) and the individual itself, i.e. the candidate to be evaluated, the proband (i) can be seen in the table below.
 
 \begin{center} 
 \begin{tabular}{|c|c|}
