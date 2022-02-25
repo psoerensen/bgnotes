@@ -615,7 +615,7 @@ Collecting terms in \@ref(eq:DecomposeGenotypicValueTwoLoci) as follows
 
 \begin{align}
 \mu &= \mu_A + \mu_B \notag \\
-U   &= BV_A + BV_B \notag \\
+BV   &= BV_A + BV_B \notag \\
 D   &= D_A + D_B \notag \\
 I   &= I_{AB} (\#eq:CollectVariables)
 \end{align}
@@ -623,7 +623,7 @@ I   &= I_{AB} (\#eq:CollectVariables)
 The decomposition shown in \@ref(eq:DecomposeGenotypicValueTwoLoci) and the collection of variables (see \@ref(eq:CollectVariables)) can be generalized to more than two loci. This leads to the following generalized decomposition of the overall total genotypic value $GV$ for the case of multiple loci affecting a certain trait of interest.
 
 \begin{equation}
-V = \mu + U + D + I
+V = \mu + BV + D + I
 (\#eq:AggregateGenotypicValueMultipleLoci)
 \end{equation}
 
