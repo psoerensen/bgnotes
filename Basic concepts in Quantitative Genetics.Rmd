@@ -4,6 +4,7 @@ author: "Guillaume Ramstein & Peter Sørensen"
 date: "`r Sys.Date()`"
 output:
   bookdown::pdf_document2:
+    citation_package: natbib
     number_sections: yes
     includes:
       in_header: preamble.tex
@@ -12,9 +13,8 @@ output:
     includes:
       in_header: mathjax_header.html
   word_document: default
-biblio-style: apalike
+bibliography: [qg2021.bib]
 link-citations: yes
-bibliography: lbgfs2021.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -64,7 +64,7 @@ P = A + D + I + E
 The genotypic effect may also depend on the environment in which they are expressed (e.g., in plants a drought-tolerance gene may have a favorable effect on grain yield under water-limited conditions, but may be useless under irrigation). Therefore we may consider an extended version of the infinitesimal model where the phenotype (P) is the sum of genotypic effects (G), environmental effect (E), and genotype-environment interaction effects (G×E):
 
 \begin{align}
-P = G + E + G\timesE
+P = G + E + G \times E
 \end{align}
 
 In practice, the genotype-environment interaction effect can be important for the phenotype of individuals, but for the sake of simplicity we will ignore them in the remainder of this section. Therefore, hereafter, we will assume that genotypic effects are not impacted by environmental factors.
@@ -474,7 +474,7 @@ When looking at the difference between the genotypic value $GV_{ij}$ and the bre
   \end{align}
 
   \begin{align}
-  GV_{12} - BV{12} &=   d - (q-p)\alpha \notag \\
+  GV_{12} - BV_{12} &=   d - (q-p)\alpha \notag \\
                    &=   d - (q-p)\left[ a + (q-p)d \right] \notag \\
                    &=   \left[(p-q)a + 2pqd\right] + 2pqd \notag \\
                    &=   \mu + D_{12}
@@ -498,7 +498,7 @@ The following table summarizes all genotypic values, all breeding values and the
 \begin{center} 
 \begin{tabular}{|c|c|c|c|}
    \hline
-   Genotyp  &  Genotypic value     &  Breeding Value    &  Dominance Deviation \\
+   Genotype  &  Genotypic value     &  Breeding Value    &  Dominance Deviation \\
    $A_iA_j$ &  $GV_{ij}$            &  $BV_{ij}$         &  $D_{ij}$           \\
    \hline
    $A_1A_1$ &  $a$                 &  $2q\alpha$        &  $-2q^2d$          \\
@@ -594,7 +594,7 @@ When only a single locus is considered, the genotypic values ($GV_{ij}$) can be 
 Let $GV_A$ be the genotypic value of locus $A$ and $GV_B$ denote the genotypic value of a second locus $B$, then the total genotypic value $GV$ attributed to both loci $A$ and $B$ can be written as 
 
 \begin{align}
-V &= V_A + V_B + I_{AB} 
+GV &= GV_A + GV_B + I_{AB} 
 (\#eq:AggregateGenotypicValueTwoLoci)
 \end{align}
 
@@ -605,7 +605,7 @@ Interaction between loci may occur between pairs or between higher numbers of di
 Applying the decomposition of the genotypic values $GV_A$ of locus $A$ and $GV_B$ of locus $B$ as shown in \@ref(eq:SeparationGenoValue) leads to 
 
 \begin{align}
-V &= V_A + V_B + I_{AB} \notag \\
+GV &= GV_A + GV_B + I_{AB} \notag \\
   &= \mu_A + BV_A + D_A + \mu_B + BV_B + D_B + I_{AB}
 (\#eq:DecomposeGenotypicValueTwoLoci)
 \end{align}
@@ -623,7 +623,7 @@ I   &= I_{AB} (\#eq:CollectVariables)
 The decomposition shown in \@ref(eq:DecomposeGenotypicValueTwoLoci) and the collection of variables (see \@ref(eq:CollectVariables)) can be generalized to more than two loci. This leads to the following generalized decomposition of the overall total genotypic value $GV$ for the case of multiple loci affecting a certain trait of interest.
 
 \begin{equation}
-V = \mu + BV + D + I
+GV = \mu + BV + D + I
 (\#eq:AggregateGenotypicValueMultipleLoci)
 \end{equation}
 
