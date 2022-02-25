@@ -29,7 +29,7 @@ This section introduces the basic concepts in quantitative genetics such as:
 
 *	Genetic value and variance for a quantitative trait
 *	Genetic parameters (heritability, genetic variance and correlation)
-*	Difference between genetic values and breeding values
+*	Difference between genotypic values and breeding values
 *	Infinitesimal model
 
 These concepts are relevant for a range of genetic and statistical analyses of complex traits and diseases in animal and plant populations, including:
@@ -45,39 +45,39 @@ In the appendix, further details about the quantative genetic models are present
 
 
 # Quantitative Genetics
-Quantitative genetics, also referred to as the genetics of complex traits, is the study of quantitative traits. Quantitative genetics is based on models in which many genes influence the trait, and in which non-genetic factors may also be important. Quantitative traits such as size, obesity or longevity vary greatly among individuals. Their phenotypes are continuously distributed phenotypes and do not show simple Mendelian inheritance (i.e., their phenotypes are distributed in discrete categories determined by one or a few genes). The quantitative genetics framework can also be used to analyze discrete traits like litter size (which consist of discrete counts like 0, 1, 2, 3, …) or binary traits like survival to adulthood (which consist of 0 or 1, ‘dead’ or ‘alive’, etc.), provided that they have a polygenic basis (i.e., they are determined by many genes). The quantitative genetics approach has diverse applications: it is fundamental to an understanding of variation and covariation among relatives in natural and managed populations; it is also used as basis for selective breeding methods in animal and plant populations  (https://doi.org/10.1098/rstb.2009.0203).
+Quantitative genetics, also referred to as the genetics of complex traits, is the study of quantitative traits. Quantitative genetics is based on models in which many genes influence the trait, and in which non-genetic factors may also be important. Quantitative traits such as size, obesity or longevity vary greatly among individuals. Their phenotypes are continuously distributed phenotypes and do not show simple Mendelian inheritance (i.e., their phenotypes are distributed in discrete categories determined by one or a few genes). The quantitative genetics framework can also be used to analyze discrete traits like litter size (which consists of discrete counts like 0, 1, 2, 3, …) or binary traits like survival to adulthood (which consists of 0 or 1, ‘dead’ or ‘alive’, etc.), provided that they have a polygenic basis (i.e., they are determined by many genes). The quantitative genetics approach has diverse applications: it is fundamental to an understanding of variation and covariation among relatives in natural and managed populations; it is also used as basis for selective breeding methods in animal and plant populations  (https://doi.org/10.1098/rstb.2009.0203).
 
 
 ## Infinitesimal model
-The infinitesimal model, also known as the polygenic model, is a widely used genetic model in quantitative genetics. Originally developed in 1918 by Ronald Fisher, it is based on the idea that variation in a quantitative trait is influenced by an infinitely large number of genes, each of which makes an infinitely small (infinitesimal) contribution to the phenotype, as well as by environmental (non-genetic) factors. In the most basic model the phenotype (P) is the sum of genetic effects (G), and environmental effect (E):
+The infinitesimal model, also known as the polygenic model, is a widely used genetic model in quantitative genetics. Originally developed in 1918 by Ronald Fisher, it is based on the idea that variation in a quantitative trait is influenced by an infinitely large number of genes, each of which makes an infinitely small (infinitesimal) contribution to the phenotype, as well as by environmental (non-genetic) factors. In the most basic model the phenotype (P) is the sum of genetic effects (G), and environmental effects (E):
 
 \begin{align}
 P = G + E
 \end{align}
 
-The genetic effect (G) in the model can be split into additive effects (A), dominance effects (D), and epistatic effects (I) such that the expanded infinitesimal model becomes:
+The genotypic effect (G) in the model can be split into additive effects (A), dominance effects (D), and epistatic effects (I) such that the expanded infinitesimal model becomes:
 
 \begin{align}
 P = A + D + I + E
 \end{align}
 
-The genetic effect may also depend on the environment in which they are expressed (e.g., in plants a drought-tolerance gene may have a favorable effect on grain yield under water-limited conditions, but may be useless under irrigation). Therefore we may consider an extended version of the infinitesimal model where the phenotype (P) is the sum of genetic effects (G), environmental effect (E), and genotype-environment interaction effects (G×E):
+The genotypic effect may also depend on the environment in which they are expressed (e.g., in plants a drought-tolerance gene may have a favorable effect on grain yield under water-limited conditions, but may be useless under irrigation). Therefore we may consider an extended version of the infinitesimal model where the phenotype (P) is the sum of genotypic effects (G), environmental effect (E), and genotype-environment interaction effects (G×E):
 
 \begin{align}
-P = G + E + GxE
+P = G + E + G\timesE
 \end{align}
 
 In practice, the genotype-environment interaction effect can be important for the phenotype of individuals, but for the sake of simplicity we will ignore them in the remainder of this section. Therefore, hereafter, we will assume that genotypic effects are not impacted by environmental factors.
 
-### Genetic effects, genetic values and breeding values
-The genetic effect (G) in the model can include additive effects (A), dominance effects (D), and epistatic effects (I). Additive effects are the summed effects of individual alleles. Dominance effects are interactions between alleles within loci. Epistatic effect are interactions between alleles in different loci and can therefore only occur if two or more loci affect the trait. 
+### Genotypic effects and breeding values
+The genotypic effect (G) in the model can include additive effects (A), dominance effects (D), and epistatic effects (I). Additive effects are the summed effects of individual alleles. Dominance effects are interactions between alleles within loci. Epistatic effect are interactions between alleles in different loci and can therefore only occur if two or more loci affect the trait. 
 
-Consider an individual that is diploid, like most animals and plants like maize, soybean, barley (i.e., they carry two copies of every genes, except in their sexual chromosomes). Assume that one locus in its genome exists under two possible alleles: A1 and A2, with respective allele effects +1 and -1.  How do the individual’s alleles combine into a genotype? They may combine additively, so that the value of a genotype (the combination of two alleles genotype) is simply the sum of allele effects, but this is only a very special case! If genetic effects are entirely additive, then the value of each possible genotype is the sum of their respective allele effects, i.e., -2 if the individual is A2A2, 0 if it is A2A1 (or A1A2), and +2 if it is A1A1. 
+Consider an individual that is diploid, like most animals and plants like maize, soybean, barley (i.e., they carry two copies of every genes, except in their sexual chromosomes). Assume that one locus in its genome exists under two possible alleles: $A_{1}$ and $A_{2}$, with respective allele effects +1 and -1.  How do the individual’s alleles combine into a genotype? They may combine additively, so that the value of a genotype (the combination of two alleles genotype) is simply the sum of allele effects, but this is only a very special case! If genetic effects are entirely additive, then the value of each possible genotype is the sum of their respective allele effects, i.e., -2 if the individual is $A_{2}A_{2}$, 0 if it is $A_{2}A_{1}$ (or $A_{1}A_{2}$), and +2 if it is $A_{1}A_{1}$. 
 
-Generally, the value of each genotype will depend on the combination of alleles within one locus (G = A + D) or across multiple loci (G = A + D + I). For example, in presence of dominance, the value of each possible genotype may be -2 if the individual is A2A2, +1 if it is A2A1 (or A1A2), and +2 if it is A1A1.
+Generally, the value of each genotype will depend on the combination of alleles within one locus (G = A + D) or across multiple loci (G = A + D + I). For example, in presence of dominance, the value of each possible genotype may be -2 if the individual is $A_{2}A_{2}$, +1 if it is $A_{2}A_{1}$ (or $A_{1}A_{2}$), and +2 if it is $A_{1}A_{1}$.
 
 #### Additive Effects
-Additive effects are the summed effects of average allele effects. Quite confusingly, additive effects depend on the population, because average allele effects depend on the frequency of genotypes in the population! For example, assume that genotypes have values -2 (A2A2), +1 (A2A1) and +2 (A1A1). In a population consisting of 25% A2A2, 50% A2A1 and 25% A1A1, you would expect the A1 allele in a A1A2 genotype 2/3 of the time, and you would expect the A1 allele in a A1A1 genotype 1/3 of the time. In another population consisting of 90% A2A2, 18% A2A1 and 1% A1A1, you would expect the A1 allele in a A1A2 genotype about 95% of the time, and in a A1A1 genotype only about 5% of the time. As a result, the effect of the A1 allele, averaged over genotypes, will not be the same, from one population to another.
+Additive effects are the summed effects of average allele effects. Quite confusingly, additive effects depend on the population, because average allele effects depend on the frequency of genotypes in the population! For example, assume that genotypes have values -2 ($A_{2}A_{2}$), +1 ($A_{2}A_{1}$) and +2 ($A_{1}A_{1}$). In a population consisting of 25% $A_{2}A_{2}$, 50% $A_{2}A_{1}$ and 25% $A_{1}A_{1}$, you would expect the $A_{1}$ allele in a $A_{1}A_{2}$ genotype 2/3 of the time, and you would expect the $A_{1}$ allele in a $A_{1}A_{1}$ genotype 1/3 of the time. In another population consisting of 90% $A_{2}A_{2}$, 18% $A_{2}A_{1}$ and 2% $A_{1}A_{1}$, you would expect the $A_{1}$ allele in a $A_{1}A_{2}$ genotype about 95% of the time, and in a $A_{1}A_{1}$ genotype only about 5% of the time. As a result, the effect of the $A_{1}$ allele, averaged over genotypes, will not be the same, from one population to another.
 The concept of additive genetic effects and average allele effects is fundamental to quantitative genetics. However, it is one of is most confusing, precisely because of the dependance of allele effects on genotype frequencies.
 
 #### Dominance Effects
@@ -86,14 +86,14 @@ Dominance genetic effects are the interactions among alleles at a given locus. T
 #### Epistatic Genetic Effects
 Epistatic genetic effects encompass all possible interactions among the loci impacting the trait, whenever there is more than one such loci. This includes all two-way interactions (e.g., interactions between loci A and B, A and C), three-way interactions (e.g., joint interaction among A, B and C), etc. Epistasis can be decomposed, so it includes interactions between additive effects at different loci, interactions between additive effects at one locus with dominance effects at a second locus, and interactions between dominance effects at different loci.
 
-#### Genetic value versus Breeding value       
-For selective breeding purposes additive genetic effects are of primary interest. This is because additive effects are generally the largest of the genetic effects, and the allelic effects are passed directly to offspring while the other genetic effects are not transmitted to the progeny, and are generally smaller in magnitude. The sum of the additive effects of all loci on a quantitative trait is known as the true breeding value.
+#### Genotypic value versus Breeding value       
+For selective breeding purposes additive genetic effects are of primary interest. This is because additive effects generally make most of the genotypic effects, and the allelic effects are passed directly to offspring while the other genetic effects are not transmitted to the progeny, and are generally smaller in magnitude. The sum of the additive effects of all loci on a quantitative trait is known as the true breeding value.
 
 * Breeding value = the value of genes to progeny (additive effects only)
 
-* Genetic value = the value of genes to self (which includes additive, dominance and epistatic effects)
+* Genotypic value = the value of genes to self (which includes additive, dominance and epistatic effects)
 
-The difference between genetic value and breeding value is largely largely dominance deviation. This is because an individual can express dominance deviation (e.g. an A1A2 heterozygote). However, an individual cannot pass on dominance deviation to its progeny as it only transmits one allele (e.g., an A1A2 heterozygote will either transmit a A1 gamete or an A2 gamete to one of its progeny, but not both!)
+The difference between genotypic value and breeding value is largely dominance deviation. This is because an individual can express dominance deviation (e.g. an $A_{1}A_{2}$ heterozygote). However, an individual cannot pass on dominance deviation to its progeny as it only transmits one allele (e.g., an $A_{1}A_{2}$ heterozygote will either transmit a $A_{1}$ gamete or an $A_{2}$ gamete to one of its progeny, but not both!)
 With fully inbred lines, offspring have the same genotype as their parent, and hence the entire parental genotypic value G is passed along. Hence, favorable interactions between alleles  are not lost by randomization under random mating but rather passed along.
 When offspring are generated by crossing (or random mating), each parent contributes a single allele at each locus to its offspring, and hence only passes along a part of its genotypic value. This part is determined by the average effect of the allele. However, any favorable interaction between alleles is not passed along to their offspring.
 
@@ -102,13 +102,13 @@ When offspring are generated by crossing (or random mating), each parent contrib
 Quantitative traits do not behave according to simple Mendelian inheritance laws. More specifically, their inheritance cannot be explained by the genetic segregation of one or a few genes. Even though Mendelian inheritance laws accurately depict the segregation of genotypes in a population, they are not tractable with the large number of genes which typically affect quantitative traits. To better understand the infinitesimal model assume Mendelian inheritance to occur at every locus in the genome. Let’s say there are 30,000 gene loci in the genome. The number of alleles at each locus varies from 2 to 30 or more. If we assume that there are only two alleles (3 possible genotypes) per locus, and gene loci segregate independently, then the number of possible genotypes (considering all loci simultaneously) would be $3^{30000}$ which is large enough to give the illusion of an infinite number of loci. Furthermore each of these loci could contribute additive and dominance effects in addition to interaction effects.
 
 
-#### Distribution of genetic and phenotypic values in single locus model
-First we will consider how to model the genetic basis of a quantitative trait when a single locus affects the trait of interest. We call this a single-locus model. The distribution of the genetic values for a set of individuals will be discrete. The frequency of the genetic values depend on genotype frequencies, which in turn depend on allele frequencies of $A_1$ and $A_2$. The phenotype is however also influenced by the environment. If we assume that the environmental effects are normally distributed (e.g. $\N(0,\sigma^2=1)$) then we can observe that the phenotype distribution is infact normally distributed. 
+#### Distribution of genotypic and phenotypic values in single locus model
+First we will consider how to model the genetic basis of a quantitative trait when a single locus affects the trait of interest. We call this a single-locus model. The distribution of the genotypic values for a set of individuals will be discrete. The frequency of the genotypic values depend on genotype frequencies, which in turn depend on allele frequencies of $A_1$ and $A_2$. The phenotype is however also influenced by the environment. If we assume that the environmental effects are normally distributed (e.g. $\N(0,\sigma^2=1)$) then we can observe that the phenotype distribution is infact normally distributed. 
 
-#### Distribution of genetic and phenotypic values in multiple loci model
+#### Distribution of genotypic and phenotypic values in multiple loci model
 Now we will consider a multiple-locus model. When several loci are causal (i.e., they have an effect on a certain trait), then we talk about a __polygenic model__. Letting the number of causal loci tend to infinity, the resulting model is called an __infinitesimal model__. From a statistical point of view, the breeding values in an infinitesimal model are considered random with a known distribution. Due to the central limit theorem, this distribution tends to a normal distribution, because of the infinitely large number of causal loci. The central limit theorem says that the distribution of any sum of a large number of very small effects converges to a normal distribution. In our case where a given trait of interest is thought to be influenced by a large number of genetic loci each having a small effect, the sum of the breeding values of all loci together can be approximated by a normal distribution. The histograms below show a better approximation to the normal distribution for breeding values (summed allele effects at causal loci), as the number of causal loci increases. In practice, 100 independently segregating causal loci may be large enough, so that the infinitesimal model (and the normal approximation is genomic models) is accurate enough for predictions.
 
-```{r, echo=FALSE, fig.cap="Distribution of genetic and phenotypic values for a quantitative trait influenced by a single locus model (top panel) or multiple loci (bottom panel)"}
+```{r, echo=FALSE, fig.cap="Distribution of genotypic and phenotypic values for a quantitative trait influenced by a single locus model (top panel) or multiple loci (bottom panel)"}
 genotype <- c("A1A1","A1A2","A2A2")
 genotype_effects <- c(-1,0,1)
 names(genotype_effects) <- genotype
@@ -123,11 +123,11 @@ a <- genotype_effects[genotypes]
 e <- rnorm(n)
 y <- a+e
 hist(y, xlab="phenotypic values",main="P")
-hist(a, xlab="genetic values",main="G")
+hist(a, xlab="genotypic values",main="G")
 hist(e, xlab="environmental values",main="E")
 
 m <- 100      # number of causal loci
-a <- rep(0,n) # initial vector of genetic values
+a <- rep(0,n) # initial vector of genotypic values
 for (locus in 1:m) {
 genotypes <- sample(genotype,size=n,prob=genotype_prob, replace=TRUE)
 a <- a + genotype_effects[genotypes]/m
@@ -135,7 +135,7 @@ a <- a + genotype_effects[genotypes]/m
 e <- rnorm(n)
 y <- a+e
 hist(y, xlab="phenotypic values",main="P")
-hist(a, xlab="genetic values",main="G")
+hist(a, xlab="genotypic values",main="G")
 hist(e, xlab="environmental values",main="E")
 ```
 
@@ -187,12 +187,12 @@ h^2 &= V_{A}/V_P  \notag \\
 h^2 &= \sigma^2_{A}/\sigma^2_P
 \end{align}
 
-* The response to artificial or natural selection, the increase (or decrease) of genetic values due to selection of individuals, over generations
+* The response to artificial or natural selection, the increase (or decrease) of genotypic values due to selection of individuals, over generations
 
 In view of the assumed complexity of the underlying gene action, involving many loci with unknown effects and interactions, much quantitative genetic analysis has, unashamedly, been at a level of the ‘black box’.
 
 #### Genetic correlation:
-In a general quantitative genetic model, in which, for each individual, two traits ($P_1$ and $P_2$) are are each defined as the sum of a genetic value ($G_1$ and $G_2$) and a environmental value ($E_1$ and $E_2$): 
+In a general quantitative genetic model, in which, for each individual, two traits ($P_1$ and $P_2$) are are each defined as the sum of a genotypic value ($G_1$ and $G_2$) and a environmental value ($E_1$ and $E_2$): 
 \begin{align}
 P_1 = G_1 + E_1 \\
 P_2 = G_2 + E_2
@@ -203,11 +203,11 @@ The phenotypic correlation ($\rho_{P_{12}}$) between the traits is defined as:
 $$\rho_{P_{12}}=\frac{\sigma_{P_{12}}}{\sqrt{\sigma_{P_{1}}^2 \sigma_{P_{2}}^2}}$$
 
 where $\sigma_{P_{12}}$ is the phenotypic covariance and  $\sigma_{P_{1}}^2$ and $\sigma_{P_{2}}^2$  are the variances of the phenotypic values for the two traits in the population.
-The genetic correlation ($\rho_{G_{12}}$) of the traits is defined as:
+The genotypic correlation ($\rho_{G_{12}}$) of the traits is defined as:
 
 $$\rho_{G_{12}}=\frac{\sigma_{G_{12}}}{\sqrt{\sigma_{G_{1}}^2 \sigma_{G_{2}}^2}}$$
 
-where $\sigma_{G_{12}}$ is the genetic covariance and  $\sigma_{G_{1}}^2$ and $\sigma_{G_{2}}^2$ are the variances of the genetic values for the two traits in the population.
+where $\sigma_{G_{12}}$ is the genotypic covariance and  $\sigma_{G_{1}}^2$ and $\sigma_{G_{2}}^2$ are the variances of the genotypic values for the two traits in the population.
 
 
 
@@ -224,7 +224,7 @@ On the premise that many genes and environmental factors interact to impact the 
 
 
 ## Single locus model for a quantitative trait
-In this section we will be introducing the single locus model for a quantitative trait. Quantitative traits do not take discrete levels, instead they show continuous distributions. Although quantitative trait are most likely influenced by many loci, it helps to first consider the case of only one causal locus, in the __single-locus model__. The single-locus model will provide the theoretical basis for more complex models, namely the infinitesimal model and genomic models (statistical models describing the effects of marker loci). In animal and plant breeding, our goal is to improve the population at the genetic level. The term improvement implies the need for a quantitative assessment of our trait of interest. Furthermore, we must associate the genotypes in the population to the quantitative values of our trait. In the following, population mean, values (phenotypic value P, genetic value G, and breeding value A) and associated variance ($V_{P}$, $V_{G}$ and $V_{A}$) will be defined for a single causal locus.
+In this section we will be introducing the single locus model for a quantitative trait. Quantitative traits do not take discrete levels, instead they show continuous distributions. Although quantitative trait are most likely influenced by many loci, it helps to first consider the case of only one causal locus, in the __single-locus model__. The single-locus model will provide the theoretical basis for more complex models, namely the infinitesimal model and genomic models (statistical models describing the effects of marker loci). In animal and plant breeding, our goal is to improve the population at the genetic level. The term improvement implies the need for a quantitative assessment of our trait of interest. Furthermore, we must associate the genotypes in the population to the quantitative values of our trait. In the following, population mean, values (phenotypic value P, genotypic value G, and breeding value A) and associated variance ($V_{P}$, $V_{G}$ and $V_{A}$) will be defined for a single causal locus.
 
 
 ### Genotypic Values {#geno-value}
@@ -300,7 +300,7 @@ $f(A_1) = 1$ &  $f(A_1A_1) = p$   &  $f(A_1A_2) = q$\\
 
 \vspace{5ex}
 
-Because parent $S$ has genotype $A_1A_1$, the frequency $f(A_1)$ of a $A_1$ allele coming from $S$ is $1$ and the frequency $f(A_2)$ of a $A_2$ allele is 0. The expected genetic value ($\mu_{11}$) of the offspring of individual $S$ can be computed as
+Because parent $S$ has genotype $A_1A_1$, the frequency $f(A_1)$ of a $A_1$ allele coming from $S$ is $1$ and the frequency $f(A_2)$ of a $A_2$ allele is 0. The expected genotypic value ($\mu_{11}$) of the offspring of individual $S$ can be computed as
 
 \begin{equation}
 \mu_{11} = p*a + q*d
@@ -344,7 +344,7 @@ $f(A_2) = 1$ &  $f(A_1A_2) = p$   &  $f(A_2A_2) = q$\\
 
 \vspace{5ex}
 
-The expected genetic value ($\mu_{22}$) of the offspring of individual $S$ can be computed as
+The expected genotypic value ($\mu_{22}$) of the offspring of individual $S$ can be computed as
 
 \begin{equation}
 \mu_{22} = pd - qa
@@ -441,7 +441,7 @@ knitr::include_graphics(path = "odg/genome-editing-allele-substitution.png")
 Due to the application of genome editing at locus $A$ of individual $i$ the breeding value changed. Before the genome editing procedure it was $BV_{22}$ and after genome editing the breeding value of individual $i$ is $BV_{12}$. So the effect of replacing a $A_2$ allele by a $A_1$ allele on the breeding value corresponds to the difference $BV_{12} - BV_{22}$. The computation of this difference between the breeding value $BV_{12}$ and $BV_{22}$ is:
 
 \begin{align}
-    BV{12} - BV_{22} &=   (q-p)\alpha - \left( -2p\alpha \right)  \notag \\
+    BV_{12} - BV_{22} &=   (q-p)\alpha - \left( -2p\alpha \right)  \notag \\
                       &=   (q-p)\alpha + 2p\alpha \notag \\
                       &=   (q-p+2p)\alpha \notag \\
                       &=   (q+p)\alpha \notag \\
@@ -452,9 +452,9 @@ Due to the application of genome editing at locus $A$ of individual $i$ the bree
 The analogous computation can be done by comparing the breeding values $BV_{11}$ and $BV_{12}$.
 
 \begin{align}
-    BV_{11} - BV_{12} & = & 2q\alpha - (q-p)\alpha \notag \\
-                      & = & \left(2q - (q-p)\right)\alpha \notag\\
-                      & = & \alpha 
+    BV_{11} - BV_{12} & =   2q\alpha - (q-p)\alpha \notag \\
+                      & =   \left(2q - (q-p)\right)\alpha \notag\\
+                      & =   \alpha 
   (\#eq:AdditiveBv2)
 \end{align}
 
@@ -617,7 +617,7 @@ Collecting terms in \@ref(eq:DecomposeGenotypicValueTwoLoci) as follows
 \mu &= \mu_A + \mu_B \notag \\
 U   &= BV_A + BV_B \notag \\
 D   &= D_A + D_B \notag \\
-I   &= I{AB} (\#eq:CollectVariables)
+I   &= I_{AB} (\#eq:CollectVariables)
 \end{align}
 
 The decomposition shown in \@ref(eq:DecomposeGenotypicValueTwoLoci) and the collection of variables (see \@ref(eq:CollectVariables)) can be generalized to more than two loci. This leads to the following generalized decomposition of the overall total genotypic value $GV$ for the case of multiple loci affecting a certain trait of interest.
@@ -635,4 +635,4 @@ On the other hand, the dominance deviation measures the effect of a certain geno
 ### Interaction Variance {#interaction-variance}
 If genotypes at different loci show epistatic interaction effects as described in section \@ref(epistatic-interaction), the interactions give rise to an additional variance component called $V_I$, which is the variance of interaction deviations. This new variance component $V_I$ can be further decomposed into sub-components. The first level of sub-components is according to the number of loci that are considered. Two-way interactions involve two loci, three-way interactions consider three loci and in general $n$-way interactions arise from $n$ d0ifferent loci. Epistatic interaction can be further decomposed according to whether they involve additive effects, dominance deviations or both, across loci. 
 
-In general, interaction effects explain only a very small amount of the overall genetic variation. As already mentioned in section \@ref(#epistatic-interaction) for animal and plant breeding, we are mostly interested in the additive effects (the breeding values). This is also true when looking at the variance components. Hence dominance variance and epistatic deviations are not used very often in practical breeding application. 
+In general, interaction effects explain only a very small amount of the overall genotypic variation. As already mentioned in section \@ref(epistatic-interaction) for animal and plant breeding, we are mostly interested in the additive effects (the breeding values). This is also true when looking at the variance components. Hence dominance variance and epistatic deviations are not used very often in practical breeding application. 
