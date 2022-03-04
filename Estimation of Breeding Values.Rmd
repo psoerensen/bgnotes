@@ -13,7 +13,7 @@ output:
     includes:
       in_header: mathjax_header.html
   word_document: default
-bibliography: lbgfs2021.bib
+bibliography: [qg2021.bib]
 link-citations: yes
 ---
 
@@ -49,9 +49,7 @@ The true breeding value (TBV) for an individual cannot be observed. It is only p
 
 
 # Basic principles for breeding value estimation
-Breeding values are estimated using information on phenotypes and genetic relationships for individuals in a breeding population. As introduced previously the phenotype for a quantitative trait is the sum of both genetic and environmental factors. In general the amount of information provided by the phenotype about the breeding value is determined by the narrow sense heritability ($h^2$), which measures the proportion of additive genetic variance contained in the total phenotypic variance). Furthermore phenotypes collected from close relatives provide more information about the breeding value of an individual. In this section we will illustrate these principles using phenotypic data and sources and genetic relationships used for for estimating breeding values. We will now try to derive a general approach for predicting breeding values for 
-any situation. Even though the procedure is general we will use a simple 
-example to describe it. 
+Breeding values are estimated using information on phenotypes and genetic relationships for individuals in a breeding population. As introduced previously the phenotype for a quantitative trait is the sum of both genetic and environmental factors. In general the amount of information provided by the phenotype about the breeding value is determined by the narrow sense heritability ($h^2$), which measures the proportion of additive genetic variance contained in the total phenotypic variance). Furthermore phenotypes collected from close relatives provide more information about the breeding value of an individual. In this section we will illustrate these principles using phenotypic data and genetic relationships used for for estimating breeding values. We will now try to derive a general approach for predicting breeding values for any situation. Even though the procedure is general we will use a simple example to describe it. 
 
 ## Genetic model
 
@@ -125,14 +123,6 @@ Because we have already specified that $E(\hat{a})=0$, it follows that $E(\hat{a
 
 \end{comment}
 
-The variance $Var(\hat{a})$ is the same as the covariance $Cov(a,\hat{a})$ between the true
-and predicted breeding value:
-\begin{align}
-Var(\hat{a}) &= Cov(a,y)[Var(y)]^{-1}Cov(a,y)\notag \\
-Cov(a,\hat{a}) &= Cov(a,y)[Var(y)]^{-1}Cov(a,y)\notag \\
-           &= Var(\hat{a})\notag 
-\end{align}
-
 
 \begin{comment}
 ### Variance of estimated breeding value ($\hat{a}$) {-}
@@ -152,19 +142,54 @@ Cov(a,\hat{a}) &= Cov(a,Cov(a,y)[Var(y)]^{-1}(y-E(y))) \notag \\
 ### Conditional density of estimated breeding values ($\hat{a}$) {-}
 
 In some cases, e.g., for specifying confidence intervals of true breeding values,
-it might be interesting to have a look at the conditional density $f(u|\hat{a})$. This
-density is a multivariate normal density with expected value $E(u|\hat{a})$ and variance
-$Var(u|\hat{a})$. These values can be computed based on the theory of conditional
+it might be interesting to have a look at the conditional density $f(a|\hat{a})$. This
+density is a multivariate normal density with expected value $E(a|\hat{a})$ and variance
+$Var(a|\hat{a})$. These values can be computed based on the theory of conditional
 multivariate normal densities.
 \begin{align}
-E(a|\hat{a}) &= E(u) + Cov(a,\hat{a})[Var(\hat{a})]^{-1}(\hat{a}-E(\hat{a})) \notag \\
+E(a|\hat{a}) &= E(a) + Cov(a,\hat{a})[Var(\hat{a})]^{-1}(\hat{a}-E(\hat{a})) \notag \\
            &= 0 + Var(\hat{a})[Var(\hat{a})]^{-1}(\hat{a}-0) \notag \\
            &= \hat{a} \notag \\
-Var(a|\hat{a}) &= Var(u) - Cov(a,\hat{a})[Var(\hat{a})]^{-1}Cov(a,\hat{a}) \notag \\
-Var(a|\hat{a}) &= Var(u) (1- Cov(a,\hat{a})^2Var(a)^{-1}Var(\hat{a})^{-1}) \notag \\
-Var(a|\hat{a}) &= Var(u) (1-r_{a,\hat{a}}^2) \notag
+Var(a|\hat{a}) &= Var(a) - Cov(a,\hat{a})[Var(\hat{a})]^{-1}Cov(a,\hat{a}) \notag \\
+Var(a|\hat{a}) &= Var(a) (1- Cov(a,\hat{a})^2Var(a)^{-1}Var(\hat{a})^{-1}) \notag \\
+Var(a|\hat{a}) &= Var(a) (1-r_{a,\hat{a}}^2) \notag
 \end{align}
 \end{comment}
+
+
+## Accuracy of breeding value estimates ($r_{a,\hat{a}}$)
+
+Estimated breeding values ($\hat{a}$) are estimates of the true breeding values ($a$), which cannot be observed directly. It is important to determine how well we have estimated the breeding value in relation to the true breeding value. This can be done using accuracy or reliability. 
+
+Accuracy is the correlation between the estimated and the true breeding value: 
+\begin{align}
+			r_{a,\hat{a}} &= \frac{\Cov(a,\hat{a})}{\sqrt{\Var(a) \Var(\hat{a})}}
+\end{align}
+
+A high correlation means that the estimated breeding value is very accurate. Reliability is the squared correlation, $r_{a,\hat{a}}^2$, between the estimated breeding value and the true breeding value. 
+
+To be able to compute the accuray or reliability of the estimated breeding value ($E(a|y)$) we need to determine the values for the terms, $Cov(a,\hat{a})$, $Var(\hat{a})$, and $Var(a)$ in the expression above. 
+It can be shown that the variance of the estimated breeding value is the same as the covariance between the true and estimated breeding value (i.e. $Var(\hat{a}) =Cov(a,\hat{a})$). Therefore the reliability can be expressed as:
+
+\begin{align}
+			r_{a,\hat{a}}^2 &= \frac{\Var(\hat{a})}{\Var(a)}
+\end{align}
+
+\begin{comment}
+\begin{align}
+Var(\hat{a}) &= Cov(a,y)[Var(y)]^{-1}Cov(a,y)\notag \\
+Cov(a,\hat{a}) &= Cov(a,y)[Var(y)]^{-1}Cov(a,y)\notag \\
+           &= Var(\hat{a})\notag 
+\end{align}
+\end{comment}
+
+Therefore reliability ($r_{a,\hat{a}}^2$) can be interpreted as the part of the genetic variation that we have explained by the estimated breeding values whereas the remainder (1-$r_{a,\hat{a}}^2$) is the uncertainty. 
+
+The variance of the estimated breeding value ($\hat{a}$) can be computed as:
+\begin{align}
+			\sigma^2_{\hat{a}}=r_{a,\hat{a}}^2\sigma^2_{a} \notag
+\end{align}
+and from this expression it is clear that when the reliability increases, the variation in $\hat{a}$ increases (breeding value estimates are more variable over values of $y$), and the estimation becomes more precise (the residual variability of a over values of $y$, the part left to uncertainty, has decreased). If the reliability is 0, then we know nothing and the variance of $\hat{a}$ is 0. If the reliability is 1, then we know everything and the variance of $\hat{a}$ is $\sigma^2_{\hat{a}}=\sigma^2_{a}$ and the error variance (uncertainty) is 0. Reliability of the breeding value ($r_{a,\hat{a}}^2$) is important because it determines how well we can predict an individual's genetic value. It can be used to control the risk of a breeding plan: for example, low $r_{a,\hat{a}}^2$ leads to greater "risk" for both lower and higher true breeding value and we might consider more phenotypic records, in order to make better-informed selection decisions. Lastly reliability is one of the crucial factors that determines the genetic progress (e.g., breeders equation which will be introduced later in the course).
 
 ## Prediction error variance (PEV) of estimated breeding values
 Because every prediction is associated with an error, the same is true for the estimated breeding values $\hat{a}$. The variability of the error for the predicted breeding values are quantified by the prediction error variance (PEV). This is computed as:
@@ -188,23 +213,6 @@ SEP(\hat{a}) &= \sqrt{Var(a-\hat{a})} \notag \\
                &= \sigma_a \sqrt{(1 - r_{a,\hat{a}}^2))} \notag
 \end{align}
 
-## Accuracy of breeding value estimates ($r_{a,\hat{a}}$)
-
-Estimated breeding values ($\hat{a}$) are estimates of the true breeding values ($a$), which cannot be observed directly. It is important to determine how well we have estimated the breeding value in relation to the true breeding value. This can be done using accuracy or reliability. Accuracy is the correlation between the estimated and the true breeding value: 
-\begin{align}
-			r_{a,\hat{a}} &= \frac{\Cov(a,\hat{a})}{\sqrt{\Var(a) \Var(\hat{a})}}
-\end{align}
-Reliability is the squared correlation, $r_{a,\hat{a}}^2$, between the estimated breeding value and the true breeding value. To be able to compute the accuray or reliability of the estimated breeding value ($E(a|y)$) we need to determine the values for the terms, $Cov(a,\hat{a})$, $Var(\hat{a})$, and $Var(a)$ in the expression above.
-
-A high correlation means that the estimated breeding value is very accurate.
-Reliability ($r_{a,\hat{a}}^2$) can be interpreted as the part of the genetic variation that we have explained by the estimated breeding values whereas the remainder (1-$r_{a,\hat{a}}^2$) is the uncertainty. 
-
-The variance of the estimated breeding value ($\hat{a}$) can be computed as:
-\begin{align}
-			\sigma^2_{\hat{a}}=r_{a,\hat{a}}^2\sigma^2_{a} \notag
-\end{align}
-and from this expression it is clear that when the reliability increases, the variation in $\hat{a}$ increases (breeding value estimates are more variable over values of $y$), and the estimation becomes more precise (the residual variability of a over values of $y$, the part left to uncertainty, has decreased). If the reliability is 0, then we know nothing and the variance of $\hat{a}$ is 0. If the reliability is 1, then we know everything and the variance of $\hat{a}$ is $\sigma^2_{\hat{a}}=\sigma^2_{a}$ and the error variance (uncertainty) is 0. Reliability of the breeding value ($r_{a,\hat{a}}^2$) is important because it determines how well we can predict an individual's genetic value. It can be used to control the risk of a breeding plan: for example, low $r_{a,\hat{a}}^2$ leads to greater "risk" for both lower and higher true breeding value and we might consider more phenotypic records, in order to make better-informed selection decisions. Lastly reliability is one of the crucial factors that determines the genetic progress (see breeders equation).
-
 # Phenotypic data and genetic relationships are used to estimate breeding values
 We will illustrate the basic principles of breeding value estimation using some simple examples where the trait has been measured on the individuals themselves or close relatives. 
 
@@ -215,6 +223,8 @@ E(a|y) &= E(a) + Cov(a,y)[Var(y)]^{-1}(y-E(y)) \notag \\
 E(a|y) &= 0 + \sigma^2_{a}[\sigma^2_{a} + \sigma^2_{e}]^{-1}(y- \mu) \notag \\
 E(a|y) &= h^2(y-\mu) \notag
 \end{align}
+
+Thus the estimated breeding value using own phenotypic record can be computed based on an estimate of the trait heritability ($h^2$) and the observed phenotype deviation ($y-\mu$). Use of records on the candidate itself is called performance testing. For performance testing to be efficient, the heritability should be at least moderately high (this can be derived from this equation: $E(a|y) = h^2(y-\mu)$).
 
 The expression for expected value terms ($E(a)$ and $E(y)$) in the equation above are based on rules for expected value of a sum of (normally distributed) random variables:
 \begin{align}
@@ -239,7 +249,6 @@ Cov(a,y) &= Cov(a,a+e) \notag \\
          &= \sigma^2_{a}  \notag
 \end{align}
 
-Thus the estimated breeding value using own phenotypic record can be computed based on an estimate of the trait heritability ($h^2$) and the observed phenotype deviation ($y-\mu$). Use of records on the candidate itself is called performance testing. For performance testing to be efficient, the heritability should be at least moderately high (this can be derived from this equation: $E(a|y) = h^2(y-\mu)$).
 
 The accuracy for the breeding based on own phenotype (y) can be calculated as:
 \begin{align}
@@ -272,11 +281,11 @@ The covariance between the true (a) and estimated breeding value, ($Cov(a,\hat{a
 \end{align}
 \end{comment}
 
+Estimation of breeding value based on own phenotype is only possible when the trait in question can be measured (directly or indirectly) on the breeding individual, i.e., the candidate to be evaluated for selection. Sometimes this is not possible, e.g., traits that are sex-limited (milk production, female fertility, etc.) cannot be measured in male individuals. Traits like carcass composition and meat quality cannot be measured on live animals, unless an indirect method can be used (e.g. ultra-sonic measurement of carcass composition). In this situation it might be possible to use phenotypic information on relatives. 
 
 ## Estimation of breeding value and accuracy based on phenotypes of close relatives:
 
-In practice we often use phenotypic records from close relatives, such as progenies, half-sibs, full-sibs, parents and grandparents. Estimation of breeding value based on own phenotype is only possible when the trait in question can be measured (directly or indirectly) on the breeding individual, i.e., the candidate to be evaluated for selection. Sometimes this is not possible, e.g., traits that are sex-limited (milk production, female fertility, etc.) cannot be measured in male individuals. Traits like carcass composition and meat quality cannot be measured on live animals, unless an indirect method can be used (e.g. ultra-sonic measurement of carcass composition). 
-In this situation it might be possible to use phenotypic information on relatives. Phenotypes collected on close relatives (as compared to distant relatives) provide more information about the breeding value of an individual (as close relatives share more DNA in common). In the following we will provide a general formula for estimating breeding values and their accuracies using different types of phenotypic information. 
+In practice we often use phenotypic records from close relatives, such as progenies, half-sibs, full-sibs, parents and grandparents. Phenotypes collected on close relatives (as compared to distant relatives) provide more information about the breeding value of an individual (as close relatives share more DNA in common). In the following we will provide a general formula for estimating breeding values and their accuracies using phenotypic information on different types of relatives. 
 
 #### General formula for estimating breeding values using different sources of information: {-}
 \begin{align}
@@ -306,6 +315,7 @@ Thus reliability depends on the same factors as the estimated breeding value exc
 
 ## Genetic relationship used for estimating breeding value
 Related individuals share genes and thus resemble each other (have correlated phenotypes, to an extent that depends on additive genetic relationships). Consider a simple parent-offspring example. The offspring get half of the genes from each parent and therefore the breeding value for the offspring is the average of the parents' breeding values plus the Mendelian deviation (the part of the breeding value that is due to random segregation of the genes from each parent):
+
 \begin{align}
 		a_{\text{offspring}}=\frac{1}{2}a_{\text{father}}+\frac{1}{2}a_{\text{mother}}+a_{\text{mendelian}} \notag 	
 \end{align}
@@ -313,11 +323,7 @@ Related individuals share genes and thus resemble each other (have correlated ph
 
 The term $a_{mendelian}$ is necessary, because two fullsibs $i$ and $j$ both having parents $father$ and $mother$ receive different random samples of the set of parental alleles. Hence the breeding values $a_i$ and $a_j$ of fullsibs $i$ and $j$ are not going to be the same. The Mendelian deviation reflects that random contribution of (Mendelian) segregation to breeding values of individuals.  
 
-In this equation the $\frac{1}{2}$ refers to the additive genetic relationship which in this example indicates that the offspring receives half of its genes from its parent. 
-
-In general the weight given to a specific source of information depends on the additive genetic relationship with the candidate. Examples of different types of additive genetic relationships can be found in the table below. 
-
-Table 1. The additive genetic relationship ($A_{ij}$) between the various sources (j) and the individual itself, i.e. the candidate to be evaluated, the proband (i).
+In this equation the $\frac{1}{2}$ refers to the additive genetic relationship which in this example indicates that the offspring receives half of its genes from its parent. In general the weight given to a specific source of information depends on the additive genetic relationship with the candidate. Examples of different types of additive genetic relationships ($A_{ij}$) between the various sources (j) and the individual itself, i.e. the candidate to be evaluated (i), can be seen in the table below.
 
 \begin{center} 
 \begin{tabular}{|c|c|}
@@ -334,9 +340,9 @@ Table 1. The additive genetic relationship ($A_{ij}$) between the various source
   \hline
   Grandparent  &  0.25 \\
   \hline
-  Halfsib  &  0.25 \\
+  Half-sib  &  0.25 \\
   \hline
-  Fullsib  &  0.5 \\
+  Full-sib  &  0.5 \\
   \hline
   Cousin  &  0.0625 \\
   \hline
@@ -346,7 +352,6 @@ Table 1. The additive genetic relationship ($A_{ij}$) between the various source
   \hline
 \end{tabular}
 \end{center}
-
 
 
 ## Estimation of breeding values using phenotypic information from multiple sources 
@@ -404,29 +409,29 @@ Where $b_i$ are optimal weights and $p_i$ are sources of information (eg own phe
 
 The optimal weights, b, are determined using calculation rules for random variables and matrix algebra:
 \begin{align}
-		b &= [Var(P)]^{-1}cov(a,P) \notag \\
+		b &= [Var(P)]^{-1}Cov(a,P) \notag \\
 		b &= V^{-1}G \notag
 \end{align}
 
 where $V$ is a matrix of (co)variances between the different phenotype sources 
 \begin{align}
 		V &= \begin{bmatrix}
-  Var(p_1) & cov(p_1,p_2)\\
-  cov(p_2,p_1) & Var(p_2)
+  Var(p_1) & Cov(p_1,p_2)\\
+  Cov(p_2,p_1) & Var(p_2)
   \end{bmatrix} \notag \\
 \end{align}
 
 and $G$ is a matrix of (co)variances between the different phenotype sources 
 \begin{align}
 		G &= \begin{bmatrix}
-  cov(a,p_1) \\
-  cov(a,p_2)
+  Cov(a,p_1) \\
+  Cov(a,p_2)
   \end{bmatrix} \notag
 \end{align}
 
-the covariance between the source of information and the true breeding value:$cov(a,p_i)$ 
-the variance of the individual information sources; $var(p_i)$
-the covariance between the different sources of information:$cov(p_i,p_j)$
+the covariance between the source of information and the true breeding value:$Cov(a,p_i)$ 
+the variance of the individual information sources; $Var(p_i)$
+the covariance between the different sources of information:$Cov(p_i,p_j)$
 
 Two variants of selection index.Index that combines information from different sources about the same trait the weights ($b_i$) are determined by genetic parameters ($h^2$), number of observation (n) and genetic relationship ($a$). Index that combines information from different traits the weights  ($b_i$) may also bring information about different traits in the breeding goal.
 Describe accuracy of selection index method
@@ -460,11 +465,11 @@ that are included in the index (I) must be the adjusted values (expressed as dev
 
 # BLUP a general approach for estimation of breeding values
 
-Breeding value estimation in animal and plant breeding programmes are nowadays based on the BLUP (Best Linear Unbiased Prediction) method. The estimation of breeding values based on multiple sources of informations must correct for the redundancy between them (e.g., the redundant information provided by parents and grandparents). Moreover, they need to be adjusted for average effects in the populations, "fixed effects". So far we have referred to that fixed effect as the population mean and we have assumed this asjustment $\mu$ to be known. Indeed, we defined the true breeding value $a$ and the non-identifiable environmental effects $e$ as deviations from a common mean, the average effect of all fixed genetic and environmental factors captured by the population mean $\mu$. But this is only true in a single idealized population where all selection candidates are kept in the same environment in which they deliver their performances at the same time. In practice the phenotypic records often need to be adjusted for systematic (fixed) environmental effects, such as age, parity, litter size, days open, sex, herd, year, season, management, etc. Several of those effects fluctuate very little over time, so accurate estimates of their effect may be obtained from previous (“historical”) sets of data. Effects of factors like herd, year, season, and management fluctuate more and are therefore best estimated directly from the data to be used in the genetic evaluations.
+Breeding value estimation in animal and plant breeding programmes are nowadays based on the BLUP (Best Linear Unbiased Prediction) method. The estimation of breeding values based on multiple sources of informations must correct for the redundancy between them (e.g., the redundant information provided by parents and grandparents). Moreover, they need to be adjusted for average effects in the populations, "fixed effects". So far we have referred to that fixed effect as the population mean and we have assumed this adjustment $\mu$ to be known. Indeed, we defined the true breeding value $a$ and the non-identifiable environmental effects $e$ as deviations from a common mean, the average effect of all fixed genetic and environmental factors captured by the population mean $\mu$. But this is only true in a single idealized population where all selection candidates are kept in the same environment in which they deliver their performances at the same time. In practice the phenotypic records often need to be adjusted for systematic (fixed) environmental effects, such as age, parity, litter size, days open, sex, herd, year, season, management, etc. Several of those effects fluctuate very little over time, so accurate estimates of their effect may be obtained from previous (“historical”) sets of data. Effects of factors like herd, year, season, and management fluctuate more and are therefore best estimated directly from the data to be used in the genetic evaluations.
 
 Compared to the idealized cases described in the previous section, a practical breeding scenario poses two problems: accounting for heteregeneous sources of genetic information (different types of relatives); and adjusting for fixed effects in the breeding population(s) (fixed environmental or genetic effects). The BLUP solution to these problems was presented by Charles R. Henderson in several publications (e.g. Henderson1973a) and Henderson1975). The key idea behind the solution is to estimate the identifiable environmental factors as fixed effects and to predict the breeding values as random effects simultaneously in a linear mixed model. Here, mixed refers to the presence of two types of effects: fixed effects (identifiable effects from environmental or genetic factors) and random effects (non-identifiiable effects from segregating genetic factors and fluctuating environmental conditions). The methodology developed by Henderson is called __BLUP__ and the properties of this methodology are directly incorporated into its name: 
 
-* __B__ stands for __best__ which means that the correlation between the true ($a$) and the predicted breeding value ($\hat{a}$) is maximal or the prediction error variance ($var(a - \hat{a})$) is minimal.
+* __B__ stands for __best__ which means that the correlation between the true ($a$) and the predicted breeding value ($\hat{a}$) is maximal or the prediction error variance ($Var(a - \hat{a})$) is minimal.
 * __L__ stands for __linear__ which means the predicted breeding values are linear functions of the observations ($y$)
 * __U__ stands for __unbiased__ which means that the expected values of the predicted breeding values are equal to the true breeding values
 * __P__ stands for __prediction__ 
@@ -522,7 +527,10 @@ We assume the phenotypic variance ($\sigma_p^2$) to be `r n_var_p` and the herit
 
 
 #### Fixed Versus Random Effects {#fixedversusrandomeffects}
-Unfortunately, there is no unique and generally accepted definition of which effects should be fixed and which should be random. There are generally accepted guidelines of how to classify effects as fixed or random. 
+Unfortunately, there is no unique and generally accepted definition of which effects should be fixed and which should be random. There are generally accepted guidelines of how to classify effects as fixed or random. Certain factors such as herd, sex, breed or feeding regimes can be classified unambiguously as fixed effects. On the other hand, breeding values are always treated as random effects. Breeding values have an expected value (of $0$) and have a certain variance (the additive genetic variance, to be estimated). They must therefore be modeled as random effects and these properties must be integrated into the linear mixed model. Furthermore, each individual has a different realization of a breeding value. Exceptions are mono-clonal twins and clones (e.g., vegetatively reproduced plants like potato or tree species).
+
+
+
 \begin{comment}
 
 Table \@ref(tab:fixedversusrandom) lists a few criteria that might be helpful.
@@ -554,73 +562,72 @@ knitr::kable(tbl_fixed_versus_random,
 \normalsize
 \end{comment}
 
-Certain factors such as herd, sex, breed or feeding regimes can be classified unambiguously as fixed effects. On the other hand, breeding values are always treated as random effects. Breeding values have an expected value (of $0$) and have a certain variance (the additive genetic variance, to be estimated). They must therefore be modeled as random effects and these properties must be integrated into the linear mixed model. Furthermore, each individual has a different realization of a breeding value. Exceptions are mono-clonal twins and clones (e.g., vegetatively reproduced plants like potato or tree species).
 
 
 #### Model Specification {#lmemodelspecification}
 In a linear mixed effects model a single observation $y_{ijk}$ is decomposed according to equation \@ref(eq:linearmixedeffectmodelsingleobservation)
 
 \begin{equation}
-y_{ijk} = \beta_i + a_j + e_{ijk}
+y_{ijk} = b_i + a_j + e_{ijk}
 (\#eq:linearmixedeffectmodelsingleobservation)
 \end{equation}
 
-where $\beta_i$ is the fixed effect of class i  (specific herd, population, location, etc.)stands for the $i-^{th}$ level of a fixed effect, $a_j$ is the $j-{th}$ realization of the random effect $u$ and $e_{ijk}$  is the residual effect of the $k-^{th}$ observation}.  To include all observations of a data set, it is helpful to represent the model in \@ref(eq:linearmixedeffectmodelsingleobservation) by a matrix-vector notation. This is shown in equation \@ref(eq:linearmixedeffectmodelmatrixvector)
+where $b_i$ is the fixed effect of class i  (specific herd, population, location, etc.)stands for the $i-^{th}$ level of a fixed effect, $a_j$ is the $j-{th}$ realization of the random effect $a$ and $e_{ijk}$  is the residual effect of the $k-^{th}$ observation}.  To include all observations of a data set, it is helpful to represent the model in \@ref(eq:linearmixedeffectmodelsingleobservation) by a matrix-vector notation. This is shown in equation \@ref(eq:linearmixedeffectmodelmatrixvector)
 
 \begin{equation}
-y = X\beta + Za + e
+y = Xb + Za + e
 (\#eq:linearmixedeffectmodelmatrixvector)
 \end{equation}
 
 \begin{tabular}{llp{10cm}}
 where  &  &  \\
        &  $y$      &  vector of length $n$ of all observations \\
-       &  $\beta$  &  vector of length $p$ of all fixed effects  \\
+       &  $b$      &  vector of length $p$ of all fixed effects  \\
        &  $X$      &  $n \times p$ design matrix linking observations to fixed effects \\
        &  $a$      &  vector of length $n_a$ of random effects \\
-       &  $Z$      &  $n \times n_u$ design matrix linking observations to random effects \\
+       &  $Z$      &  $n \times n_a$ design matrix linking observations to random effects \\
        &  $e$      &  vector of length $n$ of random residual effects.  
 \end{tabular}
 
 Furthermore, we assume the following expected values and for the variances. As already mentioned the random effects are defined as deviations and hence their expected value is set to zero. 
 
-\begin{equation}
-E(a) = 0 \qquad \text{and} \qquad E(e) = 0
-(\#eq:expectedvaluerandomeffects)
-\end{equation}
+\begin{align}
+E(a) &= 0 \notag \\
+E(e) &= 0 \notag
+\end{align}
 
-From this it follows that $E(y) = X\beta$. The variance-covariance matrices for the random effects are set to 
+From this it follows that $E(y) = Xb$. The variance-covariance matrices for the random effects are set to 
 
-\begin{equation}
-var(u) = G \qquad \text{and} \qquad var(e) = R
-(\#eq:variancerandomeffects)
-\end{equation}
+\begin{align}
+Var(a) &= G \notag \\ 
+Var(e) &= R \notag
+\end{align}
 
-Under the assumption that $cov(a,e^T) = 0$, we can compute $var(y) = Z * var(a) * Z^T + var(e) = ZGZ^T + R = V$. 
+Under the assumption that $Cov(a,e^T) = 0$, we can compute $Var(y) = Z * Var(a) * Z^T + Var(e) = ZGZ^T + R = V$. 
 
-In model \@ref(eq:linearmixedeffectmodelmatrixvector) the vectors $\beta$ and $a$ are unknown. They contain the fixed and random effects which must be estimated (or predicted). The solution of the model \@ref(eq:linearmixedeffectmodelmatrixvector) for the unknowns $\beta$ and $u$ leads to estimates $\hat{\beta}$ for the fixed effects $\beta$ and for predicted random effects $\hat{a}$. 
+In model \@ref(eq:linearmixedeffectmodelmatrixvector) the vectors $b$ and $a$ are unknown. They contain the fixed and random effects which must be estimated (or predicted). The solution of the model \@ref(eq:linearmixedeffectmodelmatrixvector) for the unknowns $b$ and $a$ leads to estimates $\hat{b}$ for the fixed effects $b$ and for predicted random effects $\hat{a}$. 
 
 
 ## Estimating effects in the linear mixed model
-The solutions to the effects $\beta$ and $u$ in the mixed model presented above are derived based on statistical techniques based on linear algebra and multivariate normal theory. The details of these derivation are not important. Therefore, we are presenting here directly the results. For $\hat{a}$, the best linear unbiased prediction (BLUP) is:
+The solutions to the effects $b$ and $a$ in the mixed model presented above are derived based on statistical techniques based on matrix algebra and multivariate normal theory. The details of these derivation are not important. Therefore, we are presenting here directly the results. For $\hat{a}$, the best linear unbiased prediction (BLUP) is:
 
 \begin{equation}
-\hat{u} = GZ^TV^{-1}(y - X\hat{\beta})
+\hat{a} = GZ^TV^{-1}(y - X\hat{b})
 (\#eq:hatublup)
 \end{equation}
 
-We call $\hat{u}$ the best linear unbiased prediction of $u$ or shorter $\hat{u} = BLUP(u)$. For $\hat{\beta}$, we insert the generalized least squares estimator (GLS) which corresponds to 
+We call $\hat{a}$ the best linear unbiased prediction of $a$ or shorter $\hat{a} = BLUP(a)$. For $\hat{b}$, we insert the generalized least squares estimator (GLS) which corresponds to 
 
 \begin{equation}
-\hat{\beta} = (X^T V^{-1} X)^-1 X^T V^{-1} y
+\hat{b} = (X^T V^{-1} X)^{-1} X^T V^{-1} y
 (\#eq:hatbetahatblue)
 \end{equation}
 
-The matrix $(X^T V^{-1} X)^{-1}$ denotes the inverse of the matrix $(X^T V^{-1} X)$.  Analogously to $\hat{u}$, $\hat{\beta}$ is called the best linear unbiased estimator of the fixed effects $\beta$. In short, we can state $\hat{\beta} = BLUE(\beta)$. 
+The matrix $(X^T V^{-1} X)^{-1}$ denotes the inverse of the matrix $(X^T V^{-1} X)$.  Analogously to $\hat{a}$, $\hat{b}$ is called the best linear unbiased estimator of the fixed effects $b$. In short, we can state $\hat{b} = BLUE(b)$. 
 
 
 ## Mixed Model Equations
-The solutions shown in \@ref(eq:hatublup) for $\hat{u}$ and in \@ref(eq:hatbetahatblue) for $\hat{\beta}$ are not suitable for practical purposes. Both solutions contain the inverse $V^{-1}$ of matrix $V$. The matrix $V$ corresponds to the variance-covariance matrix of all observations $y$. The inverse matrix $V^{-1}$ is not easy to compute. Furthermore, procedures to invert general matrices are computationally expensive and are prone to rounding errors. In one of his many papers, Henderson has shown that the results for $\hat{u}$ and $\hat{\beta}$ are the same when solving the following system of equations simultaneously:
+The solutions shown in \@ref(eq:hatublup) for $\hat{a}$ and in \@ref(eq:hatbetahatblue) for $\hat{b}$ are not suitable for practical purposes. Both solutions contain the inverse $V^{-1}$ of matrix $V$. The matrix $V$ corresponds to the variance-covariance matrix of all observations $y$. The inverse matrix $V^{-1}$ is not easy to compute. Furthermore, procedures to invert general matrices are computationally expensive and are prone to rounding errors. In one of his many papers, Henderson has shown that the results for $\hat{a}$ and $\hat{b}$ are the same when solving the following system of equations simultaneously:
 
 \begin{equation}
 \left[
@@ -631,8 +638,8 @@ The solutions shown in \@ref(eq:hatublup) for $\hat{u}$ and in \@ref(eq:hatbetah
 \right]
 \left[
   \begin{array}{c}
-  \hat{\beta} \\
-  \hat{u}
+  \hat{b} \\
+  \hat{a}
   \end{array}
 \right]
 =
@@ -645,12 +652,12 @@ The solutions shown in \@ref(eq:hatublup) for $\hat{u}$ and in \@ref(eq:hatbetah
 (\#eq:mixedmodeleq)
 \end{equation}
 
-The above shown equations are called __mixed model equations__ (MME). They no longer contain the inverse $V^{1}$ and hence these MME are much simpler to solve. Instead, the MME contain the inverses $R^{-1}$ and $G^{-1}$, which are easier to invert: R is often a very simple matrix, and G is usually smaller than (or the same size as) V. As a consequence, whenever we have to estimate breeding values using BLUP we will usually use the mixed model equations shown in \@ref(eq:mixedmodeleq).
+The above shown equations are called __mixed model equations__ (MME). They no longer contain the inverse $V^{-1}$ and hence these MME are much simpler to solve. Instead, the MME contain the inverses $R^{-1}$ and $G^{-1}$, which are easier to invert: R is often a very simple matrix, and G is usually smaller than (or the same size as) V. As a consequence, whenever we have to estimate breeding values using BLUP we will usually use the mixed model equations shown in \@ref(eq:mixedmodeleq).
 
 \begin{comment}
 
 ### Sire Model
-The application of the linear mixed effects model from \@ref(eq:linearmixedeffectmodelmatrixvector) to the numerical example in table \@ref(tab:TableBeefExample). As random effects $u$ we are taking the father $s$ of each animal $i$ with an observation. As fixed effects $\beta$ we are using the herd effect. When fathers are modeled as random effects, then we call this model a __sire model__. Setting up a sire model for the data in table \@ref(tab:TableBeefExample) looks as follows
+The application of the linear mixed effects model from \@ref(eq:linearmixedeffectmodelmatrixvector) to the numerical example in table \@ref(tab:TableBeefExample). As random effects $a$ we are taking the father $s$ of each animal $i$ with an observation. As fixed effects $\beta$ we are using the herd effect. When fathers are modeled as random effects, then we call this model a __sire model__. Setting up a sire model for the data in table \@ref(tab:TableBeefExample) looks as follows
 
 ```{r siremodelbeefexample, echo=FALSE, results='asis'}
 mat_x_sire <- matrix(data = c(1, 0,
@@ -695,17 +702,17 @@ cat("+ \n")
 cat("\\end{equation}\n")
 ```
 
-Besides the equation for the sire model we also have to specify the expected values and the variances of all random components. To be able to distinguish the sire model from the general linear mixed effects model, we usually call the random sire effect $s$ and no longer $u$. The expected values for the random variables were already stated when discussing the general linear mixed effects model in section \@ref(lmemodelspecification). Hence 
+Besides the equation for the sire model we also have to specify the expected values and the variances of all random components. To be able to distinguish the sire model from the general linear mixed effects model, we usually call the random sire effect $s$ and no longer $a$. The expected values for the random variables were already stated when discussing the general linear mixed effects model in section \@ref(lmemodelspecification). Hence 
 
 \begin{equation}
 E(s) = 0 \qquad \text{and} \qquad E(e) = 0 \qquad \rightarrow \qquad E(y) = X\beta
 (\#eq:exvaluerandvarsire)
 \end{equation}
 
-For the variances there are a few simplifications that we can use in our sire model. The covariance between the random effects $s$ and $e$ are assumed to be $0$. The covariances among the single residual effects are also assumed to be $0$. Hence, the variance-covariance matrix of the residual effects are $var(e) = I * \sigma_e^2$. The variance of the sire effects $s$ is 
+For the variances there are a few simplifications that we can use in our sire model. The covariance between the random effects $s$ and $e$ are assumed to be $0$. The covariances among the single residual effects are also assumed to be $0$. Hence, the variance-covariance matrix of the residual effects are $Var(e) = I * \sigma_e^2$. The variance of the sire effects $s$ is 
 
 $$
-var(s) = A_s * \sigma_s^2 = G
+Var(s) = A_s * \sigma_s^2 = G
 $$
 
 where $A_s$ is the additive genetic relationship matrix between the sires. We will be deriving the matrix $A_s$ in a later chapter. Because our sires are not related, we can say that $A_s = I$ and hence
@@ -719,7 +726,7 @@ Now we are ready to set up the mixed model equations from \@ref(eq:mixedmodeleq)
 
 
 ### Animal Model {#animalmodel}
-The mixed model equations are a universal tool to find BLUPs of random effects and BLUEs of fixed effect simultaneously. On the other hand it is not satisfactory that with the sire model only sires obtain predicted breeding values. All information that is known about the mothers was completely ignored when we specified the sire model. A better approach would be to combine all available information from a given population. This can be done by replacing in the sire model the random sire effects by random animals effects. As a result each animal in the dataset receives a random effect which models its breeding value. This type of model is called an __animal model__. Because the animal model has the breeding values of all animals as random effects, they are often referred to with the variable or the vector $a$^[This is not the same as the genotypic value in a single locus model.] and no longer $s$ as in the sire model. The variance-covariance matrix ($var(a)$) between all animal effects is proportional to the additive genetic relationship matrix $A$ among all animals. We will see in a later chapter how to compute the matrix $A$.
+The mixed model equations are a universal tool to find BLUPs of random effects and BLUEs of fixed effect simultaneously. On the other hand it is not satisfactory that with the sire model only sires obtain predicted breeding values. All information that is known about the mothers was completely ignored when we specified the sire model. A better approach would be to combine all available information from a given population. This can be done by replacing in the sire model the random sire effects by random animals effects. As a result each animal in the dataset receives a random effect which models its breeding value. This type of model is called an __animal model__. Because the animal model has the breeding values of all animals as random effects, they are often referred to with the variable or the vector $a$^[This is not the same as the genotypic value in a single locus model.] and no longer $s$ as in the sire model. The variance-covariance matrix ($Var(a)$) between all animal effects is proportional to the additive genetic relationship matrix $A$ among all animals. We will see in a later chapter how to compute the matrix $A$.
 
 \end{comment}
 
@@ -770,7 +777,7 @@ y_{ij} = \mu_i + g_i + e_{ij}
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
-       &  $g_i$     &  sum of all additive ($u$), dominance ($d$) and epistatic effects of the genotype of animal $i$ \\
+       &  $g_i$     &  sum of all additive ($a$), dominance ($d$) and epistatic effects of the genotype of animal $i$ \\
        &  $e_{ij}$  &  random environmental effect associated to observation $j$ of animal $i$
 \end{tabular}
 
@@ -786,7 +793,7 @@ y_{ij} = \mu_i + a_i + e_{ij}^*
 where  &  &  \\
        &  $y_{ij}$  &  $j^{th}$ record of animal $i$ \\
        &  $\mu_i$   &  identifiable fixed environmental effect \\
-       &  $a_i$       &  sum of all additive ($u$) genetic effects of the genotype of animal $i$ \\
+       &  $a_i$       &  sum of all additive ($a$) genetic effects of the genotype of animal $i$ \\
        &  $e_{ij}^*$  &  dominance, epistatic and random environmental effects of the $j^{th}$ record of animal $i$
 \end{tabular}
 
@@ -799,7 +806,7 @@ knitr::include_graphics(path = "odg/basicmodelrearrterm.png")
   
 Equation \@ref(eq:breedvalpredmodifiedmodel) constitutes the linear model that forms the basis for most problems of breeding value prediction in livestock breeding. Usually it is assumed that the phenotypic observations $y_{ij}$ follow a multivariate normal distribution. We have already seen in section \@ref(genetic-models) that the additive genetic effect ($a_i$) is thought to be the sum of a large number of unlinked loci that all contribute a very small amount to the total breeding value. Then by the central limit theorem it follows that $a_i$ converges to a normal distribution. By the same reasoning that the environmental effect $e_{ij}^*$ is composed of very many small contributions, also $e_{ij}^*$ converges to a normal distribution. From distribution theory it is known that the sum of two normally distributed random variables (like $a_i$ and $e_{ij}^*$) plus a fixed term (like $\mu$) is again a random variable that follows a normal distribution. We can conclude that the assumption that all the random effects ($y_{ij}$, $a_i$ and $e_{ij}^*$) in model \@ref(eq:breedvalpredmodifiedmodel) is consistent with distribution theory. Furthermore the central limit theorem implies that in principle the number of breeding values from single loci tends to infinity. That means the total breeding value $a_i$ corresponds to a sum of infinitely many contributions. Based on the fact that in theory $a_i$ is composed of an infinite number of infinitely small components, the model in \@ref(eq:breedvalpredmodifiedmodel) is called the __infinitesimal model__. 
 
-Concerning the variances, it is assumed that $var(y_{ij})$, $var(a_i)$ and $var(e_{ij})$ are all known. Covariances ($cov(a_i, e_{ij})$) between genetic and environmental effects and covariances ($cov(e_{ij}^*, e_{kl}^*)$) between environmental effects of mates $i$ and $k$ are assumed to be zero, respectively. 
+Concerning the variances, it is assumed that $Var(y_{ij})$, $Var(a_i)$ and $Var(e_{ij})$ are all known. Covariances ($Cov(a_i, e_{ij})$) between genetic and environmental effects and covariances ($Cov(e_{ij}^*, e_{kl}^*)$) between environmental effects of mates $i$ and $k$ are assumed to be zero, respectively. 
 
 Also $\mu_i$ which is used to represent the mean performance of animals in the same identifiable environment such as herd or management group or have the same sex or age, is assumed to be known.
 
@@ -839,10 +846,10 @@ knitr::include_graphics(path = "odg/regbreedingvaluesinglerecord.png")
 The plot in Figure \@ref(fig:regbreedingvaluesinglerecord) suggests that we fit a regression of the breeding values onto the phenotypic records. The fitted regression is represented by the red line. Hence as soon as we can draw the regression line, we can predict breeding values based on the phenotypic observations. The predicted breeding value $\hat{a_i}$ for a given $y_i$ corresponds to the value on the red line corresponding to the value of $y_i$. The slope of the regression line corresponds to the regression coefficient $b$. From regression theory, the coefficient $b$ is computed as 
 
 \begin{align}
-b &= \frac{cov(u,y)}{var(y)} \notag \\
-  &= \frac{cov(u,\mu + u + e)}{var(y)}  \notag \\
-  &= \frac{cov(u,u)}{var(y)}  \notag \\
-  &= \frac{var(u)}{var(y)}  \notag \\
+b &= \frac{Cov(a,y)}{Var(y)} \notag \\
+  &= \frac{Cov(a,\mu + a + e)}{Var(y)}  \notag \\
+  &= \frac{Cov(a,a)}{Var(y)}  \notag \\
+  &= \frac{Var(a)}{Var(y)}  \notag \\
   &= h^2
 (\#eq:regcoeffaony)
 \end{align}
@@ -858,7 +865,7 @@ where $h^2$ corresponds to the ratio between the genetic additive and the phenot
 From that it follows that the predicted breeding value for an animal based on a single own performance record corresponds to the observation corrected for the general mean $\mu$ times the heritability. The correlation between the selection criterion, in our case the phenotypic record and the true breeding value is known as the accuracy of the prediction. It provides a means of evaluating the different selection criteria. The higher the correlation between selection criterion and breeding value, the better is the prediction. Sometimes the accuracy of evaluation is reported in terms of reliability ($r^2$) which corresponds to the squared correlation between selection criterion and true breeding value. With a single own performance record per animal, the correlation is 
 
 \begin{align}
-r_{u,y} &= \frac{cov(u, y)}{\sigma_u \ \sigma_y} \notag \\
+r_{a,y} &= \frac{Cov(a, y)}{\sigma_u \ \sigma_y} \notag \\
         &= \frac{\sigma_u^2}{\sigma_u \ \sigma_y} \notag \\
         &= \frac{\sigma_u}{\sigma_y} \notag \\
         &= h
@@ -868,17 +875,17 @@ r_{u,y} &= \frac{cov(u, y)}{\sigma_u \ \sigma_y} \notag \\
 An alternative way to assess the quality of the breeding value prediction is to compute the variance of the predicted breeding values. 
 
 \begin{align}
-var(\hat{a_i}) &= var(by) = var(h^2y) \notag \\
-               &= h^4 var(y) \notag \\
-               &= r_{u,y}^2 h^2 \sigma_y^2 \notag \\
-               &= r_{u,y}^2 \sigma_a^2
+Var(\hat{a_i}) &= Var(by) = Var(h^2y) \notag \\
+               &= h^4 Var(y) \notag \\
+               &= r_{a,y}^2 h^2 \sigma_y^2 \notag \\
+               &= r_{a,y}^2 \sigma_a^2
 (\#eq:varpredictedbreedingvalue)
 \end{align}
 
 Hence the variance of the predicted breeding values corresponds to the product of the reliability times the genetic additive variance. The expected response ($R$) to selection on the basis of one record per animal is 
 
 \begin{equation}
-R = i * r_{u,y}^2 * \sigma_y = i * h^2 * \sigma_y
+R = i * r_{a,y}^2 * \sigma_y = i * h^2 * \sigma_y
 (\#eq:selectionresponseownperformance)
 \end{equation}
 
@@ -886,26 +893,26 @@ where $i$, the selection intensity refers to the superiority of selected individ
 
 
 ### Repeated Records {#repeatedrecords}
-When animals get older, it is likely that we can observe multiple measurements for the same trait. An example is milk yield in dairy cows where a cow might have repeated lactation records. The breeding value of an animal may be predicted based on the mean of the repeated records. With repeated records, an additional resemblance between the records of an animal due to permanent environmental factors occurs. The between-animal variance is partly genetic and partly caused by permanent environmental effects. The within-animal variance is attributed to differences between the successive measurements of the animal arising from temporary environmental variations, i.e., from environmental factors that change over time. The variance of observations ($var(y)$) can therefore be partitioned as 
+When animals get older, it is likely that we can observe multiple measurements for the same trait. An example is milk yield in dairy cows where a cow might have repeated lactation records. The breeding value of an animal may be predicted based on the mean of the repeated records. With repeated records, an additional resemblance between the records of an animal due to permanent environmental factors occurs. The between-animal variance is partly genetic and partly caused by permanent environmental effects. The within-animal variance is attributed to differences between the successive measurements of the animal arising from temporary environmental variations, i.e., from environmental factors that change over time. The variance of observations ($Var(y)$) can therefore be partitioned as 
 
 \begin{equation}
-var(y) = var(u) + var(pe) + var(te)
+Var(y) = Var(a) + Var(pe) + Var(te)
 (\#eq:varrepeatedrecords)
 \end{equation}
 
-where $var(u)$ is the genetic additive variance, $var(pe)$ the variance due to permanent environmental effects and $var(te)$ the variance due to temporary environmental effects. 
+where $Var(a)$ is the genetic additive variance, $Var(pe)$ the variance due to permanent environmental effects and $Var(te)$ the variance due to temporary environmental effects. 
 
 The intra-class correlation $t$ is defined as the ratio of the genetic plus the permanent environmental variance divided by the phenotypic variance.
 
 \begin{equation}
-t = \frac{var(u) + var(pe)}{var(y)}
+t = \frac{Var(a) + Var(pe)}{Var(y)}
 (\#eq:intraclasscorrelation)
 \end{equation}
 
 The term $t$ is also called __repeatability__ and it measures the correlation between the records of an individual. From \@ref(eq:intraclasscorrelation) it follows that 
 
 \begin{equation}
-1-t = \frac{var(te)}{var(y)}
+1-t = \frac{Var(te)}{Var(y)}
 (\#eq:oneminusintraclasscorrelation)
 \end{equation}
 
@@ -928,28 +935,28 @@ In this case, we use the mean ($\tilde{y_i}$) to predict the breeding value ($\h
 where 
 
 \begin{equation}
-b = \frac{cov(u,\tilde{y})}{var(\tilde{y})}
+b = \frac{Cov(a,\tilde{y})}{Var(\tilde{y})}
 (\#eq:regcoeffrepeatedrecords)
 \end{equation}
 
 The single elements are computed as
 
 \begin{equation}
-cov(u,\tilde{y}) = cov(u, \mu + u + pe + {1\over n} \sum_{k=1}^n te_k) = var(u) = \sigma_u^2
+Cov(a,\tilde{y}) = Cov(a, \mu + a + pe + {1\over n} \sum_{k=1}^n te_k) = Var(a) = \sigma_u^2
 (\#eq:covayrepeatedrecords)
 \end{equation}
 
 and 
 
 \begin{equation}
-var(\tilde{y}) = var(u) + var(pe) + {1\over n} var(te)
+Var(\tilde{y}) = Var(a) + Var(pe) + {1\over n} Var(te)
 (\#eq:varyrepeatedrecords)
 \end{equation}
 
 Expressing \@ref(eq:varyrepeatedrecords) in terms of \@ref(eq:intraclasscorrelation) and \@ref(eq:oneminusintraclasscorrelation) leads to 
 
 \begin{align}
-var(\tilde{y}) &= t * \sigma_y^2 + {1\over n} (1-t) * \sigma_y^2 \notag \\
+Var(\tilde{y}) &= t * \sigma_y^2 + {1\over n} (1-t) * \sigma_y^2 \notag \\
                &= {1\over n}\left( n*t + (1-t) \right) \sigma_y^2 \notag \\
                &= \frac{1 + (n-1)t}{n} \sigma_y^2
 (\#eq:varyastrepeatedrecords)
@@ -958,7 +965,7 @@ var(\tilde{y}) &= t * \sigma_y^2 + {1\over n} (1-t) * \sigma_y^2 \notag \\
 Inserting this into \@ref(eq:regcoeffrepeatedrecords) results in 
 
 \begin{align}
-b &= \frac{cov(u,\tilde{y})}{var(\tilde{y})} \notag \\
+b &= \frac{Cov(a,\tilde{y})}{Var(\tilde{y})} \notag \\
   &= \frac{n \sigma_u^2}{(1 + (n-1)t) \sigma_y^2} \notag \\
   &= \frac{nh^2}{1 + (n-1)t}
 (\#eq:regcoeffrepeatedrecordsresult)
@@ -976,7 +983,7 @@ The difference between repeated records of an animal is assumed to be due to tem
 The accuracies of the predicted breeding value using repeated records is 
 
 \begin{align}
-r_{u,\tilde{y}} &= \frac{cov(u,\tilde{y}) }{\sigma_u \sigma_y} \notag \\
+r_{a,\tilde{y}} &= \frac{Cov(a,\tilde{y}) }{\sigma_u \sigma_y} \notag \\
                 &= \frac{\sigma_u^2}{\sigma_u \sqrt{(1 + (n-1)t)/n \sigma_y^2}} \notag \\
                 &= h \sqrt{n/(1 + (n-1)t)} \notag \\
                 &= \sqrt{nh^2/(1 + (n-1)t)} \notag \\
@@ -998,7 +1005,7 @@ For traits that are recorded only on female animals, the prediction of breeding 
 where 
 
 \begin{equation}
-b = \frac{cov(u, \bar{y})}{var(\bar{y})}
+b = \frac{Cov(a, \bar{y})}{Var(\bar{y})}
 (\#eq:regressioncoefficientprogeny)
 \end{equation}
 
@@ -1017,25 +1024,25 @@ and
 In the current case of using progeny records to predict a breeding value, we have 
 
 \begin{align}
-cov(u, \bar{y}) &= cov(u, {1\over 2}a_s + {1\over 2}{1\over n}\sum_{k=1}^n a_{d,k} + {1\over n}\sum_{k=1}^n m_k + {1\over n}\sum_{k=1}^n e_k) \notag \\
-                &= cov(u, {1\over 2}a_s) \notag \\
-                &= {1\over 2} cov(u, a_s) \notag \\
+Cov(a, \bar{y}) &= Cov(a, {1\over 2}a_s + {1\over 2}{1\over n}\sum_{k=1}^n a_{d,k} + {1\over n}\sum_{k=1}^n m_k + {1\over n}\sum_{k=1}^n e_k) \notag \\
+                &= Cov(a, {1\over 2}a_s) \notag \\
+                &= {1\over 2} Cov(a, a_s) \notag \\
                 &= {1\over 2} \sigma_u^2
 \end{align}
 
 where $a_s$ and $a_{d,k}$ denote the breeding values of sire $s$ and dam $d$ of offspring $k$, respectively and $m_k$ and $e_k$ stand for the mendelian sampling and the environmental effect of daughter $k$. Using the same principles as in section \@ref(repeatedrecords), we get
 
 \begin{equation}
-var(\bar{y}) = (t + (1-t)/n) \sigma_y^2
+Var(\bar{y}) = (t + (1-t)/n) \sigma_y^2
 (\#eq:variancedaughtermean)
 \end{equation}
 
-where $\sigma_y^2 = var(u) + var(e) = \sigma_u^2 + \sigma_e^2$.
+where $\sigma_y^2 = Var(a) + Var(e) = \sigma_u^2 + \sigma_e^2$.
 
 Assuming there is no environmental covariance between half-sib records and the intra-class correlation $t$ is $\frac{1/4 \sigma_u^2}{\sigma_y^2}$. Then we can compute the regression coefficient as 
 
 <!-- ---------------------------------------------------- --
-  -- TODO: Explain how $var(\bar{y})$ is derived          --
+  -- TODO: Explain how $Var(\bar{y})$ is derived          --
   --                                                      --
   -- ---------------------------------------------------- -->
 
@@ -1055,7 +1062,7 @@ The term $k$ is constant for any assumed heritability ($h^2$). The regression co
 The accuracy of the estimated breeding value is
 
 \begin{align}
-r_{u, \bar{y}} &= \frac{cov(u, \bar{y})}{\sqrt{var(u) var(\bar{y})}} \notag \\
+r_{a, \bar{y}} &= \frac{Cov(a, \bar{y})}{\sqrt{Var(a) Var(\bar{y})}} \notag \\
                &= \frac{1/2 h^2 \sigma_y^2}{\sqrt{h^2 \sigma_y^2 ({1\over 4}h^2 + (1 - {1\over 4}h^2)/n) \sigma_y^2}} \notag \\
                &= \frac{1/2 h}{\sqrt{{1\over 4}h^2 + (1 - {1\over 4}h^2)/n}} \notag \\
                &= \sqrt{\frac{nh^2}{nh^2 + (4-h^2)}} \notag \\
@@ -1063,7 +1070,7 @@ r_{u, \bar{y}} &= \frac{cov(u, \bar{y})}{\sqrt{var(u) var(\bar{y})}} \notag \\
 (\#eq:accuracyprogeny)
 \end{align}
 
-The term for $r_{u, \bar{y}}$ in \@ref(eq:accuracyprogeny) approaches $1$ as the number of progeny increases, assuming $k$ is constant. The reliability ($r_{u, \bar{y}}^2$) of the predicted breeding value is $n/(n+k)$ and corresponds to $1/2 * b$ computed in \@ref(eq:regcoeffprogeny). 
+The term for $r_{a, \bar{y}}$ in \@ref(eq:accuracyprogeny) approaches $1$ as the number of progeny increases, assuming $k$ is constant. The reliability ($r_{a, \bar{y}}^2$) of the predicted breeding value is $n/(n+k)$ and corresponds to $1/2 * b$ computed in \@ref(eq:regcoeffprogeny). 
 
 
 \end{comment}
