@@ -171,7 +171,7 @@ Many more terms may be included, such as maternal genetic effects, and genotype 
 The models and summary statistics defined by Fisher and Wright have remained at the heart of quantitative genetics, not least because they provide ways to make predictions of important quantities, such as
 
 *	Breeding value ($A$), the expected performance of of an individual’s offspring
-* Broad-sense heritability, the ratio of total genetic variance V_G to the overall phenotypic variance $V_{P}$:
+* Broad-sense heritability, the ratio of total genetic variance $V_{G}$ to the overall phenotypic variance $V_{P}$:
 
 \begin{align}
 H^2 &= V_{G}/V_P \notag \\
