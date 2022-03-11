@@ -484,7 +484,7 @@ BLUP approaches are widely used in genetic evaluations, for both traditional pre
 
 
 ## Linear Mixed Model {#mixedlineareffectsmodel}
-The next step is to prepare the linear mixed model for the mouse data. Recall that the linear mixed model contains the observation vector for the trait(s) of interest ($y$), the __fixed effects__ that explain systematic differences in $y$, and the __random genetic effects__ $a$ and __random residual effects__ $e$.
+The linear mixed model contains the observation vector for the trait(s) of interest ($y$), the __fixed effects__ that explain systematic differences in $y$, and the __random genetic effects__ $a$ and __random residual effects__ $e$.
 
 A matrix formulation of a general model equation is:
 \begin{align}
