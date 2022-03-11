@@ -2,7 +2,7 @@
 title: 'Practicals in Quantiative Genetic Analyses'
 author: "Rasmus Bak Stephansen & Peter Sørensen"
 date: "`r Sys.Date()`"
-bibliography: lbgfs2021.bib
+bibliography: qg2021.bib
 biblio-style: apalike
 link-citations: yes
 output:
@@ -405,7 +405,7 @@ __Answer:__
 
 
 
-```{r,  eval=FALSE, echo=FALSE}
+```{r,  eval=TRUE, echo=TRUE}
 str(mouse)
 ```
 
@@ -421,7 +421,7 @@ __Answer:__
 \hfill\break
 
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=TRUE, echo=TRUE}
 table(mouse$M227)
 ```
 
@@ -460,7 +460,7 @@ __Answer:__
 \hfill\break
 
 
-```{r, fig.align='center', eval=FALSE, echo=FALSE}
+```{r, fig.align='center', eval=TRUE, echo=TRUE}
 layout(matrix(1:2,ncol=2))
 boxplot(mouse$BW~mouse$M227, main="M227 - Body Weight")
 boxplot(mouse$Gl~mouse$M227, main="M227 - Glucose")
@@ -685,6 +685,9 @@ options(devtools.install.args=" --no-multiargs")
 devtools::install_github("psoerensen/qgg")
 ```
 
+If this does not work you can use this:
+
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/compute_grm.R")
 
 
 ### Load R packages that will be used in this practical
