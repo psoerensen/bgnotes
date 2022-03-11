@@ -389,7 +389,6 @@ https://shiny.cnsgenomics.com/Falconer2/
 The mouse data set can be loaded using the following command:
 ```{r, echo=T}
 mouse <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/mouseqtl.rds"))
-
 ```
 
 #### Question 1: How many observations and which variables do we have in the data set?
@@ -402,8 +401,6 @@ To get a fast overview of the data set you are working with you can use the `str
 __Answer:__
 
 \hfill\break
-
-
 
 ```{r,  eval=TRUE, echo=TRUE}
 str(mouse)
@@ -446,6 +443,19 @@ $f_{B}$	&			 \\
 \hline
 \end{tabular}
 \end{center}
+
+```{r,  eval=TRUE, echo=TRUE}
+freq_genotypes <- table(mouse$M227)/sum(table(mouse$M227))
+fA <- sum(table(mouse$M227)*c(2,1,0))/(sum(table(mouse$M227))*2)
+fB <- sum(table(mouse$M227)*c(0,1,2))/(sum(table(mouse$M227))*2)
+freq_alleles <- c(fA,fB)
+names(freq_alleles) <- c("A","B")
+layout(matrix(1:2,nrow=2))
+barplot(freq_genotypes, main="Genotype Frequencies")
+barplot(freq_alleles, main="Allele Frequencies")
+freq_genotypes
+freq_alleles
+```
 
 
 #### Question 3: Does the marker variable M227 potentially influence body weight and glucose?
@@ -540,6 +550,17 @@ __Answer:__
 \hfill\break
 
 
+```{r,  eval=TRUE, echo=TRUE}
+alpha <- -fit$coefficients["add"]
+BV_AA <- 2*fA*alpha
+BV_AB <- (fA-fB)*alpha
+BV_BB <- -2*fA*alpha
+BV <- c(BV_AA,BV_AB,BV_BB)
+names(BV) <- c("AA","AB","BB")
+barplot(BV, main="Breeding Values")
+```
+
+
 Now we want to compute the genetic variance associated with marker M227. The formula below shows that genetic variance for a single locus model $\sigma_G^2$ consists of two components. The first component $\sigma_A^2$ is called the __genetic additive variance__ and the second component $\sigma_D^2$ is termed __dominance variance__. Here $\sigma_A^2$ corresponds to the variance of the breeding values. The variance of breeding values is also called the additive genetic variance, because as we have already seen the breeding values are additive in the number of favorable alleles. In populations where there is no additive genetic variance, individuals all have the same breeding value. Therefore, they will produce offspring with the same expected advantage (zero), and selection cannot generate any improvement over generations. Because $\sigma_D^2$ corresponds to the variance of the dominance deviation effects it is called dominance variance.
 
 \begin{align}
@@ -556,6 +577,17 @@ __Answer:__
 
 \hfill\break
 
+
+```{r,  eval=TRUE, echo=TRUE}
+alpha <- fit$coefficients["add"]
+d <- 0
+Va <- 2*fA*fB*alpha^2
+Vd <-  (2*fA*fB*d)^2
+Vg <- Va + Vd
+V <- c(Vg,Va,Vd)
+names(V) <- c("Vg","Va","Vd")
+barplot(V, main="Variances")
+```
 
 #### Question 7: Should you have considered other factors in the linear model specified above?   
 
@@ -636,17 +668,13 @@ __Answer:__
 
 \begin{tabular}{|l|l|}
 \hline
-11:15 & Questions to lecture and multiple-choice questions \\
+11:15 & Question to lectures, multiple-choice question and follow up on previous multiple choice questions \\
 \hline
-11:25 & Today´s exercise and assignment to groups \\
-\hline
-11:30 & Prepare group presentations – use only 1 trait \\
-\hline
-11:45 & Group presentations and discussions \\
+11:30 & Today´s exercise and assignment to groups \\
 \hline
 12:00 & 15 minutes break \\
 \hline
-12:15 & Group presentations and discussions  \\
+12:30 & Go through excercises using final word  \\
 \hline
 12:50 & Repeat multiple-choice questions \\
 \hline
@@ -685,9 +713,6 @@ options(devtools.install.args=" --no-multiargs")
 devtools::install_github("psoerensen/qgg")
 ```
 
-If this does not work you can use this:
-
-source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/compute_grm.R")
 
 
 ### Load R packages that will be used in this practical
@@ -1069,17 +1094,13 @@ Va/(Va+Ve)
 
 \begin{tabular}{|l|l|}
 \hline
-11:15 & Questions to lecture and multiple-choice questions \\
+11:15 & Question to lectures, multiple-choice question and follow up on previous multiple choice questions \\
 \hline
-11:25 & Today´s exercise and assignment to groups \\
-\hline
-11:30 & Prepare group presentations – use only 1 trait \\
-\hline
-11:45 & Group presentations and discussions \\
+11:30 & Today´s exercise and assignment to groups \\
 \hline
 12:00 & 15 minutes break \\
 \hline
-12:15 & Group presentations and discussions  \\
+12:30 & Go through excercises using final word  \\
 \hline
 12:50 & Repeat multiple-choice questions \\
 \hline
@@ -1434,21 +1455,17 @@ __Answer:__
 
 \begin{tabular}{|l|l|}
 \hline
-11:15 & Questions to lecture and multiple-choice questions \\
+11:15 & Question to lectures, multiple-choice question and follow up on previous multiple choice questions \\
 \hline
-11:25 & Today´s exercise and assignment to groups \\
-\hline
-11:30 & Prepare group presentations – use only 1 trait \\
-\hline
-11:45 & Group presentations and discussions \\
+11:30 & Today´s exercise and assignment to groups \\
 \hline
 12:00 & 15 minutes break \\
 \hline
-12:15 & Group presentations and discussions  \\
+12:30 & Go through excercises using final word  \\
 \hline
 12:50 & Repeat multiple-choice questions \\
 \hline
-13:00 & End of practical session 4 \\
+13:00 & End of practical session 5 \\
 \hline
 \end{tabular}
 
