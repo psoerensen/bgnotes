@@ -738,7 +738,7 @@ dim(pedigree)
 \hfill\break
 
 
-#### Question 3: How many generations and number of mize in each generation do we have in the pedigree?
+#### Question 3: How many generations and number of mice in each generation do we have in the pedigree?
 
 Use the `table` function on the generation variable.
 
@@ -983,7 +983,7 @@ fit$theta
 barplot(fit$theta)
 ```
 
-The first element in the `theta` vector is the estimate of the additive genetic variance ($\hat{\sigma}^2_{a}$) and the second element is the estimate of the residual variance ($\hat{\sigma}^2_{a}$). 
+The first element in the `theta` vector is the estimate of the additive genetic variance ($\hat{\sigma}^2_{a}$) and the second element is the estimate of the residual variance ($\hat{\sigma}^2_{e}$). 
 
 ```{r, eval=TRUE, echo=TRUE}
 Va <- fit$theta[1]
@@ -1011,7 +1011,7 @@ __Answer:__
 Va/(Va+Ve)
 ```
 
-In the experiment the mize were feed ad libitum. Now we want to perform a simlar experiment where mize are reared under restricted feed intake, We will record phenotypes for body weight and blood glucose levels and use mice from the same F2 population. 
+In the experiment the mice were feed ad libitum. Now we want to perform a simlar experiment where mice are reared under restricted feed intake, We will record phenotypes for body weight and blood glucose levels and use mice from the same F2 population. 
 
 #### Question 10: Should we re-estimate the heritability? 
 
