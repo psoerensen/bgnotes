@@ -25,7 +25,7 @@ set.seed(19)
 
 
 ## Learning objective:  {-}    
-This section introduces the basic concepts of estimating breeding values such as: 
+This section introduces the basic concepts of estimating genomic breeding values such as: 
 
    * basic principle behind estimating genomic breeding values
    * accuracy of estimated genomic breeding values
@@ -92,54 +92,80 @@ r^2 &= \frac{D^2}{p(M_1)*p(M_2) * p(Q_1) * p(Q_2)}
 
 In \@ref(eq:linkagediseqrescaled) $r^2$ describes the proportion of the variance at the QTL which is explained by the marker $M$. Hence the LD must be high such that the marker can explain a large part of the variance at the QTL. For the length of most livestock species, about $50'000$ SNP markers are required to get a sufficient coverage of the complete genome.
 
-# Basic principles for estimating genomic breeding values (GEBV)
-The GEBV are calculated as the sum of the effects of dense genetic markers across the entire genome, thereby potentially capturing all the quantitative trait loci (QTL) that contribute to variation in a trait. The QTL effects inferred from individual single nucleotide polymorphism (SNP) markers, are first estimated in a large reference population with phenotypic information. In subsequent generations, only marker information is required to calculate GEBV. 
-Breeding values are conceptually simple to calculate from marker information. First, the entire 
-genome is divided into small chromosome segments by dense markers. Second, the additive effects 
-of each chromosome segment are estimated simultaneously. Finally, the genomic EBV equals the 
-sum of all chromosome segment effects. The chromosome segment effects are estimated for a group 
-of individuals (i.e. a reference population). For any remaining individual, only a blood or tissue sample is 
-needed to determine its genome-wide (or genomic) EBV (Figure 1). For breeding purposes, it is 
-desirable that the EBV can be estimated accurately early in the individuals life. 
-The effect of each of these small chromosome segments can be estimated if we have phenotypes 
-and genotypes from a number of individuals. With sufficiently dense marker maps, the chromosome 
-segment effects apply to all individuals in the population in which they were estimated, because 
-markers are in linkage disequilibrium with the causal gene that they bracket. 
+# Basic principles for estimating genomic breeding values
+Genomic breeding values are conceptually simple to calculate from marker information. First, the entire genome is divided into small chromosome segments by dense markers. Second, the additive effects of each chromosome segment are estimated simultaneously. Finally, the genomic EBV equals the sum of all chromosome segment effects. The chromosome segment effects are estimated for a group of individuals (i.e. a reference population). For any remaining individual, only a blood or tissue sample is 
+needed to determine its genome-wide (or genomic) breeding values. For breeding purposes, it is desirable that the genomic breeding value can be estimated accurately early in the individuals life. The effect of each of these small chromosome segments can be estimated if we have phenotypes and genotypes from a number of individuals. With sufficiently dense marker maps, the chromosome segment effects apply to all individuals in the population in which they were estimated, because markers are in linkage disequilibrium with the causal gene that they bracket. 
+
+We will present two approaches that are commonly used to estimate genomic breeding values. The first approach is referred to as the MBLUP (or SNP-BLUP) approach. In this approach marker effects are estimated from observed phenotypic and genetic marker data recorded in the reference (or training) population. Genomic breeding values are estimated from the marker effects and genetic marker data for potential selection candidates in the breeding population. 
+The second approach is referred to as the GBLUP approach. In this approach genomic breeding values are estimated from observed phenotypic and genetic marker data for individuals in the reference (or training) population. Genomic breeding values for selection candidates are estimated based on their genomic relationship to individuals in the reference population.
+Both approaches allow for estimation of genomic breeding values for individuals without phenotypes and close relationships. This is one of the main advantages the genomic prediction and selection. As soon as a DNA is available for an individual, its marker genotypes can be determined and a genomic breeding value can be estimated. Furthermore, genomic breeding value is generally more accurate then the traditional breeding value based only on pedigree information. 
 
 
 ## A linear mixed model for estimating marker effects (MBLUP) {#linear-model-pgbv}
-A linear model to estimate marker effects based on the data from the reference population in the two-step procedure can be defined as follows
+The linear mixed model for estimating marker effects contains the observation vector for the trait(s) of interest ($y$), the fixed effects $b$, that explain systematic differences in $y$, and the random marker effects $s$, and random residual effects $e$. A matrix formulation of a general linear mixed model for estimating marker effects is:
+\begin{align}
+y &= Xb + Ms + e 
+(\#eq:mblup)
+\end{align}
+
+where
+\begin{align}
+y &: \text{is the vector of observed values of the trait,} \notag \\
+X &: \text{is a known design matrix that relates the elements of b to their corresponding element in y.} \notag \\
+b &: \text{is a vector of fixed effects,} \notag \\
+M &: \text{is a known design matrix that relates the elements of s to their corresponding element in y.} \notag \\
+s &: \text{is a vector of random marker effects,} \notag \\
+e &: \text{is a vector of random residual effects,} \notag 
+\end{align}
+
+In the linear mixed model (specified above) the marker and residual effects ($s$ and $e$) and the phenotypes ($y$) are considered to be random variables which follow a multivariate normal (MVN) distribution. In general terms the expectations of these random variables are:  
+\begin{align}
+s \sim MVN(0,S) \notag \\
+e \sim MVN(0,R) \notag \\
+y \sim MVN(Xb,V) \notag
+\end{align}
+where $S=I_s\sigma_s^2$ is a square matrix of (co)variances among markers and $R=I\sigma_e^2$ is a square matrix of residual (co)variances among the individuals, and $V=MM'\sigma_s^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. 
+
+The marker variance $\sigma_s^2$ is defined as:
 
 \begin{equation}
-y = X \beta +  Mg + e
-(\#eq:linearmodelgpbv)
+\sigma_s^2 = \frac{\sigma_a^2}{\sum_{j=1}^m 2*p_j*(1-p_j)} 
+(\#eq:lambdammegpbv)
 \end{equation}
 
-\begin{tabular}{lll}
-where  &  $m$  &  number of SNP markers \\
-       &  $y$  &  vector of observations \\
-       &  $\beta$  &  vector of fixed effects \\
-       &  $X$      &  design matrix linking fixed effects to observations \\
-       &  $g$      &  random genetic effect of SNP-genotypes \\
-       &  $M$      &  design matrix linking SNP-genotype effects to observations \\
-       &  $e$      &  vector of random residuals
-\end{tabular}       
+where $\sigma_a^2$ is the total additive genetic variance, $m$ is the number of markers, and $p_j$ is the frequency of the marker-allele that is associated with the positive QTL-allele.
 
-The observations $y$ used in \@ref(eq:linearmodelgpbv) are in most evaluations not phenotypes but traditionally predicted breeding values with an accuracy above a certain threshold. As a consequence of that the variance-covariance matrix ($R$) of the residuals $e$ is not just an identity matrix ($I$) times a residual variance component ($\sigma_e^2$) but $R$ is a diagonal matrix with elements $(R)_{ii} = {1\over B_{m}} - 1$ where $B_m$ is the accuracy of the traditionally predicted breeding value from an individual from the reference population, corrected for the parental contributions. In effect, $B_m$ corresponds to the accuracy of the mendelian sampling term.
 
-The mixed-model equations resulting from models given in \@ref(eq:linearmodelgpbv) have the following structure
+### Estimation of marker effects in MBLUP
+Estimates of the fixed effect $b$, and random marker effects, $s$, in the linear mixed model specified above can be done using the BLUE and BLUP equations shown below.
+
+The best linear unbiased estimator (BLUE) of the fixed effects $\hat{b}$ is:
+
+\begin{equation}
+\hat{b} = (X'V^{-1} X)^{-1} X' V^{-1} y
+(\#eq:hatbetahatblue)
+\end{equation}
+
+The best linear unbiased prediction (BLUP) of the marker effects $\hat{s}$ is:
+
+\begin{equation}
+\hat{s} = SV^{-1}(y - X\hat{b})
+(\#eq:hatublup)
+\end{equation}
+
+The BLUP equation for the estimate of the marker effects consists of three parts; The term, $y - X\hat{b}$, shows that the observed phenotypic values are corrected for the fixed effects represented by $X\hat{b}$. The covariance between the true marker effects ($s$) and phenotypes ($y$) is $Cov(s,y)=S=M'\sigma_s^2$. The inverse of the phenotypic covariance matrix is $[Var(y)]^{-1}=V^{-1}$. Alternatively, estimates of the (fixed and random) effects in the model can be obtained by solving the mixed model equations. The mixed-model equations for the model given in \@ref(eq:mblup) have the following structure:
 
 \begin{equation}
 \left[
   \begin{array}{lr}
   X^TR^{-1}X  &  X^TR^{-1}M  \\
-  M^TR^{-1}X  &  M^TR^{-1}M + I * \lambda
+  M^TR^{-1}X  &  M^TR^{-1}M + S^{-1}
   \end{array}
 \right]
 \left[
   \begin{array}{c}
-  \hat{\beta}\\
-  \hat{g}
+  \hat{b}\\
+  \hat{s}
   \end{array}
 \right]
 =
@@ -152,52 +178,77 @@ The mixed-model equations resulting from models given in \@ref(eq:linearmodelgpb
 (\#eq:mmegpbv)
 \end{equation}
 
-where 
+### Estimation of genomic breeding values  in MBLUP
+The estimates of the marker effects $\hat{s}$ in \@ref(eq:mmegpbv) can be used to estimate genomic breeding values $\hat{a}$ for any individual with genomic information (i.e. genotypes for the same set of markers used in the reference population) by:
 
 \begin{equation}
-\lambda = \frac{\sigma_e^2}{\sigma_a^2} \sum_{i=1}^m 2*p_i*(1-p_i)
-(\#eq:lambdammegpbv)
-\end{equation}
-
-In \@ref(eq:lambdammegpbv) $\sigma_a^2$ is the total genetic variance and $p_i$ is the frequency of the SNP-allele that is associated with the positive QTL-allele.
-
-The solutions for $\hat{g}$ from \@ref(eq:mmegpbv) correspond to the SNP-genotype effects. The predicted breeding value $\hat{a}$ for any selection candidate with genomic information is then computed as
-
-\begin{equation}
-\hat{a} = \sum_{i=1}^m M_i \hat{g}_i
+\hat{a} = \sum_{j=1}^m M_j \hat{s}_j
 (\#eq:genomicpbv)
 \end{equation}
 
-where $M_i$ corresponds to the vector of SNP-genotypes of the selection candidate.
-This model is sometimes referred to the SNP-BLUP model. 
+where $M_j$ corresponds to the vector of observed marker genotypes of an individual. 
 
-
-### Matrix $M$
-The elements in matrix $M$ can be encoded in different ways. The results from the genotyping laboratory sends a code representing the nucleotide that can be found at a given position. For the use in the linear model we have to use a different encoding. Let us assume that at a given SNP-position, the bases $G$ or $C$ are observed and $G$ corresponds to the allele with the positive effect on our trait of interest. Based on the two observed alleles, the possible genotypes are $GG$, $GC$ or $CC$. One possible code for this SNP in the matrix $M$ might be the number of $G$-Alleles which corresponds to $2$, $1$ and $0$. Alternatively, it is also possible to use the codes $1$, $0$ and $-1$ instead which corresponds to the factors with which $a$ is multiplied to get the genotypic values in the single locus model.
+### Encoding of the marker genotype matrix $M$
+The elements in the matrix $M$ can be encoded in different ways. The results from the genotyping laboratory sends a code representing the nucleotides that can be found at a given position. For the use in the linear model we have to use a different encoding. Let us assume that at a given SNP-position, the bases $G$ or $C$ are observed and $G$ corresponds to the allele with the positive effect on our trait of interest. Based on the two observed alleles, the possible genotypes are $GG$, $GC$ or $CC$. One possible code for this SNP in the matrix $M$ might be the number of $G$-alleles which corresponds to $2$, $1$ and $0$. Alternatively, it is also possible to use the codes $1$, $0$ and $-1$ instead which corresponds to the factors with which $a$ is multiplied to get the genotypic values in the single locus model.
 
 
 
-## A linear mixed model for estimating genomic values (GBLUP) {#gblup}
-The term `GBLUP` stands for genomic BLUP and is the most widely used single-step procedure. In GBLUP genomic breed values are directly predicted without the prediction of marker effects. This can be done by including the genomic breeding values $a$ which corresponds to the sum of all SNP-allele effects directly as a random effect in the model. 
+## A linear mixed model for estimating genomic breeding values (GBLUP) {#gblup}
+The linear mixed model for estimating genomic breeding values (GBLUP) contains the observation vector for the trait(s) of interest ($y$), the fixed effects $b$ that explain systematic differences in $y$, and the random genomic effects $a$ and random residual effects $e$. A matrix formulation of a general GBLUP model is:
+\begin{align}
+y &= Xb + Za + e 
+(\#eq:gblup)
+\end{align}
+
+where
+\begin{align}
+y &: \text{is the vector of observed values of the trait,} \notag \\
+b &: \text{is a vector of fixed effects,} \notag \\
+a &: \text{is a vector of random genomic effects,} \notag \\
+e &: \text{is a vector of random residual effects,} \notag \\
+X &: \text{is a known design matrix that relates the elements of b to their corresponding element in y.} \notag \\
+Z &: \text{is a known design matrix that relates the elements of a to their corresponding element in y.} \notag 
+\end{align}
+
+In the linear mixed model (specified above) the genetic and residual effects ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables which follow a multivariate normal (MVN) distribution. In general terms the expectations of these random variables are:  
+\begin{align}
+a \sim MVN(0,\tilde{G}) \notag \\
+e \sim MVN(0,R) \notag \\
+y \sim MVN(Xb,V) \notag
+\end{align}
+where $\tilde{G}=G\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genetic and residual (co)variances among the individuals, respectively, and $V=G\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. 
+The genomic relationship matrix $G$ is estimated from genetic marker data instead of pedigree information. 
+
+
+### Estimation of genetic effects in GBLUP
+Estimates of the fixed effect $b$, and random genetic effects, $a$, in the linear mixed model specified above can be done using the BLUE and BLUP equations shown below.
+
+The best linear unbiased estimator (BLUE) of the fixed effects $\hat{b}$ is:
 
 \begin{equation}
-y = X \beta + Za + e
-(\#eq:gblupmodel)
+\hat{b} = (X'V^{-1} X)^{-1} X' V^{-1} y
+(\#eq:hatbetahatblue)
 \end{equation}
 
-where $Z$ is the design matrix linking genomic breeding values to observations. The mixed model equations are the defined as
+The best linear unbiased prediction (BLUP) of the genetic effects $\hat{a}$ is:
 
+\begin{equation}
+\hat{a} = \tilde{G}V^{-1}(y - X\hat{b})
+(\#eq:hatublup)
+\end{equation}
+
+The BLUP equation for the estimate of the genetic effects consists of three parts; The term, $y - X\hat{b}$, shows that the observed phenotypic values are corrected for the fixed effects represented by $X\hat{b}$. The covariance between the true genetic effects ($a$) and phenotypes ($y$) is $Cov(a,y)=\tilde{G}=G\sigma_a^2$. The inverse of the phenotypic covariance matrix is $[Var(y)]^{-1}=V^{-1}$. Alternatively, estimates of the (fixed and random) effects in the model can be obtained by solving the mixed model equations which have the following structure:
 
 \begin{equation}
 \left[
   \begin{array}{lr}
   X^TR^{-1}X  &  X^TR^{-1}Z \\
-  Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}* \lambda
+  Z^TR^{-1}X  &  Z^TR^{-1}Z + \tilde{G}^{-1}
   \end{array}
 \right]
 \left[
   \begin{array}{c}
-  \hat{\beta} \\
+  \hat{b} \\
   \hat{a}
   \end{array}
 \right]
@@ -211,12 +262,22 @@ where $Z$ is the design matrix linking genomic breeding values to observations. 
 (\#eq:gblupmme)
 \end{equation}
 
-where $G$ is defined as in \@ref(eq:genomicrelmat) and $\lambda$ is the same as in equation \@ref(eq:lambdammegpbv). Several authors have shown that both procedures (two-step and single step) are equivalent. From \@ref(eq:gblupmodel) we can see that the GBLUP model looks very similar to the linear mixed model used in pedigree based breeding value estimation (PBLUP), except that the covariances between random effects based on the numerator relationship matrix and in GBLUP they are modeled via the genomic relationship matrix $G$. This means in the PBLUP model the covariance between random breeding values is based on the concept of common ancestry and identity by descent. This is replaced in GBLUP by the concept of sharing the same alleles based on identity by state which is assumed to be the cause of the covariance between random genomic breeding values. 
+From \@ref(eq:hatublup) we can see that the GBLUP estimation procedure looks very similar to the pedigree based breeding value estimation procedure (PBLUP). In GLUP the covariances between breeding values is based on the  genomic relationship matrix $G$ which is computed from genetic markers whereas in PBLUP it is based on the numerator relationship matrix $A$ computed from pedigree information. 
 
-The predicted genomic breeding values $\hat{a}$ coming out of \@ref(eq:gblupmme) are referred to as `genomic estimated breeding values` (GEBV).
 
-## Genomic Relationship Matrix $G$
-Multiplying the matrix $M$ with its transpose $M^T$ results in a $n\times n$ square matrix $MM^T$. On the diagonal of this matrix we get counts of how many alleles in each individual have a positive effect. The off-diagonal elements count how many individual share the same alleles across all SNP-positions. In contrast to the additive genetic relationship matrix $A$, the counts here are based on identity by state and not on identity by descent.
+### Estimation of genomic breeding values for individuals without phenotypes in GBLUP
+The estimates of the genomic breeding values $\hat{a_{t}}$ for individuals with phenotypes can be used to estimate genomic breeding values $\hat{a}$ for individuals with only genomic information (i.e. genotypes for the same set of markers used in the reference population). Under the assumption of multivariate normality for the true genomic breeding values ($a \sim MVN(0,G\sigma_a^2)$), the expected value of the genomic breeding value for individuals without phenotypes ($a_2$) conditional on the genomic breeding values for individuals with phenotypes $a_1$ can be written as:
+
+\begin{equation}
+\hat{a}_{2} = \tilde{G}_{12}\tilde{G}_{11}^{-1}\hat{a}_{1}
+(\#eq:hatublupvt)
+\end{equation}
+
+The equation given in \@ref(eq:hatublupvt) consists of three parts; The term, $\hat{a}_{1}$, represent the genomic breeding values for individuals with phenotypes in the reference population. The covariance between the true breeding values for invididuals without phenotypes ($a_2$) and individuals with phenotypes ($a_1$) is $Cov(a_1,a_2)=\tilde{G}_{12}=G_{12}\sigma_a^2$. The inverse of the genomic covariance matrix for individuals with phenotypes is $\tilde{G}_{11}^{-1}=\sigma_a^{-2}G_{11}^{-1}$. 
+
+
+### Genomic Relationship Matrix $G$
+The genomic relationship matrix is based on allele sharing. Multiplying the matrix $M$ with its transpose $M^T$ results in a $n\times n$ square matrix $MM^T$. On the diagonal of this matrix we get counts of how many alleles in each individual have a positive effect. The off-diagonal elements count how many individual share the same alleles across all SNP-positions. In contrast to the additive genetic relationship matrix $A$, the counts here are based on identity by state and not on identity by descent.
 
 The problem with matrix $MM^T$ is its dependence on the number SNP-markers. Therefore the matrix $MM^T$ is proportional to the relationship $A$ but it does not correspond to $A$ directly. As a solution to that problem (VanRaden2008) proposed to re-scale such that allele frequencies on a given locus are expressed as to times the deviation from $0.5$. This re-scaling is done with an $n \times m$ matrix $P$ where each of the $m$ columns corresponds to a SNP-Locus. Elements in column $i$ of matrix $P$ have all the same value corresponding to $2p_i - 0.5$ where $p_i$ corresponds to the frequency of the SNP-allele associated to the positive QTL-allele at locus $i$. The difference between matrices $M$ and $P$ is assigned to a new matrix $W$
 
@@ -229,63 +290,29 @@ G = \frac{WW^T}{\sum_{i=1}^m 2p_i(1-p_i)}
 (\#eq:genomicrelmat)
 \end{equation}
 
-The matrix $G$ has similar properties as the numerator relationship matrix $A$. The genomic inbreeding coefficient $F_j$ is defined as $F_j = (G)_{jj}-1$. The genomic relationship $a_{ij}$ between two individuals $i$ and $j$ corresponds to the element in matrix $G$ divided by the square root of the diagonal elements 
-
-$$a_{ij} = \frac{G_{ij}}{\sqrt{G_{ii}G_{jj}}}$$
-
+The matrix $G$ has similar properties as the numerator relationship matrix $A$. 
+The main difference between the two types of genetic relationship matrices ($G$ and $A$) is that $A$ is based on the concept of identity by descent from a common ancestor whereas $G$ is based on the concept of identity by state based on allele sharing. 
 
 
-## How Does GBLUP Work?
-The genomic relationship matrix $G$ allows to predict genomic breeding values for individuals with marker genotypes without any observation in the dataset. This fact is the basis of the large benefit of genomic selection. As soon as a DNA is available fpr an individual, its marker genotypes can be determined and a genomic breeding value can be predicted. This genomic breeding value is much more accurate then the traditional breeding value based only on ancestral information. 
+## Accuracy of genomic breeding values 
+Genomic breeding value is generally more accurate then the traditional breeding value based only on pedigree information. One of the reasons for this is that the genomic relationship matrix more efficient use of phenotypic information for all individuals (based on degree of allele sharing) in the estimation procedure. 
+The accuracy of genomic breeding values is trait specific and depends on the heritability and the number of phenotypic records. In general the accuracy of genomic breeding values increases when the size of the reference population increases, when the reference population represents as much of the relevant genetic variation in the population as possible, when selection candidates are closely related to the reference population, when genetic diversity in the population is low (i.e. low effective population size) and with better statistical models. 
 
-The solution for the unknown parameters can be obtained by solving the mixed model equations shown in \@ref(eq:asm-gblup-gblupmme). In this form the Inverse $G^{-1}$ of $G$ and the vector $\hat{g}$ of predicted genotypic breeding values are split into one part corresponding to the individuals with observations and a second part for the individuals without phenotypic information.
-
-```{r GblupMme, echo=FALSE, results='asis'}
-matCoeff <- matrix(c("X^TX","X^TZ","0",
-                     "Z^TX","Z^TZ + G^{(11)}","G^{(12)}",
-                     "0","G^{(21)}","G^{(22)}"), ncol = 3, byrow = TRUE)
-vecSol <- c("\\hat{b}","\\hat{g}_1","\\hat{g}_2")
-vecRhs <- c("X^Ty","Z^Ty","0")
-### # show mme
-cat("\\begin{equation}\n")
-cat(paste(rmdhelp::bmatrix(pmat = matCoeff), collapse = '\n'), '\n')
-cat(paste(rmdhelp::bcolumn_vector(pvec = vecSol), collapse = '\n'), '\n')
-cat(" = \n")
-cat(paste(rmdhelp::bcolumn_vector(pvec = vecRhs), collapse = '\n'), '\n')
-cat("(\\#eq:asm-gblup-gblupmme)")
-cat("\\end{equation}\n")
-```
-
-The matrix $G^{(11)}$ denotes the part of $G^{-1}$ corresponding to the individuals with phenotypic observations. Similarly, $G^{(22)}$ stands for the part of the individuals without genotypic observations. The matrices $G^{(12)}$ and $G^{(21)}$ are the parts of $G^{-1}$ which link the two groups of individuals. The same partitioning holds for the vector of predicted breeding values. The vector $\hat{g}_1$ contains the predicted breeding values for the individuals with observations and the vector $\hat{g}_2$ contains the predicted breeding values of all individuals without phenotypic observations. 
-
-Based on the last line of \@ref(eq:asm-gblup-gblupmme) the predicted breeding values $\hat{g}_2$ of all individuals without phenotypic observations can be computed from the predicted breeding values $\hat{g}_1$ from the individuals with observations.
-
-\begin{equation}
-\hat{g}_2 = -\left( G^{22}\right)^{-1}G^{21}\hat{g}_1
-(\#eq:GenomicBvAnimalNoPhen)
-\end{equation}
-
-Equation \@ref(eq:GenomicBvAnimalNoPhen) is referred to as genomic regression of predicted breeding values of individuals without observation on the predicted genomic breeding values of individuals with observations.
-
-
-## Accuracy of GEBV 
-The accuracy of GEBV is trait dependent and depends on heritability and the number of phenotypic records. The accuracy of GEBV increases when the size of the reference population increases, when the reference population represents as much of the relevant genetic variation in the population as possible, when selection candidates are closely related to the reference population, when genetic diversity in the population is low (i.e. low effective population size) and with better statistical models. 
-
-A common finding is that a straightforward BLUP method for estimating the marker effects gave reliabilities of GEBV almost as high as more complex methods. The BLUP method is attractive because the only prior information required is the additive genetic variance of the trait. 
+A common finding is that a straightforward BLUP method for estimating the marker effects gave reliabilities of genomic breeding values almost as high as more complex methods. The BLUP method is attractive because the only prior information required is the additive genetic variance of the trait. 
 
 More informative marker maps also increase accuracy, although the increase here is marginal when the marker density is already high (i.e. 50,000 markers for within breed selection in dairy cattle; advantageous with more markers for very heterogeneous populations, across-breed analyses). 
 
 
-## Practical Problems {#practical-problems}
-The model equations \@ref(eq:gblupmodel) look very straight-forward, but the practical implementation can be quite complicated. The reason for these problems is the fact that compared to the total size of a population only a small fraction of all individuals are genotyped and hence contribute the the genomic evaluation. On the other hand DGV do not contain all information that occur in conventional breeding values.
+## Implementation of genomic prediction in practical breeding {#practical-problems}
+The model equations \@ref(eq:gblupmme) look very straight-forward, but the practical implementation can be quite complicated. The reason for these problems is the fact that compared to the total size of a population only a small fraction of all individuals are genotyped and used in the estimation of genomic breeding values. 
 
-Because all non-genotyped offsprings of parents are ignored by GBLUP, this loss of information is even more dramatic. For the two step-procedure as long as the reference population has a reasonable size and is not too heterogeneous, this is not a problem, we can still come up with reasonable estimates of SNP-effects. Due to the in-balanced availability of genotypic information, a procedure to combine DGV with traditional predicted breeding values was adopted. This procedure starts with predicting DGV and combining them with traditionally predicted breeding values from parents which are termed as parent averages (PA). This procedure of combining predicted breeding values from different sources is called __blending__. The problem with blending one has to be aware of is that there is a covariance between DGV and PA which must be accounted for.
+Because all non-genotyped offsprings of parents are ignored by GBLUP, this loss of information is even more dramatic. As long as the reference population has a reasonable size and is not too heterogeneous, this is not a problem, we can still come up with reasonable estimates of marker effects and genomic breeding values for individuals without phenotypes. Due to the in-balanced availability of genotypic information, a procedure to combine genomic breeding values with pedigree based breeding values was adopted. This procedure of combining estimated breeding values from different sources is called __blending__. 
 
 A further problem is that there are different techniques to generate genotyping results. The different results also have different densities which means that they give different numbers of SNP-loci per genome. The different techniques also vary in price which is the reason that genotyping results from different technologies must be combined. Combining genotyping results with different densities of SNP-markers per genome is done with a process that is called __imputing__. This basically comes done to inferring missing SNP-genotypes on marker panels with less density based on results from denser marker panels.
 
 
 
-# Impact of genomic selection on breeding programmes
+# Impact of genomic prediction and selection on breeding programmes
 The impact of using genomic information depends on the efficiency of traditional breeding that does not use genomic information. If all selection candidates already have accurate EBV at the time of selection then genomic information will not add much, if anything. Hence, genome-wide marker information is most useful when phenotypic recording is restricted – for instance when phenotypes are expressed late in the animal’s life (e.g. meat quality, longevity), are expressed only in one sex 
 (e.g. milk yield, egg production) or are expensive to measure (e.g. feed efficiency, bacteriological samples, progesterone profiles or other physiological measures). Furthermore, genome-wide marker information is useful for traits with low heritability provided a sufficient amount of phenotypes can be recorded. It should therefore be clear that the extra benefits of genome-wide information vary across traits and across species although it can in principle be used for all species and traits.
 
@@ -293,16 +320,16 @@ Dairy cattle breeding is characterised by the main traits only being measurable 
 
 In pig breeding, most traits are measured on all selection candidates before sexual maturity. Therefore genomic information gives less extra value for pig breeding compared with dairy cattle. However, exceptions for pigs include litter size (only measurable in females and after sexual maturity), feed efficiency (only measured on few animals because it is expensive), longevity and carcass traits (expressed late). Another potential benefit for pigs is that traits can be recorded on crossbreed production animals which may be housed in different production environments and have different effects of single genes compared with purebred animals. 
 
-GEBV can be used to enhance the screening of potential breeding individuals for testing (pre-selection) which is especially attractive in situations when the costs of genotyping are relatively inexpensive compared to the costs of recording phenotypes. 
+Genomic breeding values can be used to enhance the screening of potential breeding individuals for testing (pre-selection) which is especially attractive in situations when the costs of genotyping are relatively inexpensive compared to the costs of recording phenotypes. 
 
-GEBV are also useful in intensifying selection for young animals thereby facilitating a reduced overall generation interval. For instance, with the availability of accurate genome-wide breeding values for young bulls it is more attractive to use the best young bulls widely rather than having to wait for the results of progeny group testing. Here the substantial reduction in generation interval offset the slightly lower accuracy of genome-wide breeding values compared with breeding values based on progeny results. 
+Genomic breeding values are also useful in intensifying selection for young animals thereby facilitating a reduced overall generation interval. For instance, with the availability of accurate genome-wide breeding values for young bulls it is more attractive to use the best young bulls widely rather than having to wait for the results of progeny group testing. Here the substantial reduction in generation interval offset the slightly lower accuracy of genome-wide breeding values compared with breeding values based on progeny results. 
 
-Another benefit of using GEBV rather than traditional EBV is that it results in less inbreeding if the same selection intensities are maintained. This happens because breeding based on traditional EBV puts more emphasis than GEBV on parent information, especially for traits with low heritability. 
+Another benefit of using genomic breeding values rather than traditional pedigree based breeding values is that it results in less inbreeding if the same selection intensities are maintained. This happens because breeding based on traditional pedigree based breeding values puts more emphasis than genomic breeding values on parent information, especially for traits with low heritability. 
 
-A potential danger with GEBV is that it does not capture the effect of new non-recurrent mutations in selection candidates without phenotypic information (relating to self or progeny). Thus if selection and mating decisions are made before there is phenotypic information available from progeny, or the individual itself, it becomes impossible to estimate the effect of a new mutation. This means that new unfavourable mutations may be easier spread in the population and that favourable mutations may be missed if selection is based entirely on GEBV with 
+A potential danger with genomic breeding values is that it does not capture the effect of new non-recurrent mutations in selection candidates without phenotypic information (relating to self or progeny). Thus if selection and mating decisions are made before there is phenotypic information available from progeny, or the individual itself, it becomes impossible to estimate the effect of a new mutation. This means that new unfavourable mutations may be easier spread in the population and that favourable mutations may be missed if selection is based entirely on genomic breeding values with 
 negative consequences for long term genetic progress. 
 
-Also, often some traits that should be in the breeding goal are not systematically recorded (e.g. many diseases). But such traits are still influenced by selection on other traits and frequently the combined correlated effect on such non-recorded traits is negative. With selection based on GEBV there is a risk that the negative pressure on non-recorded traits increases. So, although genomic breeding values offers exiting opportunities for enhancing genetic progress by allowing for accurate selection of individuals then they should be used with appropriate care. 
+Also, often some traits that should be in the breeding goal are not systematically recorded (e.g. many diseases). But such traits are still influenced by selection on other traits and frequently the combined correlated effect on such non-recorded traits is negative. With selection based on genomic breeding values there is a risk that the negative pressure on non-recorded traits increases. So, although genomic breeding values offers exiting opportunities for enhancing genetic progress by allowing for accurate selection of individuals then they should be used with appropriate care. 
 
 
 \begin{comment}
@@ -542,5 +569,40 @@ cat("\\right]")
 cat("$$\n")
 
 ```
+
+\end{comment}
+
+\begin{comment}
+## How Does GBLUP Work?
+The genomic relationship matrix $G$ allows to predict genomic breeding values for individuals with marker genotypes without any observation in the dataset. This fact is the basis of the large benefit of genomic selection. As soon as a DNA is available for an individual, its marker genotypes can be determined and a genomic breeding value can be predicted. This genomic breeding value is generally more accurate then the traditional breeding value based only on pedigree information. 
+
+The solution for the unknown parameters can be obtained by solving the mixed model equations shown in \@ref(eq:asm-gblup-gblupmme). In this form the Inverse $G^{-1}$ of $G$ and the vector $\hat{g}$ of predicted genotypic breeding values are split into one part corresponding to the individuals with observations and a second part for the individuals without phenotypic information.
+
+```{r GblupMme, echo=FALSE, results='asis'}
+matCoeff <- matrix(c("X^TX","X^TZ","0",
+                     "Z^TX","Z^TZ + G^{(11)}","G^{(12)}",
+                     "0","G^{(21)}","G^{(22)}"), ncol = 3, byrow = TRUE)
+vecSol <- c("\\hat{b}","\\hat{a}_1","\\hat{a}_2")
+vecRhs <- c("X^Ty","Z^Ty","0")
+### # show mme
+cat("\\begin{equation}\n")
+cat(paste(rmdhelp::bmatrix(pmat = matCoeff), collapse = '\n'), '\n')
+cat(paste(rmdhelp::bcolumn_vector(pvec = vecSol), collapse = '\n'), '\n')
+cat(" = \n")
+cat(paste(rmdhelp::bcolumn_vector(pvec = vecRhs), collapse = '\n'), '\n')
+cat("(\\#eq:asm-gblup-gblupmme)")
+cat("\\end{equation}\n")
+```
+
+The matrix $G^{11}$ denotes the part of $G^{-1}$ corresponding to the individuals with phenotypic observations. Similarly, $G^{22}$ stands for the part of the individuals without genotypic observations. The matrices $G^{12}$ and $G^{21}$ are the parts of $G^{-1}$ which link the two groups of individuals. The same partitioning holds for the vector of predicted breeding values. The vector $\hat{a}_1$ contains the predicted breeding values for the individuals with observations and the vector $\hat{a}_2$ contains the predicted breeding values of all individuals without phenotypic observations. 
+
+Based on the last line of \@ref(eq:asm-gblup-gblupmme) the predicted breeding values $\hat{g}_2$ of all individuals without phenotypic observations can be computed from the predicted breeding values $\hat{g}_1$ from the individuals with observations.
+
+\begin{equation}
+\hat{a}_2 = \left( G^{22}\right)^{-1}G^{21}\hat{a}_1
+(\#eq:GenomicBvAnimalNoPhen)
+\end{equation}
+
+Equation \@ref(eq:GenomicBvAnimalNoPhen) is referred to as genomic regression of predicted breeding values of individuals without observation on the predicted genomic breeding values of individuals with observations.
 
 \end{comment}
