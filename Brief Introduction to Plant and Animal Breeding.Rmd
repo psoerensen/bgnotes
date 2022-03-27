@@ -3,8 +3,7 @@ title: 'Brief Introduction to Plant and Animal Breeding'
 author: "Guillaume Ramstein & Peter Sørensen"
 date: "`r Sys.Date()`"
 output:
-  bookdown::pdf_document2:
-    citation_package: natbib
+  pdf_document:
     number_sections: yes
     includes:
       in_header: preamble.tex
@@ -13,8 +12,9 @@ output:
     includes:
       in_header: mathjax_header.html
   word_document: default
-bibliography: [qg2021.bib]
+biblio-style: apalike
 link-citations: yes
+bibliography: lbgfs2021.bib
 ---
 
 ```{r setup, include=FALSE}
