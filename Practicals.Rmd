@@ -7,6 +7,7 @@ biblio-style: apalike
 link-citations: yes
 output:
   pdf_document:
+    dev: png
     includes:
       in_header: preamble.tex
   html_document:
@@ -713,6 +714,13 @@ options(devtools.install.args=" --no-multiargs")
 devtools::install_github("psoerensen/qgg")
 ```
 
+If you have problems using `devtools` then use the following
+
+```{r,  eval=TRUE, echo=TRUE}
+library(qgg) # R package used for REML/BLUP analysis
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/compute_grm.R")
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/genomic_solve.R")
+```
 
 
 ### Load R packages that will be used in this practical
@@ -744,7 +752,7 @@ Use the `str` function to get a fast overview of the pedigree you are working.
 
 __Answer:__
 
-```{r,  eval=FALSE, echo=FALSE}
+```{r,  eval=TRUE, echo=TRUE}
 str(pedigree)
 ```
 
@@ -758,7 +766,7 @@ str(pedigree)
 
 __Answer:__
 
-```{r,  eval=FALSE, echo=FALSE}
+8```{r,  eval=TRUE, echo=TRUE}
 nrow(pedigree)
 dim(pedigree)
 ```
@@ -774,7 +782,7 @@ Use the `table` function on the generation variable.
 
 __Answer:__
 
-```{r,  eval=FALSE, echo=FALSE}
+```{r,  eval=TRUE, echo=TRUE}
 table(pedigree$generation)
 ```
 
@@ -838,7 +846,7 @@ A <- grm(pedigree=pedigree)
 
 __Answer:__
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=TRUE, echo=TRUE}
 dim(A)
 ```
 
@@ -892,7 +900,7 @@ __Answer:__
 Make a plot of the genetic relationship matrix using the `corrplot` function from the corrplot R package:
 
 
-```{r, eval=FALSE, echo=T, message=FALSE}
+```{r, eval=TRUE, echo=T, message=FALSE}
 corrplot(A, method="color", bg="white", 
          outline=FALSE, col=NULL, tl.pos="n",is.corr = FALSE, xlab=FALSE, ylab=FALSE)
 
@@ -1035,7 +1043,7 @@ __Answer:__
 
 \hfill\break
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=TRUE, echo=TRUE}
 Va/(Va+Ve)
 ```
 
@@ -1114,8 +1122,19 @@ In this practical we will estimate breeding values for quantitative traits in th
 
 ### Load R packages that will be used in this practical
 
-```{r, echo=T}
+```{r,  eval=FALSE, echo=TRUE}
+library(devtools)
+options(devtools.install.args=" --no-multiargs")
+devtools::install_github("psoerensen/qgg")
 library(qgg) # R package used for REML analysis
+```
+
+If you have problems using `devtools` then use the following
+
+```{r,  eval=TRUE, echo=TRUE}
+library(qgg) # R package used for REML/BLUP analysis
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/compute_grm.R")
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/genomic_solve.R")
 ```
 
 
@@ -1184,7 +1203,7 @@ where $A\sigma_a^2$, and $I\sigma_e^2$ are square matrices of genetic and residu
 
 In order to specify the linear mixed model we need to construct $y$ and $X$ from the mouse data. Let us just have a quick look at the mouse data again:
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=TRUE, echo=TRUE}
 str(mouse)
 ```
 
@@ -1294,6 +1313,10 @@ tail(ahat)
 
 #### Question 2: Make histogram for y and the estimated breeding values. What do you think about their distribution?
 
+\hfill\break
+
+__Answer:__
+
 ```{r, fig.align='center', eval=TRUE, echo=TRUE}
 layout(matrix(1:2,ncol=2))
 hist(y)
@@ -1302,12 +1325,13 @@ hist(ahat)
 
 \hfill\break
 
-__Answer:__
+
+#### Question 3: Make a scatter plot of y and the estimated breeding values. What do you think about their relationship?
+
 
 \hfill\break
 
-
-#### Question 3: Make a scatter plot of y and the estimated breeding values. What do you think about their relationship?
+__Answer:__
 
 ```{r, fig.align='center', eval=TRUE, echo=TRUE}
 plot(ahat,y)
@@ -1316,15 +1340,26 @@ cor(ahat,y)
 
 \hfill\break
 
-__Answer:__
-
-\hfill\break
 
 
 #### Question 4: Which of the sires has the highest breeding value for body weight? Which dam has the highest breeding value for body weight?
 
 
+
 \hfill\break
+
+
+```{r, eval=TRUE, echo=TRUE}
+ids <- rownames(X)
+A <- grm(pedigree=pedigree) 
+ahat <- (A[,ids]*Va)%*% Vi %*% (y-X%*%bhat)
+head(ahat)
+tail(ahat)
+ids_sire <- unique(pedigree$sire)
+ids_dam <- unique(pedigree$dam)
+sort(ahat[rownames(ahat)%in%ids_sire,])
+sort(ahat[rownames(ahat)%in%ids_dam,])
+```
 
 __Answer:__
 
@@ -1344,29 +1379,11 @@ The standard error of prediction, or SEP, is the square root of the variance of 
 
 Estimation of breeding values and reliabilities can also be done by solving the mixed model equation. Procedures for solving the mixed model equations are implemented in the `gsolve` function from the R package `qgg` introduced previously. The input to this function is $y$, $X$, $A$ or $G$ and estimates of the variance components (e.g., $\sigma_a^2$ and $\sigma_e^2$). 
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, eval=TRUE, echo=TRUE}
+A <- grm(pedigree=pedigree) 
 fit <- gsolve(y=y,X=X, GRM=list(A=A), Ve=Ve, Va=Va)
 ```
 
-
-```{r, eval=TRUE, echo=FALSE}
-A <- grm(pedigree=pedigree) 
-fit <- greml(y=scale(y),X=X, GRM=list(A=A[rownames(X),rownames(X)]))
-Z <- diag(1,nrow(A))
-rownames(Z) <- colnames(Z) <- rownames(A)
-norecords <- !rownames(A)%in%rownames(X) 
-diag(Z)[norecords] <- 0
-Va <- fit$theta[1]
-Ve <- fit$theta[2]
-C <- crossprod(Z,Z)/Ve + solve(A*Va)
-C <- solve(C)
-aii <- diag(A)
-cii <- diag(C)
-pev <- cii*Ve
-sep <- sqrt(pev)
-rel <- (1-pev/(Va*aii))
-fit <- data.frame(rel=rel,pev=pev,sep=sep)
-```
 
 We can use the `str`, `head` and `tail` functions to look at the output from the `gsolve` function:
 
@@ -1381,6 +1398,11 @@ tail(fit)
 #### Question 5: Which mouse has the hight reliability and what could be the reason for this?
 
 \hfill\break
+
+```{r, eval=TRUE, echo=TRUE}
+o <- order(fit$rel)
+tail(fit[o,])
+```
 
 __Answer:__
 
@@ -1475,8 +1497,12 @@ In this practical we will estimate genomic breeding values for quantitative trai
 
 ### Load R packages that will be used in this practical
 
-```{r, echo=T}
-library(qgg) # R package used for REML analysis
+Use the following code to load the qgg package:
+
+```{r,  eval=TRUE, echo=TRUE}
+library(qgg) # R package used for REML/BLUP analysis
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/compute_grm.R")
+source("https://raw.githubusercontent.com/psoerensen/qgg/master/R/genomic_solve.R")
 ```
 
 
@@ -1487,20 +1513,6 @@ The mouse phenotype data,  pedigree and genotype data can be loaded using the fo
 mouse <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/mouseqtl.rds"))
 pedigree <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/pedigree.rds"))
 genotypes <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/genotypes_imputed.rds"))
-```
-
-```{r, eval=F, echo=F}
-# Imputed missing genotypes using best guess
-genotypes <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/genotypes.rds"))
-M <- apply(genotypes,2,function(x){
-  nA <- sum(x, na.rm=T)    # number of copies of first allele
-  ntotal <- sum(!is.na(x)) # total number of genotypes
-  pA <- nA/(2*ntotal)      # frequency of first allele   
-  freq <- c((1-pA)*(1-pA),2*(1-pA)*pA,pA*pA) # genotype frequencies
-  x[is.na(x)] <- (0:2)[which.max(freq)] # best guess genotypes
-  x
-})
-saveRDS(M,file="C:\\Users\\au223366\\Dropbox\\GitHub\\bgcourse\\data\\genotypes_imputed.rds")
 ```
 
 First let us have a quick look at the mouse genotype data. Use the `str` function to get a fast overview of the genotypes you are working with.
@@ -1524,6 +1536,17 @@ W <- scale(genotypes) # here we center and scale columns in genotypes (i.e., mea
 G <- grm(W=W) 
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+#p <- colSums(genotypes)/(nrow(genotypes)*2)
+W <- apply(genotypes,2,function(x) {
+ px <- sum(x)/(2*length(x)) # allelle frequency
+ if(px>0.5) px <- 1-px
+ x <- x - 2*px
+ x
+})
+G <- W%*%t(W)/sum(2*p*(1-p))
+```
+
 The dimension of the genomic relationship matrix can be determined using the following command: 
 
 ```{r, eval=TRUE, echo=TRUE}
@@ -1535,7 +1558,7 @@ The number of rows and columns should be equal to the number of individuals in t
 Make a plot of the genomic relationship matrix using the `corrplot` function from the corrplot R package:
 
 
-```{r, fig.align='center', eval=FALSE, echo=T, message=FALSE}
+```{r, fig.align='center', eval=TRUE, echo=T, message=FALSE}
 corrplot(G, method="color", bg="white", 
          outline=FALSE, col=NULL, tl.pos="n",is.corr = FALSE, xlab=FALSE, ylab=FALSE)
 ```
@@ -1551,7 +1574,7 @@ __Answer:__
 
 To better compare the pedigree based genetic relationship matrix $A$ and the genomic relationship matrix $G$ we can make a scatter plot of the values from the two matrices:
 
-```{r, fig.align='center', eval=FALSE, echo=T, message=FALSE}
+```{r, fig.align='center', eval=TRUE, echo=TRUE, message=FALSE}
 A <- grm(pedigree=pedigree) 
 dim(A)
 plot(as.vector(A),as.vector(G))
@@ -1632,7 +1655,7 @@ Ve <- fit$theta[2] # Second element in theta is the residual variance
 ```
 
 
-## Estimating genomic breeding values for traits in the mouse data using BLUP: 
+## Estimating genomic breeding values for traits in the mouse data using GBLUP: 
 The goal of the GBLUP analysis is the estimate the fixed ,$b$, and random genetic effects, $a$, in the linear mixed model specified above. This can be done using the `BLUE` and `BLUP´ equations as shown previously. The best linear unbiased prediction (BLUP) of $\hat{a}$ is:
 
 \begin{equation}
@@ -1645,48 +1668,39 @@ The best linear unbiased estimator (BLUE) of $\hat{b}$ is:
 \hat{b} = (X'V^{-1} X)^{-1} X' V^{-1} y
 \end{equation}.  
 
-Estimation of breeding values can also be done by solving the mixed model equation. 
-The solutions for $\hat{a}$ and $\hat{b}$ are the same as the `BLUP` and `BLUE` when solving the following system of equations simultaneously:
-
-\begin{equation}
-\left[
-  \begin{array}{lr}
-  X'X  &  X'Z \\
-  Z'X  &  Z'Z + G^{-1}\frac{\sigma_e^2}{\sigma_a^2}
-  \end{array}
-\right]
-\left[
-  \begin{array}{c}
-  \hat{b} \\
-  \hat{a}
-  \end{array}
-\right]
-=
-\left[
-  \begin{array}{c}
-  X'y \\
-  Z'y
-  \end{array}
-\right]
-\end{equation}
-
-Procedures for solving the mixed model equations are implemented in the `gsolve` function from the R package `qgg` introduced previously. The input to this function is $y$, $X$, $A$ or $G$ and estimates of the variance components (e.g., $\sigma_a^2$ and $\sigma_e^2$). 
+We have allready determined $y$ and $X$ and therefore just need to construct the phenotypic covariance matrix $V$ (and it's inverse). This can be done using the following lines of R code:    
 
 ```{r, eval=TRUE, echo=TRUE}
-ids <- rownames(X)
-fitA <- greml(y=y,X=X, GRM=list(A=A[ids,ids]))
-fitG <- greml(y=y,X=X, GRM=list(G=G[ids,ids]))
+ids <- rownames(X) # Individuals with phenotypes
+n <- nrow(X)       # Number of individuals in the data set
+I <- diag(1,n)     # Identity matrix for residual effects  
+V <-  G[ids,ids]*Va + I*Ve  # Phenotypic variance covariance matrix
+Vi <- solve(V)     # Inverse of phenotypic covariance matrix
 ```
 
-We can use the `head` and `tail` functions to look at the output from the `gsolve` function:
+The solution to the fixed effects, $b$, can be found using the following R command:
 
 ```{r, eval=TRUE, echo=TRUE}
-head(fitA$g)
-tail(fitG$g)
+bhat <- solve(t(X) %*% Vi %*% X)%*%t(X) %*% Vi %*% y
+bhat
+```
+
+The solution to the random genetic effects, $a$, can be found using the following R command:
+
+```{r, eval=TRUE, echo=TRUE}
+ahat_G <- (G[,ids]*Va)%*% Vi %*% (y-X%*%bhat)  # Genomic based BLUP
 ```
 
 
-#### Question 3: Make histogram for y and the estimated genomic breeding values. What do you think about their distribution?
+```{r, eval=TRUE, echo=TRUE}
+V <-  A[ids,ids]*Va + I*Ve  # Phenotypic variance covariance matrix
+Vi <- solve(V)     # Inverse of phenotypic covariance matrix
+bhat <- solve(t(X) %*% Vi %*% X)%*%t(X) %*% Vi %*% y
+ahat_A <- (A[,ids]*Va)%*% Vi %*% (y-X%*%bhat)  # Genomic based BLUP
+
+```
+
+#### Question 3: Make histogram for the estimated (genomic) breeding values. What do you think about their distribution?
 
 
 \hfill\break
@@ -1697,12 +1711,10 @@ __Answer:__
 
 
 ```{r, fig.align='center', eval=TRUE, echo=TRUE}
-layout(matrix(1:2,ncol=2))
-hist(y)
-hist(fitG$g)
+layout(matrix(1:3,ncol=3))
+hist(ahat_A)
+hist(ahat_G)
 ```
-
-
 #### Question 4: Which of the sires has the highest genomic breeding value for body weight? Which of the sires has the highest breeding value for body weight? 
 
 
@@ -1710,7 +1722,15 @@ hist(fitG$g)
 
 __Answer:__
 
+```{r, fig.align='center', eval=TRUE, echo=TRUE}
+ids_sire <- as.character(unique(pedigree$sire))[-1]
+sort(ahat_G[ids_sire,])
+sort(ahat_A[ids_sire,])
+plot(ahat_A[ids_sire,],ahat_G[ids_sire,])
+```
+
 \hfill\break
+
 
 We want to compare the breeding values estimated using pedigree and genomic information. This can be done by computing the correlation or by making a scatter plot for the breeding values obtained using pedigree or genetic marker information. 
 
@@ -1725,18 +1745,7 @@ __Answer:__
 \hfill\break
 
 
-
 ```{r, fig.align='center', eval=TRUE, echo=TRUE}
-plot(fitA$g,fitG$g)
-cor(fitA$g,fitG$g)
+plot(ahat_G,ahat_A)
+cor(ahat_G,ahat_A)
 ```
-
-#### Question 6: Which of the sires has the highest genomic breeding value for blood glucose levels? 
-
-
-\hfill\break
-
-__Answer:__
-
-\hfill\break
-
