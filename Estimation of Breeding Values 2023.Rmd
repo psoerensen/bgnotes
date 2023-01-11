@@ -67,10 +67,10 @@ where  $\mu$ is the population mean, $a$ is the breeding value (i.e. additive ef
 			
 The true breeding value for an individual is the sum of all additive genetic effects that affect the quantitative trait:
 \begin{align}
-		a=\sum_{j=1}^{q}a_{j} \notag
+		a_{i}=\sum_{k=1}^{K}a_{ik} \notag
 \end{align}
 
-where $a$ is the total additive genetic effect and $a_{j}$ is the additive genetic effect for loci j. We therefore assume (based on the central limit theory) that the true breeding values, a, and the residual term, $e$, are normally distributed which means that the observed phenotype is also normally distributed:
+where $a_{i}$ is the total additive genetic effect for the i'th individual, $a_{ik}$ is the additive genetic effect for loci k, and K is the total number of causal loci. We therefore assume (based on the central limit theory) that the true breeding values, a, and the residual term, $e$, are normally distributed which means that the observed phenotype is also normally distributed:
 \begin{align}
 a \sim N(0,\sigma^2_{a}) \notag \\
 e \sim N(0,\sigma^2_{e}) \notag \\
@@ -90,18 +90,24 @@ E(a|y) &= E(a) + Cov(a,y)[Var(y)]^{-1}(y-E(y))
 \end{align}
 The breeding value is defined as deviation from the general mean which means that the expected value $E(a)$ of the true breeding value $a$ is $E(a)=0$. Therefore the expected value of the breeding value is:
 \begin{align}
-E(a|y) &= Cov(a,y)[Var(y)]^{-1}(y-E(y))
+E(a|y) &= Cov(a,y)[Var(y)]^{-1}(y-\mu)
 \end{align}
 The expression for the estimate of the breeding value consists of two parts;
 The term $y-E(y)$ shows that the observed phenotypic values are corrected for the
-fixed effects represented by $\mu$.
-The term, $b_{a|y}=Cov(a,y)[Var(y)]^{-1}$, often referred to as the regression coefficient is a weighting factor with which the corrected phenotypic values are multiplied. 
+population mean represented by $\mu$. The term, $b_{a|y}=Cov(a,y)[Var(y)]^{-1}$, often referred to as the regression coefficient is a weighting factor with which the corrected phenotypic values are multiplied. 
 
 To be able to estimate the breeding value we need to determine the values for the terms $E(a)$, $E(y)$, $Var(y)$, and $Cov(a,y)$ in the expression above. It is possible to derive simple formula's for these terms based on: 
 
    * adjusted phenotypic observations for the quantitative trait of related individuals
    * heritability of the quantitative trait
    * knowledge of inheritance laws and genetic relationships (e.g. parents, grandparents, siblings) for individuals with phenotypic observations of the quantitative trait
+
+This complicated mathematical equation can be expressed as a weighted sum of phenotypic observation for the individual itself and its relatives:
+
+\begin{align}
+\hat{a}_i &= w_1(y_1-\hat{\mu})+w_2(y_2-\hat{\mu})+ ...+ w_j(y_j-\hat{\mu})
+\end{align}
+where $w_k$ is the weigthing factor for phenotypic observation for individual k. The weight factor depends on the additive genetic variance $\sigma^2_{a}$, residual variance $\sigma^2_{e}$ and the additive genetic relationship between individual i and j (explained later).  
 
 We will distinguish between true and estimated breeding value using the following notation:
 \begin{align}
@@ -136,7 +142,7 @@ We will illustrate the basic principles of breeding value estimation using some 
 ## Estimation of breeding value and accuracy based on own phenotype:
 An estimate of the breeding value (a) based on own phenotype (y) can be calculated as: 
 \begin{align}
-E(a|y) &= h^2(y-\mu) \notag
+\hat{a} &= h^2(y-\mu) \notag
 \end{align}
 
 Thus the estimated breeding value using own phenotypic record can be computed based on an estimate of the trait heritability ($h^2$) and the observed phenotype deviation ($y-\mu$). Use of records on the candidate itself is called performance testing. For performance testing to be efficient, the heritability should be at least moderately high (as suggested by equation: $E(a|y) = h^2(y-\mu)$).
@@ -161,7 +167,7 @@ where the regression coefficient quantifies the weight (or importances) of the p
 \begin{align}
 b_{a|y}&=\frac{a'nh^2}{(1+(n-1)r} 
 \end{align}
-where $a'$ is the genetic relationship between the breeding individual and individuals with phenotypes, $n$ is the number of phenotypic records, $h^2$ is the trait heritability, and $r$ is correlation between individuals with observations ($r = a^{''}h2  + c^2$, where $a^{''}$ = genetic relationship between individuals with records and target, $c^2$ = common environmental component).
+where $a'$ is the genetic relationship between the breeding individual and individuals with phenotypes, $n$ is the number of phenotypic records, $h^2$ is the trait heritability, and $r$ is correlation between individuals with observations ($r = a^{''}h2$, where $a^{''}$ = genetic relationship between individuals with records and target). Here we assume that individuals do not share any common environmental component (same litter or same plot).
 
 Thus the importance given to a specific source of information depends on the additive genetic relationship ($a'$) with the breeding candidate, the heritability of the trait ($h^2$), and the amount of information ($n$), i.e. the number of relatives (progenies or sibs, etc.). 
 
@@ -175,7 +181,7 @@ Thus reliability depends on the same factors as the estimated breeding value exc
  * genetic relationship to individuals with information (a') is high
  * there are many records ($n$ is high)
  * heritability ($h^2$) is high
- * correlation between records ($r = a''h^2 + c^2$) is low (little redundancy in observations)
+ * correlation between records ($r = a''h^2$) is low (little redundancy in observations)
 
 
 ## Genetic relationship used for estimating breeding value
@@ -268,7 +274,7 @@ y &= \mu + a + e \notag
 where
 \begin{align}
 y &: \text{is the vector of observed values of the trait,} \notag \\
-\mu &: \text{is the population mean,} \notag \\
+\mu &: \text{is the population mean (representing the fixed effect),} \notag \\
 a &: \text{is a vector of random genetic effects,} \notag \\
 e &: \text{is a vector of random residual effects,} \notag
 \end{align}
@@ -278,7 +284,7 @@ a \sim MVN(0,G) \notag \\
 e \sim MVN(0,R) \notag \\
 y \sim MVN(\mu,V) \notag
 \end{align}
-where $G=A\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genetic and residual (co)variances among the individuals, respectively, and $V=A\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. 
+where $A\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genetic and residual (co)variances among the individuals, respectively, and $V=A\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. 
 
 ## Estimating the random genetic effects in the linear mixed model
 The goal of the BLUP analysis is the estimate the random genetic effects, $a$, in the linear mixed model specified above. This can be done using the BLUP equations shown below. The best linear unbiased prediction (BLUP) of $\hat{a}$ is:
