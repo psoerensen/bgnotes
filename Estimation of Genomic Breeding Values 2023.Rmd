@@ -77,31 +77,10 @@ Table 1. Number of markers used for genomic selection in different species
 The genetic maps are based on DNA markers in the form of single nucleotide polymorphisms (SNP) and they enable us to divide the entire genome into thousands of relatively small chromosome segments. 
  
 ## Genomic markers
-The different locations in the genome that are considered in genomic selection are called __markers__. When looking at the complete set of markers making up the genomic information in a population, the so-called __Single Nucleotide Polymorphisms__ (SNPs) have been shown to be the most useful types of markers. These SNPs correspond to differences of single bases at a given position in the genome. Based on empirical analyses of very many SNP-loci, almost all SNP just take two different states. Furthermore it is important that these SNPs are more or less evenly spread over the complete genome. Some SNPs may be located in coding regions and some my be placed in regions of unknown function. Figure \@ref(fig:snpdistribution) illustrates the distribution of SNP over the genome. 
-
-```{r snpdistribution, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap="Distribution of SNP-Loci Across A Genome"}
-#rmddochelper::use_odg_graphic(ps_path = "odg/snpdistribution.odg")
-knitr::include_graphics(path = "odg/snpdistribution.png")
-```
+The different locations in the genome that are considered in genomic selection are called __markers__. When looking at the complete set of markers making up the genomic information in a population, the so-called __Single Nucleotide Polymorphisms__ (SNPs) have been shown to be the most useful types of markers. These SNPs correspond to differences of single bases at a given position in the genome. Based on empirical analyses of very many SNP-loci, almost all SNP just take two different states. Furthermore it is important that these SNPs are more or less evenly spread over the complete genome. Some SNPs may be located in coding regions and some my be placed in regions of unknown function. 
 
 ## Quantitative Trait Loci and linkage disequilibrium
-The loci that are relevant for a quantitative trait are called __Quantitative Trait Loci__ (QTL). Any given SNP-Marker can only be informative for a given QTL, if a certain __linkage disequilibrium__ between the QTL and the marker locus exists. The idea behind linkage disequilibrium is that a certain positive QTL-allele evolved in a certain genetic neighborhood of a number of SNP loci. As a result of that the positive QTL-allele is very often inherited with the same SNP-allele. Over the generations, recombination between the QTL and the neighboring SNP-loci can happen and thereby weaken the statistical association between the positive QTL-allele and the given SNP-allele. This recombination effect is smaller when the QTL and the SNP-loci are physically closer together on the chromosome. The non-random association between QTL and SNP-markers is called linkage disequilibrium.
-
-The marker locus is called $M$ and the QTL is called $Q$, then the LD can be measured by 
-
-\begin{align}
-D &= p(M_1Q_1) * p(M_2Q_2) - p(M_1Q_2) * p(M_2Q_1)
-(\#eq:linkagediseq)
-\end{align}
-
-where $p(M_xQ_y)$ corresponds to the frequency of the combination of marker allele $M_x$ and QTL allele $Q_y$. Very often the LD measure shown in \@ref(eq:linkagediseq) is re-scaled to the interval between $0$ and $1$ which leads to 
-
-\begin{align}
-r^2 &= \frac{D^2}{p(M_1)*p(M_2) * p(Q_1) * p(Q_2)}
-(\#eq:linkagediseqrescaled)
-\end{align}
-
-In \@ref(eq:linkagediseqrescaled) $r^2$ describes the proportion of the variance at the QTL which is explained by the marker $M$. Hence the LD must be high such that the marker can explain a large part of the variance at the QTL. For the genome size of most animal and plant species, about $50,000$ SNP markers are required to get a sufficient coverage of the complete genome.
+The loci that are relevant for a quantitative trait are called __Quantitative Trait Loci__ (QTL). Any given SNP-Marker can only be informative for a given QTL, if a certain __linkage disequilibrium__ between the QTL and the marker locus exists. The idea behind linkage disequilibrium is that a certain positive QTL-allele evolved in a certain genetic neighborhood of a number of SNP loci. As a result of that the positive QTL-allele is very often inherited with the same SNP-allele. Over the generations, recombination between the QTL and the neighboring SNP-loci can happen and thereby weaken the statistical association between the positive QTL-allele and the given SNP-allele. This recombination effect is smaller when the QTL and the SNP-loci are physically closer together on the chromosome. The non-random association between QTL and SNP-markers is called linkage disequilibrium (LD). Hence the LD must be high such that the marker can explain a large part of the variance at the QTL. For the genome size of most animal and plant species, about $50,000$ SNP markers are required to get a sufficient coverage of the complete genome.
 
 # Basic principles for estimating genomic breeding values
 Genomic breeding values are conceptually simple to calculate from marker information. First, the entire genome is divided into small chromosome segments by dense markers. Second, the additive effects of each chromosome segment are estimated simultaneously. Finally, the genomic estimated breeding value (GEBV) is calculated as the sum of all chromosome segment effects. The chromosome segment effects are estimated for a group of individuals (i.e. a reference population). For any remaining individual, only a blood or tissue sample is 
@@ -113,7 +92,7 @@ Both approaches allow for estimation of genomic breeding values for individuals 
 
 
 ## A linear mixed model for estimating genomic breeding values (GBLUP) {#gblup}
-The linear mixed model for estimating genomic breeding values (GBLUP) contains the observation vector for the trait(s) of interest ($y$), the fixed effects $b$ that explain systematic differences in $y$, and the random genomic effects $a$ and random residual effects $e$. A matrix formulation of a general GBLUP model is:
+The linear mixed model for estimating genomic breeding values contains the observation vector for the trait(s) of interest ($y$), the __fixed effects__ that explain systematic differences in $y$, and the __random genomic effects__ $a$ and __random residual effects__ $e$. A matrix formulation of a general Genomic BLUP (GBLUP) model is:
 \begin{align}
 y &= \mu + a + e 
 (\#eq:gblup)
@@ -121,6 +100,7 @@ y &= \mu + a + e
 where
 \begin{align}
 y &: \text{is the vector of observed values of the trait,} \notag \\
+\mu &: \text{is the population mean (representing the fixed effect),} \notag \\
 a &: \text{is a vector of random genomic effects,} \notag \\
 e &: \text{is a vector of random residual effects,} \notag
 \end{align}
@@ -131,16 +111,16 @@ e \sim MVN(0,R) \notag \\
 y \sim MVN(\mu,V) \notag
 \end{align}
 where $\tilde{G}=G\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genomic and residual (co)variances among the individuals, respectively, and $V=G\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. 
-The genomic relationship matrix $G$ is estimated from genomic marker data instead of pedigree information. 
+The genomic relationship matrix $G$ is estimated from genomic marker data instead of pedigree information (see section below). 
 
 
 ### Estimation of genomic effects in GBLUP
-Estimates of the random genomic effects, $a$, in the linear mixed model specified above can be done using the BLUP equations shown below. The best linear unbiased prediction (BLUP) of the genomic effects $\hat{a}$ is:
+Estimates of the random genomic effects, $a$, in the linear mixed model specified above can be done using the BLUP equations shown below. The best linear unbiased prediction (GBLUP) of the genomic effects $\hat{a}$ is:
 \begin{equation}
-\hat{a} = \tilde{G}Z'V^{-1}(y - \hat{\mu})
+\hat{a} = \tilde{G}V^{-1}(y - \hat{\mu})
 (\#eq:hatublup)
 \end{equation}
-The BLUP equation for the estimate of the genomic effects consists of three parts; The term, $y - \hat{\mu}$, shows that the observed phenotypic values are corrected for the populatio mean represented by $\hat{\mu}$. The covariance between the true genomic effects ($a$) and phenotypes ($y$) is $Cov(a,y)=\tilde{G}Z'=GZ'\sigma_a^2$. The inverse of the phenotypic covariance matrix is $[Var(y)]^{-1}=V^{-1}$. 
+The BLUP equation for the estimate of the genomic effects consists of three parts; The term, $y - \hat{\mu}$, shows that the observed phenotypic values are corrected for the populatio mean represented by $\hat{\mu}$. The covariance between the true genomic effects ($a$) and phenotypes ($y$) is $Cov(a,y)=\tilde{G}=G\sigma_a^2$. The inverse of the phenotypic covariance matrix is $[Var(y)]^{-1}=V^{-1}$. 
 
 From \@ref(eq:hatublup) we can see that the GBLUP estimation procedure looks very similar to the pedigree based breeding value estimation procedure (PBLUP). In GLUP the covariances between breeding values is based on the  genomic relationship matrix $G$ which is computed from genomic markers whereas in PBLUP it is based on the numerator relationship matrix $A$ computed from pedigree information. 
 
