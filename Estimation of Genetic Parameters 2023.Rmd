@@ -129,17 +129,19 @@ y &= \mu + a + e \notag
 where
 \begin{align}
 y &: \text{is the vector of observed values of the trait,} \notag \\
-\mu &: \text{is the population mean,} \notag \\
+\mu &: \text{is the population mean (representing the fixed effects),} \notag \\
 a &: \text{is a vector of random genetic effects,} \notag \\
 e &: \text{is a vector of random residual effects,} \notag
 \end{align}
-In the statistical model (specified above) the random effects ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables which follow a multivariate normal (MVN) distribution. In general terms the expectations of these random variables are:  
+In the statistical model (specified above) the random effects ($a$ and $e$) and the phenotypes ($y$) are considered to be random variables which follow a multivariate normal (MVN) distribution:  
 \begin{align}
 a \sim MVN(0,G) \notag \\
 e \sim MVN(0,R) \notag \\
 y \sim MVN(\mu,V) \notag
 \end{align}
-where $G=A\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genetic and residual (co)variances among the individuals, respectively, and $V=A\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. $A$ is the additive genetic relationship matrix and $\sigma_a^2$ is the genetic variance and $\sigma_e^2$ is the residual variance. The Restricted Maximum Likelihood method estimate the parameters (i.e. variance components $\sigma_{a}^2$ and $\sigma_{e}^2$) in the linear mixed model specified above. The general principle used in maximum likelihood methods is to find the set of parameters which maximizes the __likelihood__ of the data, i.e., the probability of observations given the model and its parameter estimates: $p(y|\hat{b}, \hat{\sigma}^2_{a}, \hat{\sigma}^2_{e})$. From the REML estimate of the variance components, the heritability can easily be computed by 
+where $G=A\sigma_a^2$, and $R=I\sigma_e^2$ are square matrices of genetic and residual (co)variances among the individuals, respectively, and $V=A\sigma_a^2+I\sigma_e^2$ is the overall phenotypic covariance matrix. $A$ is the additive genetic relationship matrix (introduced in the next section) and $\sigma_a^2$ is the genetic variance and $\sigma_e^2$ is the residual variance. 
+
+Restricted Maximum Likelihood method estimate the parameters (i.e. variance components $\sigma_{a}^2$ and $\sigma_{e}^2$) in the linear mixed model specified above. The general principle used in maximum likelihood methods is to find the set of parameters which maximizes the __likelihood__ of the data, i.e., the probability of observations given the model and its parameter estimates: $p(y|\hat{b}, \hat{\sigma}^2_{a}, \hat{\sigma}^2_{e})$. From the REML estimate of the variance components, the heritability can easily be computed by 
 \begin{align}
 \hat{h}^2 &= \hat{\sigma}^2_{a}/(\hat{\sigma}^2_a+\hat{\sigma}^2_e)
 \end{align}
