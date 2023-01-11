@@ -34,14 +34,14 @@ This section introduces the basic concepts in quantitative genetics such as:
 
 These concepts are relevant for a range of genetic and statistical analyses of complex traits and diseases in animal and plant populations, including:
 
-*	Estimating the effect of single locus (or marker) for gene discovery
-*	Estimating the effect of multiple loci (or markers) for genomic prediction
+<!-- *	Estimating the effect of single locus (or marker) for gene discovery -->
+<!-- *	Estimating the effect of multiple loci (or markers) for genomic prediction -->
 *	Estimating the heritability of a trait (the part of its variability due to genetics)
 *	Estimating breeding values by pedigree or genomic information
 *	Selection of breeding individuals based on estimated breeding values
 *	Prediction of selection response based on estimated heritability (breeder’s equation)
 
-In the appendix, further details about the quantative genetic models are presented, but these may be outside the scope of this BSc course.
+<!-- In the appendix, further details about the quantative genetic models are presented, but these may be outside the scope of this BSc course. -->
 
 
 # Quantitative Genetics
@@ -217,6 +217,7 @@ On the premise that many genes and environmental factors interact to impact the 
 
 
 
+\begin{comment}
 
 
 \newpage
@@ -636,3 +637,5 @@ On the other hand, the dominance deviation measures the effect of a certain geno
 If genotypes at different loci show epistatic interaction effects as described in section \@ref(epistatic-interaction), the interactions give rise to an additional variance component called $V_I$, which is the variance of interaction deviations. This new variance component $V_I$ can be further decomposed into sub-components. The first level of sub-components is according to the number of loci that are considered. Two-way interactions involve two loci, three-way interactions consider three loci and in general $n$-way interactions arise from $n$ d0ifferent loci. Epistatic interaction can be further decomposed according to whether they involve additive effects, dominance deviations or both, across loci. 
 
 In general, interaction effects explain only a very small amount of the overall genotypic variation. As already mentioned in section \@ref(epistatic-interaction) for animal and plant breeding, we are mostly interested in the additive effects (the breeding values). This is also true when looking at the variance components. Hence dominance variance and epistatic deviations are not used very often in practical breeding application. 
+
+\end{comment}
