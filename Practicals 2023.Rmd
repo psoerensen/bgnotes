@@ -1,0 +1,217 @@
+---
+title: 'Practicals in Quantiative Genetic Analyses'
+author: "Rasmus Bak Stephansen & Peter Sørensen"
+date: "`r Sys.Date()`"
+bibliography: qg2021.bib
+biblio-style: apalike
+link-citations: yes
+output:
+  pdf_document:
+    dev: png
+    includes:
+      in_header: preamble.tex
+  html_document:
+    includes:
+      in_header: mathjax_header.html
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+# Introduction
+In these practicals we will be analysing quantitative traits observed in a mice population. The mouse data consist of phenotypes for traits related to growth and obesity (e.g. body weight, glucose levels in blood), pedigree information, and genetic marker data. The practicals will be a mix of theoretical and practical exercises in R that are used for illustrating/applying the theory presented in the lectures and corresponding notes. 
+
+* Practical 1: Basic concepts in breeding and understanding of quantitative traits
+* Practical 2: Basic Quantitative Genetics illustrated in the mouse data
+* Practical 3: Estimation of Genetic Parameters for traits in the mouse data
+* Practical 4: Estimation of Breeding Values for traits in the mouse data
+* Practical 5: Estimation of Genomic Breeding Values for traits in the mouse data
+
+
+
+\newpage
+
+# Practical 1: Basic concepts in breeding and quantitative genetics
+
+
+## Time schedule of practical session:
+\begin{tabular}{|l|l|}
+\hline
+Time & Activity \\
+\hline
+11:15 & Questions to lecture and multiple-choice questions \\
+\hline
+11:25 & Introduction to exercises \\
+\hline
+11:35 & Assignments to groups – work with exercises \\
+\hline
+12:00 & Break \\
+\hline
+12:35 & Prepare final words of exercises in each group \\
+\hline
+12:45 & Present final words \\
+\hline
+12:55 & Repeat multiple-choice questions \\
+\hline
+13:00 & End of practical session 1 \\
+\hline
+\end{tabular}
+
+
+
+## Exercises 1:
+
+Below are a few questions related to basic concepts in breeding and quantitative genetics. Discuss the question in groups of 3-5 students. Summarize your answer in a few bullet points.
+
+#### Q1: What is breeding and quantiative genetics?
+#### A1: 
+
+Breeding refers to the process of intentionally producing offspring with specific desired traits. This can be done in both plants and animals and involves the selection of parent organisms based on their genetic characteristics, followed by controlled mating or pollination.
+
+Quantiative Genetics is the study of heredity and the variation of traits passed down from generation to generation. Genetics provides the theoretical foundation for breeding, as breeders use genetic principles to understand how traits are passed down and how they can be influenced.
+
+Natural selection and artificial selection are two mechanisms that drive evolution and the development of new traits in organisms. 
+
+#### Q2: What is natural selection?
+#### A2: 
+Natural selection is the process by which certain traits become more or less common in a population over time based on the environment. This occurs when organisms with certain traits are more successful in surviving and reproducing, passing on their traits to the next generation. Over time, traits that confer a survival advantage will become more common in the population, leading to evolution.
+
+#### Q2: What is artificial selection?
+#### A2: 
+Artificial selection involves human intervention in the selection of traits. This is often done through controlled breeding programs, where organisms with desired traits are selectively mated to produce offspring with those traits. This can be used to develop new varieties of crops, livestock, and other organisms with specific desired characteristics.
+
+#### Q2: What is the difference between articial and natural selection?
+#### A2: 
+While natural selection operates based on environmental pressures, artificial selection operates based on human goals and desires. Both mechanisms can result in the development of new traits, but artificial selection allows for much more control and direction in the process.
+
+#### Question 3: What is the definition of a quantitative trait and provide some examples?
+#### A3: 
+A quantitative trait, also known as a continuous trait, is a trait that varies in a continuous manner and is influenced by many genes and the environment. Quantitative traits are usually measured on a scale and can range from very small to very large values. 
+Examples of quantitative traits include height, weight, milk production in dairy cattle, and grain yield in crops. 
+
+
+#### Question 3: Is it easy to breed for quantitative trait?
+#### A3: 
+These traits are typically difficult to breed for as they are influenced by a large number of genes, each with a small effect, as well as environmental factors. 
+Breeding programs for quantitative traits typically involve the use of statistical methods to select for the desired trait based on the relationship between the trait and molecular markers, pedigree information, and environmental data.
+
+
+The relationship between phenotypes (P) and genotypes (G) and the environment (E) can be summarized by the following equation: 
+
+                   					P = G + E
+
+#### Question 5: Which information can we collect about P, G and E?
+P: We can collect phenotypes for quantitative traits such as height, weight, milk production in dairy cattle, and grain yield in crops. 
+G: We can collect genotype information about breed, pedigree, family, genetic markers. 
+E. We can collect environmental information about type of soil, weather. 
+
+#### Question 6: Can you give an example of a successful breeding program and its impact on agriculture or the industry?
+
+
+#### A6: 
+One example of a successful breeding program in dairy cattle is the Holstein breed. The Holstein breed is a dairy cattle breed that originated in the Netherlands and is now widely used in dairy production worldwide.
+Breeders have been selectively breeding Holsteins to have exceptional milk production, with some animals producing over 10,000 kilos of milk per year.
+In addition to high milk production, breeders have also worked to improve other traits such as reproductive efficiency, longevity, and health. 
+The success of the Holstein breed has led to its widespread use in dairy production around the world and has been a major factor in the growth of the dairy industry.
+The Holstein breeding program is a good example of how breeding can be used to improve production in livestock and make a significant impact on the industry.
+
+<!-- One example of a successful breeding program in plants is the development of disease-resistant crops. Plant breeding has played a major role in increasing crop yields and improving resistance to diseases and pests. -->
+<!-- One example of a successful breeding program in this area is the development of disease-resistant varieties of potatoes. Potatoes are a major food crop and are susceptible to many diseases, including late blight, which is caused by the fungus Phytophthora infestans. In the late 19th century, the Irish potato famine was caused by the spread of late blight, leading to widespread famine and death. -->
+<!-- To address this issue, plant breeders have developed disease-resistant potato varieties through conventional breeding methods and the use of genetic engineering. For example, researchers have identified and introduced genes from wild relatives of the potato that confer resistance to late blight into cultivated varieties. These new varieties are now widely grown and have significantly reduced the impact of late blight on potato production. -->
+<!-- This is just one example of how plant breeding has been used to improve crop production and reduce the impact of diseases. Other examples include the development of disease-resistant varieties of crops such as rice, corn, and wheat. -->
+
+
+
+
+\newpage
+
+## Exercises 2:
+In this exercise we will perform an explorative data analyses of two quantitative traits, body weight and blood glucose levels, observed in the F2 mouse population. These explorative data analyses includes computation of basic descriptive statistics such as mean, and variance used to describe each of these traits. Distribution plots (e.g., histogram) will be used to visualize whether the trait phenotypes follow a normal distribution. Boxplots will be used to spot potential effects of explanatory variables.  Furthermore relationships between traits and variables will be characterized in terms of correlations and linear relationships.
+
+
+One of the first thing to do is to explore the data used in the analysis. The goal is to understand the variables, how many records the data set contains, how many missing values, what is the variable structure, what are the variable relationships and more. 
+
+The two quantitative traits we will be analysing are glucose levels in the blood (Gl) and body weight (BW) measured in the mice at 8 weeks of age. For each of these measurement we have information about the father (sire), mother (dam), gender and batch (reps). 
+
+```{r, echo=FALSE}
+mouse <- readRDS(url("https://github.com/psoerensen/bgcourse/raw/main/data/mouse.rds"))
+Weight <- mouse[,"BW"]
+Glucose <- mouse[,"Gl"]
+str(mouse)
+```
+
+Histograms and boxplots can be used to visualize the distribution and compare the two traits. Based on histrograms the two traits appear to be normally distributed
+```{r, fig.align='center', eval=TRUE, echo=FALSE}
+layout(matrix(1:4,ncol=2,byrow=TRUE))
+hist(Weight)
+hist(Glucose)
+boxplot(Weight, main="Weight", frame.plot=FALSE)
+boxplot(Glucose, main="Glucose", frame.plot=FALSE)
+```
+
+#### Question 5: Phenotypic relationship between body weight and glucose levels.
+Below is a scatter plot of the the 2 traits that can be used to illustrate their relationship. Is there a strong relationship between the phenotypes of weight and glucose?
+
+```{r, eval=TRUE, echo=FALSE}
+plot(Weight,Glucose, frame.plot=FALSE, main=paste("Correlation=",round(cor(Weight,Glucose),2)))
+```
+
+
+\newpage
+#### Question 7: Influence of family relationship on the traits.
+Boxplots can be used to visualize the potential effect of family structure (e.g. sire) on the two traits. Based on these plots do you think family relationship influence the traits?
+
+```{r, fig.align='center', eval=TRUE, echo=FALSE}
+layout(matrix(1:2,ncol=2))
+Sire <- mouse$sire
+Dam <- mouse$dam
+boxplot(Weight~Sire, main="Sire effect", horizontal=TRUE, frame.plot=FALSE)
+boxplot(Glucose~Sire, main="Sire effect", horizontal=TRUE, frame.plot=FALSE)
+```
+
+
+
+\newpage
+#### Question 9: Influence of gender.
+The boxplots below visualize the potential effect of gender on the two traits. Describe the effect of gender. Does gender influence the traits?
+
+```{r, fig.align='center', eval=TRUE, echo=FALSE}
+layout(matrix(1:2,ncol=2))
+Sire <- mouse$sire
+Gender <- mouse$sex
+boxplot(Weight~Gender, main="Gender effect", frame.plot=FALSE)
+boxplot(Weight~Gender, main="Gender effect", frame.plot=FALSE)
+```
+
+
+\newpage
+#### Question 12: Fitting a statistical model that include effects of sire, dam, gender and batch.
+The exploratory data analysis is the process of analyzing and visualizing the data to get a better understanding of the data. It is not a formal statistical test. Which factors should we include in the statistical model? To best answer these question we can fit a linear model that include these factors (sire, dam, sex, reps) in the model. The results from this analyses is shown below. There is a strong effect of sire, dam, gender and batch. Do you think genetics play a role in these traits?  
+
+```{r, eval=T, echo=FALSE}
+fit <- lm(Weight~Sire+Dam+Gender)
+anova(fit)
+fit <- lm(Glucose~Sire+Dam+Gender)
+anova(fit)
+```
+
+
+
+
+\newpage
+
+## Further details about mouse data
+
+The __M16 mouse__ was established as an outbred animal model of early onset polygenic obesity and diabesity. This was done by selection for 3- to 6-week weight gain for 27 generations from  an outbred  ICR  base  population.  Breeding  criterion  was within-litter  selection  for  the  male  and  female  with  the largest weight gain from 3 to 6 weeks of age. An ICR control line was maintained in parallel, with random mating from  generation  to  generation  but  maintaining  a  similar effective population size. Mice from the M16 line ar elarger at all ages and have increased body fat percentage, fat cell  size,  fat  cell  numbers,  and  organ  weights  when  compared with ICR. Mice from the M16 line are larger at all ages and have increased body fat percentage, fat cell  size,  fat  cell  numbers,  and  organ  weights  when  compared with ICR. These mice also exhibit hyperphagia, accompanied by moderate obesity, and are hyperglycemic, hyperinsulinemic, and hypercholesterolemic.
+
+The __ICR mouse__ is a strain of albino mice originating in SWISS and selected by Dr. Hauschka to create a fertile mouse line. Because mice of this strain have been sent to various places from the Institute of Cancer Research in the USA, the strain was named ICR after the initial letters of the institute. Mice of this strain are relatively large albinos with a gentle nature that grow well. The ICR mouse is a general-purpose model used for studies in a wide range of fields including toxicity, pharmacology, drug efficacy, and immunology.
+
+
+A large __F2 population__ (n=1181) was __established by crossing the M16 and ICR lines__ (for a recent description of relevant phenotypes in the parental lines, see https://onlinelibrary.wiley.com/doi/epdf/10.1038/oby.2004.176). Twelve F1 families resulted from six pair matings of M16 males x ICR females and six pair matings of the reciprocal cross. A total of 55 F1 dams were mated to 11 F1 sires in sets of five F1 full sisters mated to the same F1 sire. These same specific matings were repeated in three consecutive replicates. Thus, the F2 population consisted of 55 full-sib families of up to 24 individuals each and 11 sire families families of up to 120 individuals each. Actual numbers of mice within families varied slightly due to a small number of failed pregnancies. All litters were standardized at birth to eight pups, with approximately equal representation of males and females.
+
+More information about the mouse data can be found in the following publications:
+
+https://onlinelibrary.wiley.com/doi/epdf/10.1038/oby.2004.176
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1449794/
